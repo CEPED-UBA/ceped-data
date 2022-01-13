@@ -42,14 +42,14 @@ ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Table",                 
+        tabPanel("Tabla",                 
                  textOutput("texto"),
                  tableOutput("table_data"),
                  downloadButton('downloadTable','Descargar tabla')),
-        tabPanel("Metadata", 
+        tabPanel("Metadatos", 
                  textOutput("metadata"),
                  downloadButton('downloadTable_md','Descargar metadata')) ,
-        tabPanel("Plot", 
+        tabPanel("Gráfico", 
                  fluidRow(column(6, sliderInput("height", "Altura del gráfico", min = 100, max = 1000, value = 380)), 
                           column(6, sliderInput("width", "Ancho del gráfico", min = 100, max = 1000, value = 800))),
                  plotOutput("plot_id"),
