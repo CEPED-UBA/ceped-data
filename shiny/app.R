@@ -23,10 +23,15 @@ ui <- fluidPage(
     sidebarPanel(
       selectInput("var1_id",
                   "Variable:",
-                  vector_variables),
-      selectInput("pais_id",
-                  "País:",
-                  vector_paises),
+                  vector_variables,
+                  multiple = F,
+                  selected = vector_variables[8]),
+      selectInput(inputId = "pais_id",
+                  label ="País:",
+                  choices = vector_paises,
+                  multiple = T,
+                  selected = vector_paises[1:2]
+      ),
       selectInput("desag_id",
                   "Desagregación:",
                   vector_desagreg),
@@ -58,7 +63,7 @@ server <- function(input, output, session){
     
     df <- Serie_salarios %>% 
       filter(cod.variable == input$var1_id) %>% 
-      filter(nombre.pais == input$pais_id) %>% 
+      filter(nombre.pais %in% input$pais_id) %>% 
       filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) 
       
     
@@ -87,12 +92,14 @@ server <- function(input, output, session){
   
   plot <- reactive({
     
-    tab_filtrada() %>% ggplot(aes(y = valor, x = as.factor(ANO4), group = 1))+
-    geom_line(size = 1, color = "cadetblue3") + 
+    tab_filtrada() %>% ggplot(
+      aes(y = valor, x = as.factor(ANO4),group = iso3c,color = iso3c))+
+    geom_line(size = 1) + 
     labs(y=paste0(input$var1_id),
          x = "Año")+
     theme_minimal()+
-    theme(text = element_text(size = 9))+ 
+    theme(text = element_text(size = 9),
+          legend.position = "left")+ 
     theme(axis.text.x = element_text(angle = 90))
     
   })
