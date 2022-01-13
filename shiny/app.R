@@ -5,7 +5,7 @@ library(tidyverse)
 library(readr)
 library(openxlsx)
 
-Serie_salarios <- readRDS("data/salarios.RDS")
+Serie_salarios <- readRDS("../data/salarios.RDS")
 
 vector_variables <- unique(Serie_salarios$cod.variable)
 vector_paises <- unique(Serie_salarios$nombre.pais)
