@@ -16,6 +16,8 @@ vector_desagreg <- c("Todos","etc")
 
 ui <- fluidPage(
   
+  theme = bslib::bs_theme(bootswatch = "flatly"),
+  
   titlePanel("CEPED-data"),
   
   sidebarLayout(
@@ -40,16 +42,17 @@ ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Table", 
-                 tableOutput("table_data"),
+        tabPanel("Table",                 
                  textOutput("texto"),
+                 tableOutput("table_data"),
                  downloadButton('downloadTable','Descargar tabla')),
         tabPanel("Metadata", 
                  textOutput("metadata"),
                  downloadButton('downloadTable_md','Descargar metadata')) ,
         tabPanel("Plot", 
-                 plotOutput("plot_id", width = "950px", height = "600px"),
-                 #textOutput("texto"), 
+                 fluidRow(column(6, sliderInput("height", "Altura del gráfico", min = 100, max = 1000, value = 380)), 
+                          column(6, sliderInput("width", "Ancho del gráfico", min = 100, max = 1000, value = 800))),
+                 plotOutput("plot_id"),
                  downloadButton('downloadPlot','Descargar gráfico'))
         
       )
@@ -58,6 +61,8 @@ ui <- fluidPage(
 )
 
 server <- function(input, output, session){
+  
+  thematic::thematic_shiny()
   
   tab_filtrada <- reactive({
     
@@ -69,9 +74,12 @@ server <- function(input, output, session){
     
   })
   
-  titulo <- reactive ({ titulo <- paste0("Serie de ", diccionario_variables$nombre.variable[diccionario_variables$cod.variable==input$var1_id], 
-                                         " para ", input$pais_id, ". Años: ", input$id_periodo[1], " al ", input$id_periodo[2])})
+ titulo <- reactive ({ titulo <- paste0("Serie de ", diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$var1_id],
+                                        " para ", paste0(input$pais_id, collapse = ", "), ". Años: ", input$id_periodo[1], " al ", input$id_periodo[2])})
+
   
+  
+    
   output$texto <- renderText({titulo()})
   
   output$table_data <- renderTable({
@@ -104,10 +112,16 @@ server <- function(input, output, session){
     
   })
   
-  output$plot_id <- renderPlot({
+  output$plot_id <- renderPlot(
     
-    
-    plot()})
+      width = function() input$width,
+      height = function() input$height,
+      res = 96,
+      
+      {
+      plot()
+       }
+    )
   
   output$downloadPlot <- downloadHandler(
     filename = function(){paste(input$var1_id,"_",input$pais_id,'.png',sep='')},
