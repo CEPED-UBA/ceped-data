@@ -5,19 +5,9 @@ library(tidyverse)
 library(readr)
 library(openxlsx)
 
-<<<<<<< Updated upstream
-Serie_salarios <- readRDS("../data/salarios.RDS")
-=======
-<<<<<<< HEAD
-=======
-Serie_salarios <- readRDS("../data/salarios.RDS")
->>>>>>> 532d03905cc1f864da1f9c3ca9bb7209add60f68
->>>>>>> Stashed changes
 
-#Serie_salarios <- readRDS("data/salarios.RDS")
-#diccionario_variables <- read.xlsx("data/diccionario_cod.variable.xlsx")
-Serie_salarios <- readRDS("~/GitHub/ceped-data/data/salarios.RDS")
-diccionario_variables <- read.xlsx("~/GitHub/ceped-data/data/diccionario_cod.variable.xlsx")
+Serie_salarios <- readRDS("../data/salarios.RDS")
+diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 
 vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
 vector_paises <- unique(Serie_salarios$nombre.pais)
