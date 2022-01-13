@@ -5,9 +5,21 @@ library(tidyverse)
 library(readr)
 library(openxlsx)
 
+<<<<<<< Updated upstream
 Serie_salarios <- readRDS("../data/salarios.RDS")
+=======
+<<<<<<< HEAD
+=======
+Serie_salarios <- readRDS("../data/salarios.RDS")
+>>>>>>> 532d03905cc1f864da1f9c3ca9bb7209add60f68
+>>>>>>> Stashed changes
 
-vector_variables <- unique(Serie_salarios$cod.variable)
+#Serie_salarios <- readRDS("data/salarios.RDS")
+#diccionario_variables <- read.xlsx("data/diccionario_cod.variable.xlsx")
+Serie_salarios <- readRDS("~/GitHub/ceped-data/data/salarios.RDS")
+diccionario_variables <- read.xlsx("~/GitHub/ceped-data/data/diccionario_cod.variable.xlsx")
+
+vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
 vector_paises <- unique(Serie_salarios$nombre.pais)
 vector_desagreg <- c("Todos","etc")
 
@@ -33,11 +45,16 @@ ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Table", tableOutput("table_data"),
+        tabPanel("Table", 
+                 tableOutput("table_data"),
+                 textOutput("texto"),
                  downloadButton('downloadTable','Descargar tabla')),
-        tabPanel("Metadata", textOutput("metadata"),
+        tabPanel("Metadata", 
+                 textOutput("metadata"),
                  downloadButton('downloadTable_md','Descargar metadata')) ,
-        tabPanel("Plot", plotOutput("plot_id", width = "950px", height = "600px"),
+        tabPanel("Plot", 
+                 plotOutput("plot_id", width = "950px", height = "600px"),
+                 #textOutput("texto"), 
                  downloadButton('downloadPlot','Descargar gráfico'))
         
       )
@@ -56,6 +73,11 @@ server <- function(input, output, session){
       
     
   })
+  
+  titulo <- reactive ({ titulo <- paste0("Serie de ", diccionario_variables$nombre.variable[diccionario_variables$cod.variable==input$var1_id], 
+                                         " para ", input$pais_id, ". Años: ", input$id_periodo[1], " al ", input$id_periodo[2])})
+  
+  output$texto <- renderText({titulo()})
   
   output$table_data <- renderTable({
     
