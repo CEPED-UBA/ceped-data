@@ -42,10 +42,13 @@ ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Tabla",                 
+        tabPanel("Tabla",   
+                 br(),
                  textOutput("texto"),
-                 tableOutput("table_data"),
-                 downloadButton('downloadTable','Descargar tabla')),
+                 br(),
+                 downloadButton('downloadTable','Descargar tabla'),
+                 br(),
+                 tableOutput("table_data")),
         tabPanel("Metadatos", 
                  textOutput("metadata"),
                  downloadButton('downloadTable_md','Descargar metadata')) ,
