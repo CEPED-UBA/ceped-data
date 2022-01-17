@@ -42,6 +42,11 @@ ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(
+        tabPanel("Gráfico", 
+                 fluidRow(column(6, sliderInput("height", "Altura del gráfico", min = 100, max = 1000, value = 380)), 
+                          column(6, sliderInput("width", "Ancho del gráfico", min = 100, max = 1000, value = 800))),
+                 plotOutput("plot_id"),
+                 downloadButton('downloadPlot','Descargar gráfico')),
         tabPanel("Tabla",   
                  br(),
                  textOutput("texto"),
@@ -52,11 +57,7 @@ ui <- fluidPage(
         tabPanel("Metadatos", 
                  textOutput("metadata"),
                  downloadButton('downloadTable_md','Descargar metadata')) ,
-        tabPanel("Gráfico", 
-                 fluidRow(column(6, sliderInput("height", "Altura del gráfico", min = 100, max = 1000, value = 380)), 
-                          column(6, sliderInput("width", "Ancho del gráfico", min = 100, max = 1000, value = 800))),
-                 plotOutput("plot_id"),
-                 downloadButton('downloadPlot','Descargar gráfico'))
+
         
       )
     )
@@ -77,8 +78,16 @@ server <- function(input, output, session){
     
   })
   
- titulo <- reactive ({ titulo <- paste0("Serie de ", diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$var1_id],
-                                        " para ", paste0(input$pais_id, collapse = ", "), ". Años: ", input$id_periodo[1], " al ", input$id_periodo[2])})
+ titulo <- reactive ({ 
+   
+  lista_paises <-  paste0(input$pais_id, collapse = ", ")
+  
+  lista_paises <- sub(",([^,]*)$", " y\\1", lista_paises)   
+  
+  nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$var1_id]
+  
+  titulo <- paste0(nombre_variable ," para ", lista_paises , ". Años: ", input$id_periodo[1], " al ", input$id_periodo[2])
+  })
 
   
   
@@ -103,14 +112,21 @@ server <- function(input, output, session){
   
   plot <- reactive({
     
+    nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$var1_id]
+    
     tab_filtrada() %>% ggplot(
       aes(y = valor, x = as.factor(ANO4),group = iso3c,color = iso3c))+
     geom_line(size = 1) + 
-    labs(y=paste0(input$var1_id),
+    labs(title= titulo(),
+         color= "País",
+         y=nombre_variable,
          x = "Año")+
     theme_minimal()+
     theme(text = element_text(size = 9),
-          legend.position = "left")+ 
+          axis.text.x = element_text(size=10),
+          axis.text.y = element_text(size=10),
+          legend.position = "bottom", 
+          plot.title= element_text(size=12, face="bold"))+ 
     theme(axis.text.x = element_text(angle = 90))
     
   })
