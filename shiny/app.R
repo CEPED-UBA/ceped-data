@@ -48,6 +48,7 @@ ui <- fluidPage(
     mainPanel(
       tabsetPanel(
         tabPanel("Gráfico", 
+                 br(),
                  fluidRow(column(6, sliderInput("height", "Altura del gráfico", min = 100, max = 1000, value = 380)), 
                           column(6, sliderInput("width", "Ancho del gráfico", min = 100, max = 1000, value = 800))),
                  plotOutput("plot_id"),
@@ -60,7 +61,9 @@ ui <- fluidPage(
                  br(),
                  tableOutput("table_data")),
         tabPanel("Metadatos", 
+                 br(),
                  textOutput("metadata"),
+                 br(),
                  downloadButton('downloadTable_md','Descargar metadata')) ,
 
         
@@ -163,6 +166,12 @@ server <- function(input, output, session){
       ggsave(file,plot=plot(), width=8, height=4)
     }
   )
+  
+  metadatos <- reactive({
+    diccionario_variables$metadata[diccionario_variables$cod.variable == input$var1_id]
+  })
+  
+  output$metadata <- renderText({metadatos()})
   
 }
 
