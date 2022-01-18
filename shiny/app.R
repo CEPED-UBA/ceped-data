@@ -5,13 +5,18 @@ library(tidyverse)
 library(readr)
 library(openxlsx)
 
+lista_dfs <- list()
 
 Serie_salarios <- readRDS("../data/salarios.RDS")
+
+#Voy agregando a una lista los dataframes que vamos a subir
+lista_dfs[[1]] <- Serie_salarios
+
 diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 
 vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
 vector_paises <- unique(Serie_salarios$nombre.pais)
-vector_desagreg <- c("Todos","etc")
+vector_desagreg <- c("País","etc")
 
 
 ui <- fluidPage(
@@ -68,9 +73,17 @@ server <- function(input, output, session){
   
   thematic::thematic_shiny()
   
+  base <- reactive({
+  
+    if(input$var1_id %in% diccionario_variables$cod.variable[diccionario_variables$base == "Serie_salarios"]){
+      lista_dfs[[1]]
+    }
+    
+  })
+  
   tab_filtrada <- reactive({
     
-    df <- Serie_salarios %>% 
+    df <- base() %>% 
       filter(cod.variable == input$var1_id) %>% 
       filter(nombre.pais %in% input$pais_id) %>% 
       filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) 
