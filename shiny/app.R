@@ -4,6 +4,7 @@ library(plotly)
 library(tidyverse)
 library(readr)
 library(openxlsx)
+options(scipen = 9999)
 
 Serie_salarios <- readRDS("../data/salarios.RDS")
 
@@ -18,8 +19,10 @@ lista_dfs[[2]] <- tipo_cambio_argentina
 
 #Armo vectores para inputs
 vector_bases <- unique(diccionario_variables$base)
-vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
-vector_paises <- unique(Serie_salarios$nombre.pais)
+
+#Las opciones aparecen en función de lo que se elija, lo saco de acá
+#vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
+#vector_paises <- unique(Serie_salarios$nombre.pais)
 vector_desagreg <- c("País","etc")
 
 
@@ -36,22 +39,28 @@ ui <- fluidPage(
                   "Unidad Temática:",
                   vector_bases ,
                   multiple = F,
-                  selected = vector_bases[1]),
+                  selected = vector_bases[1]
+                  ),
       selectInput("var1_id",
                   "Variable:",
-                  vector_variables,
-                  multiple = F,
-                  selected = vector_variables[8]),
+                  NULL,
+                  #vector_variables,
+                  multiple = F
+                  #selected = vector_variables[1]
+                  ),
       selectInput(inputId = "pais_id",
                   label ="País:",
-                  choices = vector_paises,
-                  multiple = T,
-                  selected = vector_paises[1:2]
+                  NULL,
+                  #choices = vector_paises,
+                  multiple = T
+                  #selected = vector_paises[1:2]
       ),
       selectInput("desag_id",
                   "Desagregación:",
                   vector_desagreg),
       sliderInput("id_periodo", "Período:", value = c(2001,2015), min = 1970, max = 2022)
+      ,br()
+      ,actionButton("actualizar", "Ver")
     ),
     
     mainPanel(
@@ -87,17 +96,25 @@ server <- function(input, output, session){
   
   base <- reactive({
   
-     # if(input$var1_id %in% diccionario_variables$cod.variable[diccionario_variables$base == "Serie_salarios"]){
-     #   lista_dfs[[1]]
-     # }
-    
-    if(input$unidad_tematica=="Serie_salarios")  {Serie_salarios}
-    
-    if(input$unidad_tematica=="Tipo_Cambio_Arg")  {tipo_cambio_argentina}  
+     if(input$unidad_tematica=="Serie_salarios"){
+       lista_dfs[[1]]
+     } else if(input$unidad_tematica=="Tipo_Cambio_Arg"){
+       lista_dfs[[2]]
+     }
     
   })
   
-  tab_filtrada <- reactive({
+  observeEvent(base(), {
+    var_ops <- unique(base()$cod.variable)
+    pais_ops <- unique(base()$nombre.pais)
+    min_year <- min(base()$ANO4)
+    max_year <- max(base()$ANO4)
+    updateSelectInput(session,inputId = "var1_id", choices = var_ops)
+    updateSelectInput(session,inputId = "pais_id", choices = pais_ops)
+    updateSliderInput(session,inputId = "id_periodo", min = min_year, max = max_year)
+  })
+  
+  tab_filtrada <- eventReactive(input$actualizar, {
     
     df <- base() %>% 
       filter(cod.variable == input$var1_id) %>% 
@@ -107,7 +124,7 @@ server <- function(input, output, session){
     
   })
   
- titulo <- reactive ({ 
+ titulo <- eventReactive(input$actualizar, { 
    
   lista_paises <-  paste0(input$pais_id, collapse = ", ")
   
@@ -139,16 +156,16 @@ server <- function(input, output, session){
       write.xlsx(tab_filtrada(), file)    }
   )
   
-  plot <- reactive({
+  plot <- eventReactive(input$actualizar, { 
     
     nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$var1_id]
     
     tab_filtrada() %>% ggplot(
       aes(y = valor, x = as.factor(ANO4),group = iso3c,color = iso3c))+
     geom_line(size = 1) + 
-    labs(title= titulo(),
+    labs(title= str_wrap(titulo(),60),
          color= "País",
-         y=nombre_variable,
+         y = str_wrap(nombre_variable,40),
          x = "Año")+
     theme_minimal()+
     theme(text = element_text(size = 9),
@@ -180,7 +197,7 @@ server <- function(input, output, session){
     }
   )
   
-  metadatos <- reactive({
+  metadatos <- eventReactive(input$actualizar, { 
     diccionario_variables$metadata[diccionario_variables$cod.variable == input$var1_id]
   })
   
