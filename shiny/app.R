@@ -5,15 +5,20 @@ library(tidyverse)
 library(readr)
 library(openxlsx)
 
-lista_dfs <- list()
-
 Serie_salarios <- readRDS("../data/salarios.RDS")
 
-#Voy agregando a una lista los dataframes que vamos a subir
-lista_dfs[[1]] <- Serie_salarios
+#Base para probar
+eph_argentina <- read.xlsx("../data/eph_argentina.xlsx")
 
 diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 
+#Voy agregando a una lista los dataframes que vamos a subir
+lista_dfs <- list()
+lista_dfs[[1]] <- Serie_salarios
+lista_dfs[[2]] <- eph_argentina
+
+#Armo vectores para inputs
+vector_bases <- unique(diccionario_variables$base)
 vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
 vector_paises <- unique(Serie_salarios$nombre.pais)
 vector_desagreg <- c("País","etc")
@@ -28,6 +33,11 @@ ui <- fluidPage(
   sidebarLayout(
     
     sidebarPanel(
+      selectInput("unidad_tematica",
+                  "Unidad Temática:",
+                  vector_bases ,
+                  multiple = F,
+                  selected = vector_bases[1]),
       selectInput("var1_id",
                   "Variable:",
                   vector_variables,
@@ -47,12 +57,6 @@ ui <- fluidPage(
     
     mainPanel(
       tabsetPanel(
-        tabPanel("Gráfico", 
-                 br(),
-                 fluidRow(column(6, sliderInput("height", "Altura del gráfico", min = 100, max = 1000, value = 380)), 
-                          column(6, sliderInput("width", "Ancho del gráfico", min = 100, max = 1000, value = 800))),
-                 plotOutput("plot_id"),
-                 downloadButton('downloadPlot','Descargar gráfico')),
         tabPanel("Tabla",   
                  br(),
                  textOutput("texto"),
@@ -60,6 +64,12 @@ ui <- fluidPage(
                  downloadButton('downloadTable','Descargar tabla'),
                  br(),
                  tableOutput("table_data")),
+        tabPanel("Gráfico", 
+                 br(),
+                 fluidRow(column(6, sliderInput("height", "Altura del gráfico", min = 100, max = 1000, value = 380)), 
+                          column(6, sliderInput("width", "Ancho del gráfico", min = 100, max = 1000, value = 800))),
+                 plotOutput("plot_id"),
+                 downloadButton('downloadPlot','Descargar gráfico')),
         tabPanel("Metadatos", 
                  br(),
                  textOutput("metadata"),
@@ -172,6 +182,19 @@ server <- function(input, output, session){
   })
   
   output$metadata <- renderText({metadatos()})
+  
+  
+  #Actualización de opciones de input segun la unidad tematica/base seleccionada
+  
+  observeEvent(input$unidad_tematica, {
+    
+    variables_unidad_tematica <- diccionario_variables %>% filter(base==input$unidad_tematica)
+    
+    vector_variables_unidad_tematica <- setNames(variables_unidad_tematica$cod.variable, variables_unidad_tematica$nombre.variable)
+    
+    updateSelectInput(inputId = "var1_id", choices = vector_variables_unidad_tematica)
+  })  
+  
   
 }
 
