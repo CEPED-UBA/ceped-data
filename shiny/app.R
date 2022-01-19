@@ -7,15 +7,14 @@ library(openxlsx)
 
 Serie_salarios <- readRDS("../data/salarios.RDS")
 
-#Base para probar
-eph_argentina <- read.xlsx("../data/eph_argentina.xlsx")
+tipo_cambio_argentina <- readRDS("../data/Tipo_Cambio_Arg.RDS")
 
 diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 
 #Voy agregando a una lista los dataframes que vamos a subir
 lista_dfs <- list()
 lista_dfs[[1]] <- Serie_salarios
-lista_dfs[[2]] <- eph_argentina
+lista_dfs[[2]] <- tipo_cambio_argentina
 
 #Armo vectores para inputs
 vector_bases <- unique(diccionario_variables$base)
@@ -88,9 +87,13 @@ server <- function(input, output, session){
   
   base <- reactive({
   
-    if(input$var1_id %in% diccionario_variables$cod.variable[diccionario_variables$base == "Serie_salarios"]){
-      lista_dfs[[1]]
-    }
+     # if(input$var1_id %in% diccionario_variables$cod.variable[diccionario_variables$base == "Serie_salarios"]){
+     #   lista_dfs[[1]]
+     # }
+    
+    if(input$unidad_tematica=="Serie_salarios")  {Serie_salarios}
+    
+    if(input$unidad_tematica=="Tipo_Cambio_Arg")  {tipo_cambio_argentina}  
     
   })
   
