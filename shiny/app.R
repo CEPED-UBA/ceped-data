@@ -7,10 +7,9 @@ library(openxlsx)
 options(scipen = 9999)
 
 Serie_salarios <- readRDS("../data/salarios.RDS")
-
 tipo_cambio_argentina <- readRDS("../data/Tipo_Cambio_Arg.RDS")
-
 diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
+
 
 #Voy agregando a una lista los dataframes que vamos a subir
 lista_dfs <- list()
@@ -35,8 +34,8 @@ ui <- fluidPage(
   sidebarLayout(
     
     sidebarPanel(
-      selectInput("unidad_tematica",
-                  "Unidad Temática:",
+      selectInput("tema",
+                  "Elija un tema:",
                   vector_bases ,
                   multiple = F,
                   selected = vector_bases[1]
@@ -96,9 +95,9 @@ server <- function(input, output, session){
   
   base <- reactive({
   
-     if(input$unidad_tematica=="Serie_salarios"){
+     if(input$tema=="Serie_salarios"){
        lista_dfs[[1]]
-     } else if(input$unidad_tematica=="Tipo_Cambio_Arg"){
+     } else if(input$tema=="Tipo_Cambio_Arg"){
        lista_dfs[[2]]
      }
     
@@ -206,13 +205,13 @@ server <- function(input, output, session){
   
   #Actualización de opciones de input segun la unidad tematica/base seleccionada
   
-  observeEvent(input$unidad_tematica, {
+  observeEvent(input$tema, {
     
-    variables_unidad_tematica <- diccionario_variables %>% filter(base==input$unidad_tematica)
+    variables_tema <- diccionario_variables %>% filter(base==input$tema)
     
-    vector_variables_unidad_tematica <- setNames(variables_unidad_tematica$cod.variable, variables_unidad_tematica$nombre.variable)
+    vector_variables_tema <- setNames(variables_tema$cod.variable, variables_tema$nombre.variable)
     
-    updateSelectInput(inputId = "var1_id", choices = vector_variables_unidad_tematica)
+    updateSelectInput(inputId = "var1_id", choices = vector_variables_tema)
   })  
   
   
