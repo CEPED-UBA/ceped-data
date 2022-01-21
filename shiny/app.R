@@ -4,10 +4,14 @@ library(plotly)
 library(tidyverse)
 library(readr)
 library(openxlsx)
+
 options(scipen = 9999)
+
 
 Serie_salarios <- readRDS("../data/salarios.RDS")
 tipo_cambio_argentina <- readRDS("../data/Tipo_Cambio_Arg.RDS")
+mercado_de_trabajo_arg <- readRDS("../data/Mercado_de_Trabajo_Arg.RDS")
+poblacion_eph <- readRDS("../data/Poblacion_eph.RDS")
 diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 
 
@@ -15,13 +19,11 @@ diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 lista_dfs <- list()
 lista_dfs[[1]] <- Serie_salarios
 lista_dfs[[2]] <- tipo_cambio_argentina
+lista_dfs[[3]] <- mercado_de_trabajo_arg
+lista_dfs[[4]] <- poblacion_eph
 
 #Armo vectores para inputs
 vector_bases <- unique(diccionario_variables$base)
-
-#Las opciones aparecen en función de lo que se elija, lo saco de acá
-#vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
-#vector_paises <- unique(Serie_salarios$nombre.pais)
 vector_desagreg <- c("País","etc")
 
 
@@ -99,6 +101,10 @@ server <- function(input, output, session){
        lista_dfs[[1]]
      } else if(input$tema=="Tipo_Cambio_Arg"){
        lista_dfs[[2]]
+     } else if(input$tema=="Mercado_de_Trabajo_Arg"){
+       lista_dfs[[3]]
+     } else if(input$tema=="Poblacion_eph"){
+       lista_dfs[[4]]
      }
     
   })
@@ -108,8 +114,8 @@ server <- function(input, output, session){
     pais_ops <- unique(base()$nombre.pais)
     min_year <- min(base()$ANO4)
     max_year <- max(base()$ANO4)
-    updateSelectInput(session,inputId = "var1_id", choices = var_ops)
-    updateSelectInput(session,inputId = "pais_id", choices = pais_ops)
+    updateSelectInput(session,inputId = "var1_id", choices = var_ops, selected=var_ops[1])
+    updateSelectInput(session,inputId = "pais_id", choices = pais_ops, selected=pais_ops[1])
     updateSliderInput(session,inputId = "id_periodo", min = min_year, max = max_year)
   })
   
