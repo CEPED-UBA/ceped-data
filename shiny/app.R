@@ -7,13 +7,15 @@ library(openxlsx)
 
 options(scipen = 9999)
 
-
+#Cargo bases
 Serie_salarios <- readRDS("../data/salarios.RDS")
 tipo_cambio_argentina <- readRDS("../data/Tipo_Cambio_Arg.RDS")
 mercado_de_trabajo_arg <- readRDS("../data/Mercado_de_Trabajo_Arg.RDS")
 poblacion_eph <- readRDS("../data/Poblacion_eph.RDS")
-diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
+eph_mercado_de_trabajo_categoria_ocupacional <- readRDS("../data/eph_mercado_de_trabajo_categoria_ocupacional.RDS")
 
+#Cargo diccionario de variables, bases y metadatos
+diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 
 #Voy agregando a una lista los dataframes que vamos a subir
 lista_dfs <- list()
@@ -21,6 +23,7 @@ lista_dfs[[1]] <- Serie_salarios
 lista_dfs[[2]] <- tipo_cambio_argentina
 lista_dfs[[3]] <- mercado_de_trabajo_arg
 lista_dfs[[4]] <- poblacion_eph
+lista_dfs[[5]] <- eph_mercado_de_trabajo_categoria_ocupacional 
 
 #Armo vectores para inputs
 vector_bases <- unique(diccionario_variables$base)
@@ -105,18 +108,22 @@ server <- function(input, output, session){
        lista_dfs[[3]]
      } else if(input$tema=="Poblacion_eph"){
        lista_dfs[[4]]
+     } else if(input$tema=="eph_mercado_de_trabajo_categoria_ocupacional"){
+       lista_dfs[[5]]
      }
+    
     
   })
   
   observeEvent(base(), {
-    var_ops <- unique(base()$cod.variable)
+    variables_tema <- diccionario_variables %>% filter(base==input$tema)
+    var_ops_etiquetadas <- setNames(variables_tema$cod.variable, variables_tema$nombre.variable)
     pais_ops <- unique(base()$nombre.pais)
     min_year <- min(base()$ANO4)
     max_year <- max(base()$ANO4)
-    updateSelectInput(session,inputId = "var1_id", choices = var_ops, selected=var_ops[1])
+    updateSelectInput(inputId = "var1_id", choices = var_ops_etiquetadas, selected=var_ops_etiquetadas[1])
     updateSelectInput(session,inputId = "pais_id", choices = pais_ops, selected=pais_ops[1])
-    updateSliderInput(session,inputId = "id_periodo", min = min_year, max = max_year)
+    updateSliderInput(session,inputId = "id_periodo", min = min_year, max = max_year, value=c(min_year, max_year))
   })
   
   tab_filtrada <- eventReactive(input$actualizar, {
@@ -207,19 +214,6 @@ server <- function(input, output, session){
   })
   
   output$metadata <- renderText({metadatos()})
-  
-  
-  #Actualización de opciones de input segun la unidad tematica/base seleccionada
-  
-  observeEvent(input$tema, {
-    
-    variables_tema <- diccionario_variables %>% filter(base==input$tema)
-    
-    vector_variables_tema <- setNames(variables_tema$cod.variable, variables_tema$nombre.variable)
-    
-    updateSelectInput(inputId = "var1_id", choices = vector_variables_tema)
-  })  
-  
   
 }
 
