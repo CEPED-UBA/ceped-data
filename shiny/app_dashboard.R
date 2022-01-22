@@ -10,13 +10,18 @@ library(DT)
 options(scipen = 9999)
 
 Serie_salarios <- readRDS("../data/salarios.RDS")
-
 tipo_cambio_argentina <- readRDS("../data/Tipo_Cambio_Arg.RDS")
-
+mercado_de_trabajo_arg <- readRDS("../data/Mercado_de_Trabajo_Arg.RDS")
+poblacion_eph <- readRDS("../data/Poblacion_eph.RDS")
 diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 
 #Voy agregando a una lista los dataframes que vamos a subir
 base_binded <- bind_rows(Serie_salarios,tipo_cambio_argentina)
+lista_dfs <- list()
+lista_dfs[[1]] <- Serie_salarios
+lista_dfs[[2]] <- tipo_cambio_argentina
+lista_dfs[[3]] <- mercado_de_trabajo_arg
+lista_dfs[[4]] <- poblacion_eph
 
 #Armo vectores para inputs
 vector_bases <- unique(diccionario_variables$base)
@@ -61,26 +66,28 @@ body <- dashboardBody(fluidRow(dataTableOutput("tablita"),
                                options= list(pageLength = 100)))
                       
 server <- function(input, output) {
-  
-  base <- reactive({
+
+# NO PUDE HACER FUNCIONAR ESTA PARTE REACTIVA  
     
-    if(input$serie %in% unique(Serie_salarios$cod.variable)){
-      lista_dfs[[1]]
-    } else if(input$serie %in% unique(tipo_cambio_argentina$cod.variable)){
-      lista_dfs[[2]]
-    }
-    
-  })
-  
-  tab_filtrada <- eventReactive(input$actualizar, {
-    
-    df <- base() %>% 
-      filter(cod.variable == input$var1_id) %>% 
-      filter(nombre.pais %in% input$pais_id) %>% 
-      filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) 
-    
-    
-  })
+  # base <- reactive({
+  #   
+  #   if(input$serie %in% unique(Serie_salarios$cod.variable)){
+  #     lista_dfs[[1]]
+  #   } else if(input$serie %in% unique(tipo_cambio_argentina$cod.variable)){
+  #     lista_dfs[[2]]
+  #   }
+  #   
+  # })
+  # 
+  # tab_filtrada <- eventReactive(input$actualizar, {
+  #   
+  #   df <- base() %>% 
+  #     filter(cod.variable == input$var1_id) %>% 
+  #     filter(nombre.pais %in% input$pais_id) %>% 
+  #     filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) 
+  #   
+  #   
+  # })
   
   output$tablita <- renderDataTable({
     Sale <- Serie_salarios %>% filter(cod.variable == input$serie_salario)
