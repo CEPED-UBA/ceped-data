@@ -55,7 +55,7 @@ sidebar <- dashboardSidebar(
     ),
     div( id = 'sidebar_salario_periodo',
          conditionalPanel("input.sidebar === 'Mercado De Trabajo'",
-    sliderInput("id_periodo", "Período:", value = c(2001,2015), min = 1970, max = 2022)
+    sliderInput("id_periodo_sal", "Período:", value = c(2001,2015), min = min(Serie_salarios$ANO4), max = max(Serie_salarios$ANO4))
     )
     ),
     menuItem(text = "Tipo de Cambio", icon = icon("money-bill-alt"), tabName = "Tipo de Cambio",selected = F),
@@ -67,6 +67,11 @@ sidebar <- dashboardSidebar(
                                          selected = NULL,  width = "200px",
                                          multiple = F))
          ),
+    div( id = 'sidebar_tc_periodo',
+         conditionalPanel("input.sidebar === 'Tipo de Cambio'",
+                          sliderInput("id_periodo_tc", "Período:", value = c(2001,2015), min = min(tipo_cambio_argentina$ANO4), max = max(tipo_cambio_argentina$ANO4))
+         )
+    ),
     
     actionButton("actualizar", "Actualizar Series")
 
@@ -78,23 +83,38 @@ body <- dashboardBody(
   fluidRow(
     box(footer = "CEPED-ROCKANDROLL",solidHeader = T,width = 20,
         plotOutput("ploteado"))),
-  fluidRow(box(tableOutput("tablita"))))
+  fluidRow(box(tableOutput("tablita")),
+           column(width = 6,
+             box(title = "Metadata", width = NULL, textOutput("metadata")),
+             box(width = NULL,
+                 downloadButton('downloadTable','Descargar tabla')),
+             box(width = NULL,
+                 downloadButton('downloadPlot','Descargar gráfico')),
+             box(width = NULL,
+                 downloadButton('downloadTable_md','Descargar metadata')))
+           ))
                       
 server <- function(input, output) {
 
 #cual <- observe(input$sidebar) 
+  
+  variables_adecuadas <- reactive({
+    if(input$sidebar == "Mercado De Trabajo"){input$serie_salario} else
+      if(input$sidebar == "Tipo de Cambio"){input$serie_tc}
+  })
 
   
   tab_filtrada <- eventReactive(input$actualizar, {
  
-    variables_adecuadas <- 
-      if(input$sidebar == "Mercado De Trabajo"){input$serie_salario} else
-        if(input$sidebar == "Tipo de Cambio"){input$serie_tc}
+    
+    periodo_adecuado <- 
+      if(input$sidebar == "Mercado De Trabajo"){c(input$id_periodo_sal[1]:input$id_periodo_sal[2])} else
+        if(input$sidebar == "Tipo de Cambio"){c(input$id_periodo_tc[1]:input$id_periodo_tc[2])}
     
     df <- base_binded %>%
-      filter(cod.variable  %in%  variables_adecuadas) %>% 
+      filter(cod.variable  %in%  variables_adecuadas()) %>% 
       filter(nombre.pais %in% input$pais_id) %>% 
-      filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2]))
+      filter(ANO4 %in% periodo_adecuado)
 
 
   })
@@ -103,15 +123,26 @@ server <- function(input, output) {
     tab_filtrada()
   })
   
-  output$ploteado <- renderPlot(
+  output$downloadTable <- downloadHandler(
+    
+    
+    filename = function(){paste(variables_adecuadas(),"_",input$pais_id,'.xlsx',sep='')},
+    content = function(file){
+      
+      
+      write.xlsx(tab_filtrada(), file)    }
+  )
+  
+  
+  plot <- eventReactive(input$actualizar, {
     
     tab_filtrada() %>% 
       ggplot(
-      aes(y = valor, x = as.factor(ANO4),group = iso3c,color = iso3c))+
+        aes(y = valor, x = as.factor(ANO4),group = iso3c,color = iso3c))+
       geom_line(size = 1) + 
       labs(color= "País",
            #title= str_wrap(titulo(),60),
-          # y = str_wrap(nombre_variable,40),
+           # y = str_wrap(nombre_variable,40),
            x = "Año")+
       theme_minimal()+
       theme(text = element_text(size = 9),
@@ -119,7 +150,33 @@ server <- function(input, output) {
             axis.text.y = element_text(size=10),
             legend.position = "bottom", 
             plot.title= element_text(size=12, face="bold"))+ 
-      theme(axis.text.x = element_text(angle = 90)))
+      theme(axis.text.x = element_text(angle = 90))
+    
+  })
+  
+  output$ploteado <- renderPlot(
+    
+    plot()
+    
+    )
+  
+  
+  output$downloadPlot <- downloadHandler(
+    filename = function(){paste(variables_adecuadas(),"_",input$pais_id,'.png',sep='')},
+    content = function(file){
+      
+      
+      ggsave(file,plot=plot(), width=8, height=4)
+    }
+  )
+  
+  
+  metadatos <- eventReactive(input$actualizar, { 
+    
+    diccionario_variables$metadata[diccionario_variables$cod.variable == variables_adecuadas()]
+  })
+  
+  output$metadata <- renderText({metadatos()})
     
 }
 
