@@ -12,19 +12,36 @@ mercado_de_trabajo_arg <- readRDS("../data/Mercado_de_Trabajo_Arg.RDS")
 poblacion_eph <- readRDS("../data/Poblacion_eph.RDS")
 diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 
+# Serie_salarios <- readRDS("data/salarios.RDS")
+# tipo_cambio_argentina <- readRDS("data/Tipo_Cambio_Arg.RDS")
+# mercado_de_trabajo_arg <- readRDS("data/Mercado_de_Trabajo_Arg.RDS")
+# poblacion_eph <- readRDS("data/Poblacion_eph.RDS")
+# diccionario_variables <- read.xlsx("data/diccionario_cod.variable.xlsx")
+
 #Voy agregando a una lista los dataframes que vamos a subir
 base_binded <- bind_rows(Serie_salarios,tipo_cambio_argentina)
-
 
 #Armo vectores para inputs
 vector_bases <- unique(diccionario_variables$base)
 
 #Las opciones aparecen en función de lo que se elija, lo saco de acá
-vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
+#vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
+
+#Vector con nombres para cod.variable (series salario)
+v_variables <- diccionario_variables %>% filter(base=="Serie_salarios") %>% select(cod.variable) 
+v_nombres <- diccionario_variables %>% filter(base=="Serie_salarios") %>% select(nombre.variable)
+vector_variables_serie_salario <- setNames(v_variables$cod.variable, v_nombres$nombre.variable)
+#Vector con nombres para cod.variable (series "Tipo_Cambio_Arg")
+v_variables <- diccionario_variables %>% filter(base=="Tipo_Cambio_Arg") %>% select(cod.variable) 
+v_nombres <- diccionario_variables %>% filter(base=="Tipo_Cambio_Arg") %>% select(nombre.variable)
+vector_variables_tipo_cambio_argentina <- setNames(v_variables$cod.variable, v_nombres$nombre.variable)
+
+
+#vector_variables_serie_salario <- setNames(diccionario_variables$cod.variable[diccionario_variables$base=="Series_salario"], diccionario_variables$nombre.variable[base=="Series_salario"])
+
+
 vector_paises <- unique(Serie_salarios$nombre.pais)
 vector_desagreg <- c("País","etc")
-
-
 
 header <- dashboardHeader(title = "CEPED DATA")
 
@@ -33,13 +50,14 @@ sidebar <- dashboardSidebar(
     id = "sidebar",
     style = "position: relative; overflow: visible;",
     menuItem(text = "Areas Temáticas", icon = icon("folder"), tabName = "Areas Temáticas"),#Para que aparezca seleccionado al ppio
+
     menuItem(text = "Mercado de Trabajo", icon = icon("tools"), tabName = "Mercado De Trabajo"),
     div( id = 'sidebar_salario',
          conditionalPanel("input.sidebar === 'Mercado De Trabajo'",
                           selectizeInput("serie_salario",
                                          "Seleccionar una Serie", 
-                                         choices =  unique(Serie_salarios$cod.variable), 
-                                         selected = unique(Serie_salarios$cod.variable)[9],
+                                         choices =  vector_variables_serie_salario, 
+                                         selected = vector_variables_serie_salario[1],
                                          width = "300px",
                                          multiple = F))
          ),
@@ -55,21 +73,23 @@ sidebar <- dashboardSidebar(
     ),
     div( id = 'sidebar_salario_periodo',
          conditionalPanel("input.sidebar === 'Mercado De Trabajo'",
-    sliderInput("id_periodo_sal", "Período:", value = c(2001,2015), min = min(Serie_salarios$ANO4), max = max(Serie_salarios$ANO4))
+    sliderInput("id_periodo_sal", "Período:", value = c(min(Serie_salarios$ANO4),max(Serie_salarios$ANO4)), min = min(Serie_salarios$ANO4), max = max(Serie_salarios$ANO4))
     )
     ),
+    
+    
     menuItem(text = "Tipo de Cambio", icon = icon("money-bill-alt"), tabName = "Tipo de Cambio",selected = F),
     div( id = 'sidebar_tc',
          conditionalPanel("input.sidebar === 'Tipo de Cambio'",
                           selectizeInput("serie_tc",
                                          "Seleccionar una Serie", 
-                                         choices =  unique(tipo_cambio_argentina$cod.variable), 
+                                         choices =  vector_variables_tipo_cambio_argentina, 
                                          selected = NULL,  width = "200px",
                                          multiple = F))
          ),
     div( id = 'sidebar_tc_periodo',
          conditionalPanel("input.sidebar === 'Tipo de Cambio'",
-                          sliderInput("id_periodo_tc", "Período:", value = c(2001,2015), min = min(tipo_cambio_argentina$ANO4), max = max(tipo_cambio_argentina$ANO4))
+                          sliderInput("id_periodo_tc", "Período:", value = c(min(tipo_cambio_argentina$ANO4), max(tipo_cambio_argentina$ANO4)), min = min(tipo_cambio_argentina$ANO4), max = max(tipo_cambio_argentina$ANO4))
          )
     ),
     
@@ -81,10 +101,12 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   fluidRow(
-    box(footer = "CEPED-ROCKANDROLL",solidHeader = T,width = 20,
+    box(title = textOutput("titulo"), footer= "ceped.data | Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED-UBA)", 
+    solidHeader = T,width = 20,
         plotOutput("ploteado"))),
   fluidRow(box(tableOutput("tablita")),
            column(width = 6,
+#             box(width = NULL, textOutput("titulo")),
              box(title = "Metadata", width = NULL, textOutput("metadata")),
              box(width = NULL,
                  downloadButton('downloadTable','Descargar tabla')),
@@ -171,12 +193,45 @@ server <- function(input, output) {
   )
   
   
-  metadatos <- eventReactive(input$actualizar, { 
-    
-    diccionario_variables$metadata[diccionario_variables$cod.variable == variables_adecuadas()]
-  })
+  # metadatos <- eventReactive(input$actualizar, { 
+  #   
+  #   diccionario_variables$metadata[diccionario_variables$cod.variable == variables_adecuadas()]
+  #   
+  #   })
+  
+   metadatos <-  reactive({
+     if(input$sidebar == "Mercado De Trabajo") 
+           {diccionario_variables$metadata[diccionario_variables$cod.variable == input$serie_salario] } else
+     
+     if(input$sidebar == "Tipo de Cambio")
+             {diccionario_variables$metadata[diccionario_variables$cod.variable == input$serie_tc] }
+  
+        })
+  
   
   output$metadata <- renderText({metadatos()})
+  
+  
+  titulo <- reactive({
+    if(input$sidebar == "Mercado De Trabajo")  {
+      
+    lista_paises <-  paste0(input$pais_id, collapse = ", ")
+    lista_paises <- sub(",([^,]*)$", " y\\1", lista_paises)   
+    nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$serie_salario]
+    titulo <- paste0(nombre_variable ," para ", lista_paises , ". Años: ", input$id_periodo_sal[1], " al ", input$id_periodo_sal[2]) 
+    } else
+      
+    if(input$sidebar == "Tipo de Cambio")  {
+ 
+           nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$serie_tc]
+      titulo <- paste0(nombre_variable ," para Argentina", ". Años: ", input$id_periodo_tc[1], " al ", input$id_periodo_tc[2]) 
+        
+        }
+    
+  })
+    
+    
+  output$titulo <- renderText({titulo()})
     
 }
 
