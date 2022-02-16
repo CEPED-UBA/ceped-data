@@ -187,7 +187,6 @@ server <- function(input, output) {
 
   output$ploteado <- renderPlot(
     
-    
     if(!input$actualizar) {
       
       ggdraw() +
@@ -195,7 +194,7 @@ server <- function(input, output) {
     }
     
      else{
-    
+       
     plot()
     
      }
