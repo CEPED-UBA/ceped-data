@@ -3,6 +3,8 @@ library(ggplot2)
 library(tidyverse)
 library(openxlsx)
 library(shinydashboard)
+library(cowplot)
+library(magick)
 
 options(scipen = 9999)
 
@@ -31,6 +33,7 @@ vector_bases <- unique(diccionario_variables$base)
 v_variables <- diccionario_variables %>% filter(base=="Serie_salarios") %>% select(cod.variable) 
 v_nombres <- diccionario_variables %>% filter(base=="Serie_salarios") %>% select(nombre.variable)
 vector_variables_serie_salario <- setNames(v_variables$cod.variable, v_nombres$nombre.variable)
+
 #Vector con nombres para cod.variable (series "Tipo_Cambio_Arg")
 v_variables <- diccionario_variables %>% filter(base=="Tipo_Cambio_Arg") %>% select(cod.variable) 
 v_nombres <- diccionario_variables %>% filter(base=="Tipo_Cambio_Arg") %>% select(nombre.variable)
@@ -43,7 +46,10 @@ vector_variables_tipo_cambio_argentina <- setNames(v_variables$cod.variable, v_n
 vector_paises <- unique(Serie_salarios$nombre.pais)
 vector_desagreg <- c("País","etc")
 
-header <- dashboardHeader(title = "CEPED DATA")
+header <- dashboardHeader(title = "ceped.data")
+
+
+
 
 sidebar <- dashboardSidebar(
   sidebarMenu(
@@ -51,6 +57,7 @@ sidebar <- dashboardSidebar(
     style = "position: relative; overflow: visible;",
     menuItem(text = "Areas Temáticas", icon = icon("folder"), tabName = "Areas Temáticas"),#Para que aparezca seleccionado al ppio
 
+    
     menuItem(text = "Mercado de Trabajo", icon = icon("tools"), tabName = "Mercado De Trabajo"),
     div( id = 'sidebar_salario',
          conditionalPanel("input.sidebar === 'Mercado De Trabajo'",
@@ -155,13 +162,13 @@ server <- function(input, output) {
       write.xlsx(tab_filtrada(), file)    }
   )
   
-  
+
   plot <- eventReactive(input$actualizar, {
-    
-    tab_filtrada() %>% 
+
+    tab_filtrada() %>%
       ggplot(
         aes(y = valor, x = as.factor(ANO4),group = iso3c,color = iso3c))+
-      geom_line(size = 1) + 
+      geom_line(size = 1) +
       labs(color= "País",
            #title= str_wrap(titulo(),60),
            # y = str_wrap(nombre_variable,40),
@@ -170,16 +177,28 @@ server <- function(input, output) {
       theme(text = element_text(size = 9),
             axis.text.x = element_text(size=10),
             axis.text.y = element_text(size=10),
-            legend.position = "bottom", 
-            plot.title= element_text(size=12, face="bold"))+ 
+            legend.position = "bottom",
+            plot.title= element_text(size=12, face="bold"))+
       theme(axis.text.x = element_text(angle = 90))
-    
+
+
   })
-  
+
+
   output$ploteado <- renderPlot(
+    
+    
+    if(!input$actualizar) {
+      
+      ggdraw() +
+        draw_image("logo_ceped.png")
+    }
+    
+     else{
     
     plot()
     
+     }
     )
   
   
