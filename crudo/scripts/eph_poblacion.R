@@ -1,7 +1,8 @@
 
-
+library(readxl)
 base <- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED (bases).xls", 
                    sheet = "pob trim")
+
 base <- base[7:13, ]
 
 
@@ -36,7 +37,7 @@ for (i in 2003:2021){
 base3 <- cbind(ANO4, trimestre, base2)
 
 base3 <- base3 %>% 
-  mutate(ANO4= paste0(ANO4, ".", trimestre)) %>% 
+  mutate(ANO4.trim= paste0(ANO4, ".", trimestre)) %>% 
   select(-trimestre)
 
 base4 <- gather(base3, key="cod.variable", value="valor", 2:6 )
