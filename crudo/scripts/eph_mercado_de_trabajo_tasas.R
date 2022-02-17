@@ -42,7 +42,7 @@ base2[] <- lapply(base2, function(x) as.numeric(as.character(x)))
 rownames(base2) <- NULL
 
 base2 <- base2 %>% 
-  mutate(ANO4= paste0(ANO4, ".", trimestre)) %>% 
+  mutate(ANO4.trim= paste0(ANO4, ".", trimestre)) %>% 
   select(-trimestre)
 
 
@@ -96,7 +96,7 @@ base2[] <- lapply(base2, function(x) as.numeric(as.character(x)))
 rownames(base2) <- NULL
 
 base2 <- base2 %>% 
-  mutate(ANO4= paste0(ANO4, ".", trimestre)) %>% 
+  mutate(ANO4.trim= paste0(ANO4, ".", trimestre)) %>% 
   select(-trimestre)
 
 base3 <- gather(base2, key="cod.variable", value="valor", 2:5 )

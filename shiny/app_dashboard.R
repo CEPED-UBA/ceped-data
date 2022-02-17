@@ -21,10 +21,12 @@ diccionario_variables <- read.xlsx("../data/diccionario_cod.variable.xlsx")
 # diccionario_variables <- read.xlsx("data/diccionario_cod.variable.xlsx")
 
 #Voy agregando a una lista los dataframes que vamos a subir
-base_binded <- bind_rows(serie_salarios,tipo_cambio_argentina, poblacion_eph)
+base_binded <- bind_rows(serie_salarios,tipo_cambio_argentina, poblacion_eph, mercado_de_trabajo_arg)
 
 #Armo vectores para inputs
 vector_bases <- unique(diccionario_variables$base)
+
+### Vectores con nombres de variables (ver si se puede simplificar codigo) 
 
 #Las opciones aparecen en función de lo que se elija, lo saco de acá
 #vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
@@ -43,6 +45,12 @@ vector_variables_tipo_cambio_argentina <- setNames(v_variables$cod.variable, v_n
 v_variables <- diccionario_variables %>% filter(base=="Poblacion_eph") %>% select(cod.variable) 
 v_nombres <- diccionario_variables %>% filter(base=="Poblacion_eph") %>% select(nombre.variable)
 vector_variables_poblacion_eph <- setNames(v_variables$cod.variable, v_nombres$nombre.variable)
+
+#Vector con nombres para cod.variable (series "mercado_de_trabajo_arg")
+v_variables <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>% select(cod.variable) 
+v_nombres <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>% select(nombre.variable)
+vector_variables_mercado_de_trabajo_arg <- setNames(v_variables$cod.variable, v_nombres$nombre.variable)
+
 
 
 #vector_variables_serie_salario <- setNames(diccionario_variables$cod.variable[diccionario_variables$base=="Series_salario"], diccionario_variables$nombre.variable[base=="Series_salario"])
@@ -108,6 +116,28 @@ sidebar <- dashboardSidebar(
     
     
     
+    menuItem(text = "Mercado de Trabajo Argentina", icon = icon("briefcase", lib = "font-awesome"), tabName = "Mercado de Trabajo Argentina",selected = F),
+    div( id = 'sidebar_mercado_de_trabajo_arg',
+         conditionalPanel("input.sidebar === 'Mercado de Trabajo Argentina'",
+                          selectizeInput("serie_mercado_de_trabajo_arg",
+                                         "Seleccionar una Serie", 
+                                         choices =  vector_variables_mercado_de_trabajo_arg, 
+                                         selected = NULL,  
+                                         width = "200px",
+                                         multiple = F))
+    ),
+    div( id = 'sidebar_mercado_de_trabajo_arg_periodo',
+         conditionalPanel("input.sidebar === 'Mercado de Trabajo Argentina'",
+                          sliderInput("id_periodo_mercado_de_trabajo_arg", "Período:", 
+                                      value = c(as.numeric(min(mercado_de_trabajo_arg$ANO4.trim)), as.numeric(max(mercado_de_trabajo_arg$ANO4.trim))), 
+                                      min = as.numeric(min(mercado_de_trabajo_arg$ANO4.trim)), 
+                                      max = as.numeric(max(mercado_de_trabajo_arg$ANO4.trim)))
+         )
+    ),
+    
+    
+    
+    
     menuItem(text = "Población EPH Argentina", icon = icon("users", lib = "font-awesome"), tabName = "Población EPH Argentina",selected = F),
     div( id = 'sidebar_poblacion_eph',
          conditionalPanel("input.sidebar === 'Población EPH Argentina'",
@@ -126,6 +156,13 @@ sidebar <- dashboardSidebar(
                                       max = as.numeric(max(poblacion_eph$ANO4.trim)))
          )
     ),
+    
+    
+    
+    
+    
+    
+    
     
     actionButton("actualizar", "Actualizar Series")
     
@@ -156,7 +193,8 @@ server <- function(input, output) {
   variables_adecuadas <- reactive({
     if(input$sidebar == "Series de salario"){input$serie_salario} else
       if(input$sidebar == "Tipo de Cambio Argentina"){input$serie_tc} else
-        if(input$sidebar == "Población EPH Argentina"){input$serie_poblacion_eph}
+        if(input$sidebar == "Población EPH Argentina"){input$serie_poblacion_eph} else
+          if(input$sidebar == "Mercado de Trabajo Argentina"){input$serie_mercado_de_trabajo_arg}
   })
 
   
@@ -166,11 +204,13 @@ server <- function(input, output) {
     periodo_adecuado <- 
       if(input$sidebar == "Series de salario"){c(input$id_periodo_sal[1]:input$id_periodo_sal[2])} else
         if(input$sidebar == "Tipo de Cambio Argentina"){c(input$id_periodo_tc[1]:input$id_periodo_tc[2])} else
-          if(input$sidebar == "Población EPH Argentina"){c(input$id_periodo_poblacion_eph[1]:input$id_periodo_poblacion_eph[2])}
+          if(input$sidebar == "Población EPH Argentina"){c(input$id_periodo_poblacion_eph[1]:input$id_periodo_poblacion_eph[2])} else
+            if(input$sidebar == "Mercado de Trabajo Argentina"){c(input$id_periodo_mercado_de_trabajo_arg[1]:input$id_periodo_mercado_de_trabajo_arg[2])}
     
     
     
     df <- 
+      
     if(input$sidebar == "Series de salario"){
       base_binded %>% ungroup() %>%
       filter(cod.variable  %in%  variables_adecuadas()) %>% 
@@ -184,8 +224,13 @@ server <- function(input, output) {
         
     if(input$sidebar == "Población EPH Argentina"){
       base_binded %>% ungroup() %>%
-        filter(cod.variable  %in%  variables_adecuadas()) %>% 
-        select(-c(ANO4))}
+      filter(cod.variable  %in%  variables_adecuadas()) %>% 
+        select(-c(ANO4))} else
+          
+    if(input$sidebar == "Mercado de Trabajo Argentina"){
+      base_binded %>% ungroup() %>%
+      filter(cod.variable  %in%  variables_adecuadas()) %>% 
+      select(-c(ANO4))}
 
 
   })
@@ -228,6 +273,7 @@ server <- function(input, output) {
         } else
           
           
+          
       if(input$sidebar == "Tipo de Cambio Argentina"){
         tab_filtrada() %>%
           ggplot(
@@ -246,6 +292,26 @@ server <- function(input, output) {
           theme(axis.text.x = element_text(angle = 90))
           } else
             
+        
+        if(input$sidebar == "Mercado de Trabajo Argentina"){    
+          
+          tab_filtrada() %>%
+            ggplot(
+              aes(y = valor, x = ANO4.trim ,group = iso3c))+
+            geom_line(size = 1) +
+            labs(color= "País",
+                 #title= str_wrap(titulo(),60),
+                 # y = str_wrap(nombre_variable,40),
+                 x = "Trimestre")+
+            theme_minimal()+
+            theme(text = element_text(size = 9),
+                  axis.text.x = element_text(size=10),
+                  axis.text.y = element_text(size=10),
+                  legend.position = "bottom",
+                  plot.title= element_text(size=12, face="bold"))+
+            theme(axis.text.x = element_text(angle = 90))}    else
+            
+                
         if(input$sidebar == "Población EPH Argentina"){    
           
           tab_filtrada() %>%
@@ -255,7 +321,7 @@ server <- function(input, output) {
             labs(color= "País",
                  #title= str_wrap(titulo(),60),
                  # y = str_wrap(nombre_variable,40),
-                 x = "Año")+
+                 x = "Trimestre")+
             theme_minimal()+
             theme(text = element_text(size = 9),
                   axis.text.x = element_text(size=10),
@@ -293,12 +359,7 @@ server <- function(input, output) {
     }
   )
   
-  
-  # metadatos <- eventReactive(input$actualizar, { 
-  #   
-  #   diccionario_variables$metadata[diccionario_variables$cod.variable == variables_adecuadas()]
-  #   
-  #   })
+
   
    metadatos <-  eventReactive(input$actualizar, {
      if(input$sidebar == "Series de salario") 
@@ -306,7 +367,10 @@ server <- function(input, output) {
      
      if(input$sidebar == "Tipo de Cambio Argentina")
              {diccionario_variables$metadata[diccionario_variables$cod.variable == input$serie_tc] } else
-               
+     
+     if(input$sidebar == "Mercado de Trabajo Argentina")
+             {diccionario_variables$metadata[diccionario_variables$cod.variable == input$serie_mercado_de_trabajo_arg] } else           
+                         
      if(input$sidebar == "Población EPH Argentina")
              {diccionario_variables$metadata[diccionario_variables$cod.variable == input$serie_poblacion_eph] }           
   
@@ -325,23 +389,29 @@ server <- function(input, output) {
     nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$serie_salario]
     titulo <- paste0(nombre_variable ," para ", lista_paises , ". Años: ", input$id_periodo_sal[1], " al ", input$id_periodo_sal[2]) 
    
-     } else
+      } else
       
     if(input$sidebar == "Tipo de Cambio Argentina")  {
  
-           nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$serie_tc]
+      nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$serie_tc]
       titulo <- paste0(nombre_variable ," para Argentina", ". Años: ", input$id_periodo_tc[1], " al ", input$id_periodo_tc[2]) 
         
-      } else
+     } else
     
+    if(input$sidebar == "Mercado de Trabajo Argentina")  {
+      
+      nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$serie_mercado_de_trabajo_arg]
+      titulo <- paste0(nombre_variable ," para Argentina", ". Años: ", input$id_periodo_mercado_de_trabajo_arg[1], " al ", input$id_periodo_mercado_de_trabajo_arg[2]) 
+      
+     } else
+         
     if(input$sidebar == "Población EPH Argentina")  {
-      
-      nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$serie_poblacion_eph]
-      titulo <- paste0(nombre_variable ," para Argentina", ". Años: ", input$id_periodo_poblacion_eph[1], " al ", input$id_periodo_poblacion_eph[2]) 
-      
+           
+        nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$serie_poblacion_eph]
+        titulo <- paste0(nombre_variable ," para Argentina", ". Años: ", input$id_periodo_poblacion_eph[1], " al ", input$id_periodo_poblacion_eph[2]) 
+           
        }
-    
-    
+ 
   })
     
     
