@@ -28,7 +28,7 @@ vector_bases <- unique(diccionario_variables$base)
 
 ### Vectores con nombres de variables (ver si se puede simplificar codigo) 
 
-#Las opciones aparecen en función de lo que se elija, lo saco de acá
+#Las opciones aparecen en funciÃ³n de lo que se elija, lo saco de acá
 #vector_variables <- setNames(diccionario_variables$cod.variable, diccionario_variables$nombre.variable)
 
 #Vector con nombres para cod.variable (series salario)
@@ -138,9 +138,9 @@ sidebar <- dashboardSidebar(
     
     
     
-    menuItem(text = "Población EPH Argentina", icon = icon("users", lib = "font-awesome"), tabName = "Población EPH Argentina",selected = F),
+    menuItem(text = "PoblaciÃ³n EPH Argentina", icon = icon("users", lib = "font-awesome"), tabName = "PoblaciÃ³n EPH Argentina",selected = F),
     div( id = 'sidebar_poblacion_eph',
-         conditionalPanel("input.sidebar === 'Población EPH Argentina'",
+         conditionalPanel("input.sidebar === 'PoblaciÃ³n EPH Argentina'",
                           selectizeInput("serie_poblacion_eph",
                                          "Seleccionar una Serie", 
                                          choices =  vector_variables_poblacion_eph, 
@@ -149,7 +149,7 @@ sidebar <- dashboardSidebar(
                                          multiple = F))
     ),
     div( id = 'sidebar_poblacion_eph_periodo',
-         conditionalPanel("input.sidebar === 'Población EPH Argentina'",
+         conditionalPanel("input.sidebar === 'PoblaciÃ³n EPH Argentina'",
                           sliderInput("id_periodo_poblacion_eph", "Período:", 
                                       value = c(as.numeric(min(poblacion_eph$ANO4.trim)), as.numeric(max(poblacion_eph$ANO4.trim))), 
                                       min = as.numeric(min(poblacion_eph$ANO4.trim)), 
@@ -171,7 +171,7 @@ sidebar <- dashboardSidebar(
 
 body <- dashboardBody(
   fluidRow(
-    box(title = textOutput("titulo"), footer= "ceped.data | Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED-UBA)", 
+    box(title = textOutput("titulo"), footer= "ceped.data | Portal de difusiÃ³n de datos del Centro de Estudios sobre PoblaciÃ³n, Empleo y Desarrollo (CEPED-UBA)", 
     solidHeader = T,width = 20,
         plotOutput("ploteado"))),
   fluidRow(box(tableOutput("tablita")),
@@ -193,7 +193,7 @@ server <- function(input, output) {
   variables_adecuadas <- reactive({
     if(input$sidebar == "Series de salario"){input$serie_salario} else
       if(input$sidebar == "Tipo de Cambio Argentina"){input$serie_tc} else
-        if(input$sidebar == "Población EPH Argentina"){input$serie_poblacion_eph} else
+        if(input$sidebar == "PoblaciÃ³n EPH Argentina"){input$serie_poblacion_eph} else
           if(input$sidebar == "Mercado de Trabajo Argentina"){input$serie_mercado_de_trabajo_arg}
   })
 
@@ -204,7 +204,7 @@ server <- function(input, output) {
     periodo_adecuado <- 
       if(input$sidebar == "Series de salario"){c(input$id_periodo_sal[1]:input$id_periodo_sal[2])} else
         if(input$sidebar == "Tipo de Cambio Argentina"){c(input$id_periodo_tc[1]:input$id_periodo_tc[2])} else
-          if(input$sidebar == "Población EPH Argentina"){c(input$id_periodo_poblacion_eph[1]:input$id_periodo_poblacion_eph[2])} else
+          if(input$sidebar == "PoblaciÃ³n EPH Argentina"){c(input$id_periodo_poblacion_eph[1]:input$id_periodo_poblacion_eph[2])} else
             if(input$sidebar == "Mercado de Trabajo Argentina"){c(input$id_periodo_mercado_de_trabajo_arg[1]:input$id_periodo_mercado_de_trabajo_arg[2])}
     
     
@@ -222,7 +222,7 @@ server <- function(input, output) {
       filter(cod.variable  %in%  variables_adecuadas()) %>% 
       filter(ANO4 %in% periodo_adecuado) } else
         
-    if(input$sidebar == "Población EPH Argentina"){
+    if(input$sidebar == "PoblaciÃ³n EPH Argentina"){
       base_binded %>% ungroup() %>%
       filter(cod.variable  %in%  variables_adecuadas()) %>% 
         select(-c(ANO4))} else
@@ -312,7 +312,7 @@ server <- function(input, output) {
             theme(axis.text.x = element_text(angle = 90))}    else
             
                 
-        if(input$sidebar == "Población EPH Argentina"){    
+        if(input$sidebar == "PoblaciÃ³n EPH Argentina"){    
           
           tab_filtrada() %>%
             ggplot(
@@ -371,7 +371,7 @@ server <- function(input, output) {
      if(input$sidebar == "Mercado de Trabajo Argentina")
              {diccionario_variables$metadata[diccionario_variables$cod.variable == input$serie_mercado_de_trabajo_arg] } else           
                          
-     if(input$sidebar == "Población EPH Argentina")
+     if(input$sidebar == "PoblaciÃ³n EPH Argentina")
              {diccionario_variables$metadata[diccionario_variables$cod.variable == input$serie_poblacion_eph] }           
   
         })
@@ -405,7 +405,7 @@ server <- function(input, output) {
       
      } else
          
-    if(input$sidebar == "Población EPH Argentina")  {
+    if(input$sidebar == "PoblaciÃ³n EPH Argentina")  {
            
         nombre_variable <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==input$serie_poblacion_eph]
         titulo <- paste0(nombre_variable ," para Argentina", ". Años: ", input$id_periodo_poblacion_eph[1], " al ", input$id_periodo_poblacion_eph[2]) 
