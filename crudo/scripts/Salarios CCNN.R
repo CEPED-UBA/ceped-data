@@ -27,8 +27,19 @@ IPC_2005 <- read.xlsx("crudo/datos/Prod y Salarios.xlsx",
                values_to = "IPC_2005") %>%
   mutate(nombre.pais = str_replace_all(nombre.pais,"[[:punct:] ]+",replacement = " "))
 
+## TCN-WB####
+Euro_area <- read.xlsx("crudo/datos/comparación internacional - salarios promedio PPP.xlsx",
+                       sheet = "Euro Area")
+series_tcn <- readRDS("crudo/datos/series_tcn.RDS")
 
-# PPA####
+series_tcn<- series_tcn %>%
+  group_by(date) %>%
+  mutate(TCN = case_when(
+    iso3c %in% Euro_area$`Alpha-3` ~ PA.NUS.FCRF[iso3c == "EMU"],
+    TRUE ~ PA.NUS.FCRF)) %>% 
+  select(ANO4 = date,iso3c,TCN)
+
+## PPA####
 PPA_WB <- read.csv("crudo/datos/All_PPA_WB_2017.csv") %>%
   rename(iso3c = Country.Code)
 
@@ -80,7 +91,9 @@ base <- Paises %>%
   left_join(Salarios_UMN) %>% 
   left_join(IPC_2005) %>% 
   left_join(PPA_series) %>% 
+  left_join(series_tcn) %>% 
   mutate(salario_real_2005 = Salario.UMN/IPC_2005*100,
+         salario_dolares = Salario.UMN/TCN,
          salario_ppa_c_priv_corr = Salario.UMN/PPA_c_priv_serie,
          salario_ppa_c_actual_corr = Salario.UMN/PPA_c_actual_serie) %>% 
   group_by(iso3c) %>% 
@@ -95,4 +108,4 @@ base_export <- base %>%
                names_to = "cod.variable",values_to = "valor") %>% 
   filter(!is.na(valor))
 
-saveRDS(base_export,file = "data/salarios.RDS")
+saveRDS(base_export,file = "shiny/data/salarios.RDS")
