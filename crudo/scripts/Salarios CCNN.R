@@ -100,7 +100,9 @@ base <- Paises %>%
   mutate(indice_salario_real_2005 = 100*salario_real_2005/salario_real_2005[ANO4 == 2005]) %>% 
   filter(!is.na(ANO4)) %>% 
   group_by(ANO4) %>% 
-  mutate(salario_relativo_usa_c_priv = salario_ppa_c_priv_corr/salario_ppa_c_priv_corr[iso3c == "USA"],
+  mutate(tcn_ppa_cpriv = TCN/PPA_c_priv_serie,
+         salario_relativo_usa_dolares=salario_dolares/salario_dolares[iso3c == "USA"],
+         salario_relativo_usa_c_priv = salario_ppa_c_priv_corr/salario_ppa_c_priv_corr[iso3c == "USA"],
          salario_relativo_usa_c_actual = salario_ppa_c_actual_corr/salario_ppa_c_actual_corr[iso3c == "USA"])
 
 base_export <- base %>% 
