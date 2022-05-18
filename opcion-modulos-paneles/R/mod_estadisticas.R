@@ -1,3 +1,30 @@
+library(ggplot2)
+library(tidyverse)
+library(openxlsx)
+library(cowplot)
+library(magick)
+
+
+
+mercado_de_trabajo_arg <- readRDS("www/data/Mercado_de_Trabajo_Arg.RDS")
+poblacion_eph <- readRDS("www/data/Poblacion_eph.RDS")
+
+diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
+
+base_binded <- bind_rows(poblacion_eph, mercado_de_trabajo_arg)
+
+#Armo vectores para inputs
+vector_bases <- unique(diccionario_variables$base)
+
+#Vector con nombres para cod.variable (series "poblacion_eph")
+v_variables <- diccionario_variables %>% filter(base=="Poblacion_eph") %>% select(cod.variable) 
+v_nombres <- diccionario_variables %>% filter(base=="Poblacion_eph") %>% select(nombre.variable)
+vector_variables_poblacion_eph <- setNames(v_variables$cod.variable, v_nombres$nombre.variable)
+
+#Vector con nombres para cod.variable (series "mercado_de_trabajo_arg")
+v_variables <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>% select(cod.variable) 
+v_nombres <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>% select(nombre.variable)
+vector_variables_mercado_de_trabajo_arg <- setNames(v_variables$cod.variable, v_nombres$nombre.variable)
 
 
 estad_plot_server <- function(id) {

@@ -16,7 +16,19 @@ btn_style <- "float:right;border-radius: 15px;"
 ui <- fluidPage( 
   theme = shinytheme("journal"),
   
-  navbarPage('ceped-data', id = "pag",
+  #define fakeClick for buttons
+        (tags$head(tags$script(HTML('var fakeClick = function(tabName) {
+                                                         var dropdownList = document.getElementsByTagName("a");
+                                                         for (var i = 0; i < dropdownList.length; i++) {
+                                                         var link = dropdownList[i];
+                                                         if(link.getAttribute("data-value") == tabName) {
+                                                         link.click();
+                                                         };
+                                                         }
+                                                         };
+                                                         '))) ),
+  
+          navbarPage('ceped-data', id = "pag",
              
              
              tabPanel('Home',
@@ -83,13 +95,11 @@ ui <- fluidPage(
                                                 #img(height = 250, width = 250,src = "img/data_preview.png"),
                                                 p('¿Quiénes somos?'),
                                                 
-                                                actionButton('amiembros', 'conocer')
-                                                
-                                                # tags$a("conocer",
-                                                #        style=btn_style,
-                                                #        onclick="fakeClick('CEPED')",
-                                                #        class="btn btn-default btn-s"
-                                                # )
+                                                tags$a("conocer",
+                                                       style=btn_style,
+                                                       onclick="fakeClick('CEPED')",
+                                                       class="btn btn-default btn-s"
+                                                )
                                        )
                              )
                       )
@@ -102,8 +112,9 @@ ui <- fluidPage(
              
              #sample_plot_ui('ejemplo'),
              estad_plot_ui('ejemplo1'),
-             series_plot_ui('ejemplo2')#,
-             ,ceped_plot_ui('ejemplo3')
+             series_plot_ui('ejemplo2'),
+             papers_plot_ui('ejemplo3'),
+             ceped_plot_ui('ejemplo4')
              #etc
   )
   
@@ -115,10 +126,10 @@ ui <- fluidPage(
 
 server <- function (input, output,session) {
   
-  observeEvent(input$conocer, {
-    updateNavbarPage(session, "pag",
-                      selected = "CEPED")
-  })
+  # observeEvent(input$conocer, {
+  #   updateNavbarPage(session, "pag",
+  #                     selected = "CEPED")
+  # })
 
 
   
@@ -129,7 +140,8 @@ server <- function (input, output,session) {
    #sample_plot_server('ejemplo')
   estad_plot_server('ejemplo1')
   series_plot_server('ejemplo2')
-  ceped_plot_server('ejemplo3')
+  papers_plot_server('ejemplo3')
+  ceped_plot_server('ejemplo4')
   # 
 }
 
