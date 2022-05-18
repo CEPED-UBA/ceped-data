@@ -112,7 +112,16 @@ ui <- fluidPage(
              
              #sample_plot_ui('ejemplo'),
              estad_plot_ui('ejemplo1'),
-             series_plot_ui('ejemplo2'),
+             
+             navbarMenu(title = 'Series',
+                        
+             series_plot_ui(id ='salarios', title ='Serie de salarios', v_salarios),
+             series_plot_ui(id ='tc', title ='Tipo de cambio',v_tc),
+             series_plot_ui(id ='bp', title ='Balanza de pagos',v_bp),
+             series_plot_ui(id ='ipc', title ='IPC Argentina', v_ipc)
+             
+             ),
+             
              papers_plot_ui('ejemplo3'),
              ceped_plot_ui('ejemplo4')
              #etc
@@ -139,7 +148,10 @@ server <- function (input, output,session) {
   # # Output modules ----------------------------------------------------------
    #sample_plot_server('ejemplo')
   estad_plot_server('ejemplo1')
-  series_plot_server('ejemplo2')
+  series_plot_server('salarios')
+  series_plot_server('tc')
+  series_plot_server('bp')
+  series_plot_server('ipc')
   papers_plot_server('ejemplo3')
   ceped_plot_server('ejemplo4')
   # 
