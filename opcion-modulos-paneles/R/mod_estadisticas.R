@@ -1,0 +1,70 @@
+
+
+estad_plot_server <- function(id) {
+  moduleServer(id, function(input, output, session) {
+    
+    plot <- function(input_cut){
+      
+      d <- diamonds[sample(nrow(diamonds), 1000), ] %>% 
+        filter(cut==input_cut)
+      
+      p <- ggplot(data = d, aes(x = carat, y = price)) +
+        geom_point(aes(text = paste("Clarity:", clarity))) +
+        geom_smooth(aes(colour = cut, fill = cut))
+      
+      
+      ggplotly(p)
+    }
+    
+    output$plot1 <- renderPlotly({plot(input$input1)})
+    output$plot2 <- renderPlotly({plot(input$input2)})
+    output$plot3 <- renderPlotly({plot(input$input3)})
+  })
+}
+
+estad_plot_ui <- function(id) {
+  ns <- NS(id)
+  
+  navbarMenu(title = 'Estadísticas',
+             
+             tabPanel('EPH tasas básicas',
+                      value = 'tasas',
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput(ns('input1'),label = 'select cut',
+                                      choices = diamonds$cut %>% unique(),
+                                      selected = 'Premium',
+                                      multiple = FALSE)
+                        ),
+                        mainPanel(plotlyOutput(ns('plot1'))
+                        )
+                      )
+             ),
+             
+             tabPanel('EPH población',
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput(ns('input2'),label = 'select cut',
+                                      choices = diamonds$cut %>% unique(),
+                                      selected = 'Premium',
+                                      multiple = FALSE)
+                        ),
+                        mainPanel(plotlyOutput(ns('plot2'))
+                        )
+                      )
+             ),
+             tabPanel('EPH categoría ocupacional',
+                      sidebarLayout(
+                        sidebarPanel(
+                          selectInput(ns('input3'),label = 'select cut',
+                                      choices = diamonds$cut %>% unique(),
+                                      selected = 'Premium',
+                                      multiple = FALSE)
+                        ),
+                        mainPanel(plotlyOutput(ns('plot3'))
+                        )
+                      )
+             )
+             
+  )
+}

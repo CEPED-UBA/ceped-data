@@ -1,0 +1,141 @@
+library(shiny)
+library(shinythemes)
+library(shinycssloaders)
+library(glue)
+library(DT)
+library(plotly)
+library(gridExtra)
+library(shinyjs)
+library(shinydashboard)
+
+
+btn_style <- "float:right;border-radius: 15px;"
+
+
+
+ui <- fluidPage( 
+  theme = shinytheme("journal"),
+  
+  navbarPage('ceped-data', id = "pag",
+             
+             
+             tabPanel('Home',
+                      fluidRow(
+                        
+                        column(12,
+                               column(6,
+                                      tags$div( class="panel panel-primary",
+                                                tags$div(class= "panel-heading",
+                                                         h3('Datos procesados')),
+                                                tags$div(class="panel-body",
+                                                         
+                                                         #img(height = 250, width = 250,src = "img/data_preview.png"),
+                                                         p('Estadísticas derivadas de bases de datos e información pública procesadas por el CEPED'),
+                                                         
+                                                         
+                                                         tags$a("ver estadísticas",
+                                                                style=btn_style,
+                                                                onclick="fakeClick('tasas')",
+                                                                class="btn btn-primary btn-s"
+                                                         )
+                                                )
+                                      )
+                               ),  
+                               column(6,
+                                      tags$div( class="panel panel-warning",
+                                                tags$div( class= "panel-heading",
+                                                          h3('Series')),
+                                                tags$div(class="panel-body",
+                                                         #img(height = 250, width = 250,src = "img/methods_preview.png"),
+                                                         p('Datos que surgen de líneas de investigación desarrolladas por integrantes del CEPED'),
+                                                         tags$a("ver series", style=btn_style,
+                                                                onclick="fakeClick('salarios')",
+                                                                class="btn btn-warning btn-s")
+                                                )
+                                      )
+                               )
+                        )
+                      ),
+                      fluidRow(
+                        column(12,
+                        column(6,
+                               tags$div( class="panel panel-danger",
+                                         tags$div(class= "panel-heading",
+                                                  h3('Datos de artículos')),
+                                         tags$div(class="panel-body",
+                                                  
+                                                  #img(height = 250, width = 250,src = "img/data_preview.png"),
+                                                  p('Presentación interactiva de datos que fueron publicados en artículos de integrantes del CEPED'),
+                                                  tags$a("ver presentación",
+                                                         style=btn_style,
+                                                         onclick="fakeClick('pres')",
+                                                         class="btn btn-danger btn-s"
+                                                  )
+                                         )
+                               )
+                      ),
+                      column(6,
+                             tags$div( class="panel panel-default",
+                                       tags$div(class= "panel-heading",
+                                                h3('Sobre el CEPED')),
+                                       tags$div(class="panel-body",
+                                                
+                                                #img(height = 250, width = 250,src = "img/data_preview.png"),
+                                                p('¿Quiénes somos?'),
+                                                
+                                                actionButton('amiembros', 'conocer')
+                                                
+                                                # tags$a("conocer",
+                                                #        style=btn_style,
+                                                #        onclick="fakeClick('CEPED')",
+                                                #        class="btn btn-default btn-s"
+                                                # )
+                                       )
+                             )
+                      )
+                      
+                        )
+                      
+                      
+                      )),
+             
+             
+             #sample_plot_ui('ejemplo'),
+             estad_plot_ui('ejemplo1'),
+             series_plot_ui('ejemplo2')#,
+             ,ceped_plot_ui('ejemplo3')
+             #etc
+  )
+  
+  
+)
+
+
+##### server #####
+
+server <- function (input, output,session) {
+  
+  observeEvent(input$conocer, {
+    updateNavbarPage(session, "pag",
+                      selected = "CEPED")
+  })
+
+
+  
+
+  # ########## 
+  # 
+  # # Output modules ----------------------------------------------------------
+   #sample_plot_server('ejemplo')
+  estad_plot_server('ejemplo1')
+  series_plot_server('ejemplo2')
+  ceped_plot_server('ejemplo3')
+  # 
+}
+
+
+##### RUN #####
+
+shinyApp(ui, server)
+
+
