@@ -1,23 +1,18 @@
 
+vector_publis <- c("Reproducción familiar", "Precariedad mundial")
 
+base_resumenes <- data.frame() #hacer un excel
 
 papers_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    plot <- function(input_cut){
-      
-      d <- diamonds[sample(nrow(diamonds), 1000), ] %>% 
-        filter(cut==input_cut)
-      
-      p <- ggplot(data = d, aes(x = carat, y = price)) +
-        geom_point(aes(text = paste("Clarity:", clarity))) +
-        geom_smooth(aes(colour = cut, fill = cut))
-      
-      
-      ggplotly(p)
+    resumen <- function(publi){
+      base_resumenes %>% 
+        filter(publicacion == publi) %>% 
+        select(resumen)
     }
     
-    output$plot1 <- renderPlotly({plot(input$input1)})
+    #output$resumen_publi <- renderText({resumen(input$publicacion_id)})
   })
 }
 
@@ -29,12 +24,18 @@ papers_plot_ui <- function(id) {
            value = 'pres',
            sidebarLayout(
              sidebarPanel(
-               selectInput(ns('input1'),label = 'select cut',
-                           choices = diamonds$cut %>% unique(),
-                           selected = 'Premium',
+               selectInput(ns('publicacion_id'),label = 'Elegir una publicación:',
+                           choices = vector_publis,
+                           selected = vector_publis[1],
                            multiple = FALSE)
              ),
-             mainPanel(plotlyOutput(ns('plot1'))
+             mainPanel(
+               box(title = "Resumen", width = NULL, textOutput(ns('resumen_publi'))),
+               box(title = "Acceder a publicación completa", width = NULL, textOutput(ns('link_revista'))),
+               box(title = "Acceder a app interactiva", width = NULL, textOutput(ns('link_app')))
+                           
+                                    
+                                    
              )
            )
   )

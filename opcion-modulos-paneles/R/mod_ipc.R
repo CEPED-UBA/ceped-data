@@ -69,7 +69,11 @@ ipc_plot_server <- function(id) {
               plot.title= element_text(size=12, face="bold"))+
         theme(axis.text.x = element_text(angle = 90))
       
-      #p
+      p
+      #ggplotly(p, tooltip = c("text"))
+    }
+    
+    plot_interact <- function(p){
       ggplotly(p, tooltip = c("text"))
     }
     
@@ -83,7 +87,7 @@ ipc_plot_server <- function(id) {
       generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
     output$plot <- renderPlotly({
-      plot(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+      plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
     })
     output$tabla <- renderTable({
       armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
@@ -94,6 +98,23 @@ ipc_plot_server <- function(id) {
     output$metadata2 <- renderText({
       generar_metadata(input$var_serie)
     })
+    output$downloadTable <- downloadHandler(
+      
+      filename = function(){paste(input$var_serie,'.xlsx',sep='')},
+      content = function(file){
+        
+        write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
+                   file)    }
+    )
+    output$downloadPlot <- downloadHandler(
+      filename = function(){paste(input$var_serie,'.png',sep='')},
+      content = function(file){
+        
+        
+        ggsave(file,plot=plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
+               width=8, height=4)
+      }
+    )
     
     
   })
