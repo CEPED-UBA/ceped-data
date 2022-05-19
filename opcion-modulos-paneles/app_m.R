@@ -7,6 +7,7 @@ library(plotly)
 library(gridExtra)
 library(shinyjs)
 library(shinydashboard)
+library(openxlsx)
 
 
 btn_style <- "float:right;border-radius: 15px;"
@@ -117,7 +118,8 @@ ui <- fluidPage(
                         
              series_plot_ui(id ='salarios', title ='Serie de salarios', v_salarios),
              series_plot_ui(id ='tc', title ='Tipo de cambio',v_tc),
-             series_plot_ui(id ='bp', title ='Balanza de pagos',v_bp),
+             #series_plot_ui(id ='bp', title ='Balanza de pagos',v_bp),
+             bp_plot_ui(id ='bp', title ='Balance de Pagos Argentina'),
              ipc_plot_ui(id ='ipc', title ='IPC Argentina', v_ipc)
              
              ),
@@ -143,14 +145,15 @@ server <- function (input, output,session) {
 
   
 
-  # ########## 
+  # ##
   # 
   # # Output modules ----------------------------------------------------------
    #sample_plot_server('ejemplo')
   estad_plot_server('ejemplo1')
   series_plot_server('salarios')
   series_plot_server('tc')
-  series_plot_server('bp')
+ # series_plot_server('bp')
+  bp_plot_server('bp')
   ipc_plot_server('ipc')
   papers_plot_server('ejemplo3')
   ceped_plot_server('ejemplo4')
