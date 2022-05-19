@@ -85,7 +85,10 @@ series_plot_server <- function(id) {
     generar_metadata <- function(variables){
       diccionario_variables$metadata[diccionario_variables$nombre.variable == variables] 
     }
-    output$titulo <- renderText({
+    output$titulo1 <- renderText({
+      generar_titulo(input$var_serie,input$pais_id, input$id_periodo[1],input$id_periodo[2])
+    })
+    output$titulo2 <- renderText({
       generar_titulo(input$var_serie,input$pais_id, input$id_periodo[1],input$id_periodo[2])
     })
     output$plot <- renderPlotly({
@@ -94,7 +97,10 @@ series_plot_server <- function(id) {
     output$tabla <- renderTable({
       armar_tabla(input$var_serie,input$pais_id, input$id_periodo[1],input$id_periodo[2])
     })
-    output$metadata <- renderText({
+    output$metadata1 <- renderText({
+      generar_metadata(input$var_serie)
+    })
+    output$metadata2 <- renderText({
       generar_metadata(input$var_serie)
     })
     
@@ -124,29 +130,50 @@ series_plot_ui <- function(id, title,v_variables) {
                            width = "300px"),
                sliderInput(ns('id_periodo'), "Período:", value = c(1980,2005), min = 1950, max = 2010)
              ),
+             
+             
              mainPanel(
-               box(width = NULL, textOutput(ns('titulo'))),
+               
+               tabsetPanel(
+                 
+                 tabPanel("Gráfico",
+                          value = "g_series",
+                          
+               box(width = NULL, textOutput(ns('titulo1'))),
+               br(),
                plotlyOutput(ns('plot')),
+               br(),
+               box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+               br(),
+               box(width = NULL,
+                   downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+               
+                 ),
+               
+               tabPanel("Tabla",
+                        value = "t_series",
                
                fluidRow(
                  column(12,
                         column(6, 
-                                   box(tableOutput(ns('tabla')))),
+                               box(width = NULL, textOutput(ns('titulo2'))),
+                               br(),
+                               box(tableOutput(ns('tabla')))),
                         column(6,          
-                               box(title = "Metadata", width = NULL, textOutput(ns('metadata'))),
+                               box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
                                br(),
                                box(width = NULL,
-                                   downloadButton(ns('downloadTable'),'Descargar tabla')),
-                               br(),
-                               box(width = NULL,
-                                   downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+                                   downloadButton(ns('downloadTable'),'Descargar tabla'))
                                
                                ))
+               ))
+               
                )
                
-               
-               
              )
+             
+             
+             
            
   )
   

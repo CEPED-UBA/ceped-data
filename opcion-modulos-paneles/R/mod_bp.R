@@ -29,23 +29,23 @@ bp_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     
-    # armar_tabla <- function(variables, periodo_i, periodo_f){
-    #   base_binded %>% ungroup() %>%
-    #     filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables]) ) %>% 
-    #     
-    #     filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-    #     mutate(ANO4 = round(ANO4,0)) %>% 
-    #     rename("Serie" = "cod.variable",
-    #            
-    #            "Período" = "ANO4") %>% 
-    #     select(-iso3c)
-    # }
-    # 
-    # generar_titulo <- function(variables, periodo_i, periodo_f){
-    #   lista_paises <-  paste0(paises, collapse = ", ") 
-    #   nombre_variable <- unique(diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==variables])
-    #   titulo <- paste0(variables ," para ", ". Años: ", periodo_i, " al ", periodo_f)
-    # }
+    armar_tabla <- function(variables, valu, periodo_i, periodo_f){
+      bop_arg_dolares %>%
+        filter(cod.variable  %in%   variables,valuacion == valu) %>% 
+        filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+        rename("Serie" = "cod.variable",
+               "País" = "nombre.pais",
+               "Período" = "ANO4",
+               "Valuación" = "valuacion") %>% 
+        select("País","iso3c","Período","Serie","Valuación", "valor")
+    }
+    
+    generar_titulo <- function(variables, valu, periodo_i, periodo_f){
+      nombre_variable <-  paste0(variables, collapse = ", ")
+      nombre_variable <- sub(",([^,]*)$", " y\\1", nombre_variable)   
+      titulo <- paste0(nombre_variable , " en ",valu," desde ", periodo_i, " hasta ", periodo_f)
+    }
+   
     
     plot <- function(variables,valu, periodo_i, periodo_f){
       
@@ -58,7 +58,8 @@ bp_plot_server <- function(id) {
         geom_line(size = 1) +
         geom_point(size = 2) +
         labs(y = "",
-             x = "Año")+
+             x = "Año",
+             color = "")+
         theme_minimal()+
         theme(text = element_text(size = 9),
               axis.text.x = element_text(size=10),
@@ -74,19 +75,26 @@ bp_plot_server <- function(id) {
     # generar_metadata <- function(variables){
     #   diccionario_variables$metadata[diccionario_variables$nombre.variable == variables] 
     # }
-    # output$titulo <- renderText({
-    #   generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
-    # })
+    
+    output$titulo1 <- renderText({
+      generar_titulo(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2])
+    })
+    output$titulo2 <- renderText({
+      generar_titulo(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2])
+    })
     output$plot <- renderPlotly({
       plot(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2])
     })
-    # output$tabla <- renderTable({
-    #   armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
-    # })
-    # output$metadata <- renderText({
+    
+    output$tabla <- renderTable({
+      armar_tabla(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2])
+    })
+    # output$metadata1 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
-    
+    # output$metadata2 <- renderText({
+    #   generar_metadata(input$var_serie)
+    # })
     
   })
 }
@@ -121,23 +129,44 @@ bp_plot_ui <- function(id, title,v_variables) {
                              )
                  ),
                mainPanel(
-                 box(width = NULL, textOutput(ns('titulo'))),
-                 plotlyOutput(ns('plot')),
-                 fluidRow(
-                   column(12,
-                          column(6,
-                          box(tableOutput(ns('tabla')))),
-                   column(6,
-                          box(title = "Metadata", width = NULL, textOutput(ns('metadata'))),
-                          br(),
-                          box(width = NULL,
-                          downloadButton(ns('downloadTable'),'Descargar tabla')),
-                          br(),
-                          box(width = NULL,
-                          downloadButton(ns('downloadPlot'),'Descargar gráfico')))
-                        )
-                   )
-             )
+                 
+                 tabsetPanel(
+                   
+                   tabPanel("Gráfico",
+                            value = "g_bp",
+                            
+                            box(width = NULL, textOutput(ns('titulo1'))),
+                            br(),
+                            plotlyOutput(ns('plot')),
+                            br(),
+                            box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+                            br(),
+                            box(width = NULL,
+                                downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+                            
+                   ),
+                   
+                   tabPanel("Tabla",
+                            value = "t_bp",
+                            
+                            fluidRow(
+                              column(12,
+                                     column(9, 
+                                            box(width = NULL, textOutput(ns('titulo2'))),
+                                            br(),
+                                            box(tableOutput(ns('tabla')))),
+                                     column(3,          
+                                            box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
+                                            br(),
+                                            box(width = NULL,
+                                                downloadButton(ns('downloadTable'),'Descargar tabla'))
+                                            
+                                     ))
+                            ))
+                   
+                 )
+                 
+               )
              
            )
            

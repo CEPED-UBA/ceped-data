@@ -125,8 +125,11 @@ ui <- fluidPage(
              ),
              
              papers_plot_ui('ejemplo3'),
-             ceped_plot_ui('ejemplo4')
+             ceped_plot_ui('ejemplo4'),
+             
              #etc
+             
+             #footer = "Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED-UBA)"
   )
   
   

@@ -33,19 +33,18 @@ ipc_plot_server <- function(id) {
     armar_tabla <- function(variables, periodo_i, periodo_f){
       base_binded %>% ungroup() %>%
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables]) ) %>% 
-        
+        filter(nombre.pais == "Argentina") %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         mutate(ANO4 = round(ANO4,0)) %>% 
         rename("Serie" = "cod.variable",
-               
-               "Período" = "ANO4") %>% 
+               "Período" = "ANO4",
+               "País" = "nombre.pais") %>% 
         select(-iso3c)
     }
     
     generar_titulo <- function(variables, periodo_i, periodo_f){
-      lista_paises <-  paste0(paises, collapse = ", ") 
       nombre_variable <- unique(diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==variables])
-      titulo <- paste0(variables ," para ", ". Años: ", periodo_i, " al ", periodo_f)
+      titulo <- paste0(variables ," desde ", periodo_i, " hasta ", periodo_f)
     }
     
     plot <- function(variables, periodo_i, periodo_f){
@@ -54,10 +53,11 @@ ipc_plot_server <- function(id) {
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+        filter(nombre.pais == "Argentina") %>% 
         ggplot(
-          aes(x = as.factor(ANO4), y = valor, group = iso3c, color = iso3c
-              ,text=paste0('</br>',iso3c,'</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
-        geom_line(size = 1) +
+          aes(x = as.factor(ANO4), y = valor, group = nombre.pais, color = nombre.pais
+              ,text=paste0('</br>',nombre.pais,'</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
+        geom_line(size = 1, color = "blue") +
         labs(color= "País",
              y = "",
              x = "Año")+
@@ -65,7 +65,7 @@ ipc_plot_server <- function(id) {
         theme(text = element_text(size = 9),
               axis.text.x = element_text(size=10),
               axis.text.y = element_text(size=10),
-              legend.position = "bottom",
+              legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
         theme(axis.text.x = element_text(angle = 90))
       
@@ -76,7 +76,10 @@ ipc_plot_server <- function(id) {
     generar_metadata <- function(variables){
       diccionario_variables$metadata[diccionario_variables$nombre.variable == variables] 
     }
-    output$titulo <- renderText({
+    output$titulo1 <- renderText({
+      generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+    })
+    output$titulo2 <- renderText({
       generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
     output$plot <- renderPlotly({
@@ -85,7 +88,10 @@ ipc_plot_server <- function(id) {
     output$tabla <- renderTable({
       armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
-    output$metadata <- renderText({
+    output$metadata1 <- renderText({
+      generar_metadata(input$var_serie)
+    })
+    output$metadata2 <- renderText({
       generar_metadata(input$var_serie)
     })
     
@@ -101,6 +107,8 @@ ipc_plot_ui <- function(id, title,v_variables) {
   
   tabPanel(title,
            value = id,
+           
+                   
            sidebarLayout(
              sidebarPanel(
                selectInput(ns('var_serie'),label = 'Seleccionar una Serie',
@@ -110,32 +118,54 @@ ipc_plot_ui <- function(id, title,v_variables) {
                            multiple = F),
                sliderInput(ns('id_periodo'), "Período:", value = c(1980,2005), min = 1950, max = 2010)
              ),
-             mainPanel(
-               box(width = NULL, textOutput(ns('titulo'))),
-               plotlyOutput(ns('plot')),
+             
+             mainPanel( 
                
+               tabsetPanel(
+                 
+                 tabPanel("Gráfico",
+                          value = "g_ipc",
+                          
+               box(width = NULL, textOutput(ns('titulo1'))), 
+               br(),
+               plotlyOutput(ns('plot')),
+               br(),
+               box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+               br(),
+               box(width = NULL,
+                   downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+               
+               ),
+               
+               tabPanel("Tabla",
+                        value = "t_ipc",
+               
+               box(width = NULL, textOutput(ns('titulo2'))), 
+               br(),
                fluidRow(
                  column(12,
                         column(6, 
                                box(tableOutput(ns('tabla')))),
                         column(6,          
-                               box(title = "Metadata", width = NULL, textOutput(ns('metadata'))),
+                               box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
                                br(),
                                box(width = NULL,
-                                   downloadButton(ns('downloadTable'),'Descargar tabla')),
-                               br(),
-                               box(width = NULL,
-                                   downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+                                   downloadButton(ns('downloadTable'),'Descargar tabla'))
+                               
                                
                         ))
                )
+                 )
                
-               
+             )
                
              )
              
            )
            
+  
+           
   )
+  
   
 }
