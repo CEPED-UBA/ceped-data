@@ -45,7 +45,7 @@ estad_plot_server <- function(id) {
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0(lista_variables ," desde ", periodo_i, " hasta ", periodo_f)
+      titulo <- paste0(lista_variables ,". Promedio anual. Años ", periodo_i, " - ", periodo_f)
 
        }
     
