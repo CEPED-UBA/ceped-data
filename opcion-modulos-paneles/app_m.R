@@ -112,7 +112,15 @@ ui <- fluidPage(
              
              
              #sample_plot_ui('ejemplo'),
-             estad_plot_ui('ejemplo1'),
+#             estad_plot_ui('ejemplo1'),
+             
+             navbarMenu(title = 'Estadísticas',
+             
+                        estad_plot_ui(id ='estadisticas', title ='Mercado de Trabajo EPH', v_variables),           
+
+                        
+             ),
+             
              
              navbarMenu(title = 'Series',
                         
@@ -152,7 +160,7 @@ server <- function (input, output,session) {
   # 
   # # Output modules ----------------------------------------------------------
    #sample_plot_server('ejemplo')
-  estad_plot_server('ejemplo1')
+  estad_plot_server('estadisticas')
   series_plot_server('salarios')
   series_plot_server('tc')
  # series_plot_server('bp')
