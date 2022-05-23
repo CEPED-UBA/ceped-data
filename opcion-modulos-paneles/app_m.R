@@ -39,7 +39,7 @@ ui <- fluidPage(
                                column(6,
                                       tags$div( class="panel panel-primary",
                                                 tags$div(class= "panel-heading",
-                                                         h3('Datos procesados')),
+                                                         h3('Estadísticas procesadas')),
                                                 tags$div(class="panel-body",
                                                          
                                                          #img(height = 250, width = 250,src = "img/data_preview.png"),
@@ -48,7 +48,7 @@ ui <- fluidPage(
                                                          
                                                          tags$a("ver estadísticas",
                                                                 style=btn_style,
-                                                                onclick="fakeClick('tasas')",
+                                                                onclick="fakeClick('estadisticas')",
                                                                 class="btn btn-primary btn-s"
                                                          )
                                                 )
@@ -57,7 +57,7 @@ ui <- fluidPage(
                                column(6,
                                       tags$div( class="panel panel-warning",
                                                 tags$div( class= "panel-heading",
-                                                          h3('Series')),
+                                                          h3('Series del CEPED')),
                                                 tags$div(class="panel-body",
                                                          #img(height = 250, width = 250,src = "img/methods_preview.png"),
                                                          p('Datos que surgen de líneas de investigación desarrolladas por integrantes del CEPED'),

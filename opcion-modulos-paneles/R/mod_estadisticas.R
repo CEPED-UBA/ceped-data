@@ -84,7 +84,7 @@ estad_plot_server <- function(id) {
     
     i <- length(variables)  
         
-    paste0(variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
+    paste0( variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
       
     }
     
