@@ -124,7 +124,8 @@ ui <- fluidPage(
              
              navbarMenu(title = 'Series',
                         
-             series_plot_ui(id ='salarios', title ='Serie de salarios', v_salarios),
+             #series_plot_ui(id ='salarios', title ='Serie de salarios', v_salarios),
+             salarios_plot_ui(id ='salarios', title ='Salarios Internacionales'),
              series_plot_ui(id ='tc', title ='Tipo de cambio',v_tc),
              #series_plot_ui(id ='bp', title ='Balanza de pagos',v_bp),
              bp_plot_ui(id ='bp', title ='Balance de Pagos Argentina'),
@@ -161,10 +162,11 @@ server <- function (input, output,session) {
   # # Output modules ----------------------------------------------------------
    #sample_plot_server('ejemplo')
   estad_plot_server('estadisticas')
-  series_plot_server('salarios')
+  #series_plot_server('salarios')
   series_plot_server('tc')
  # series_plot_server('bp')
   bp_plot_server('bp')
+  salarios_plot_server('salarios')
   ipc_plot_server('ipc')
   papers_plot_server('ejemplo3')
   ceped_plot_server('ejemplo4')
