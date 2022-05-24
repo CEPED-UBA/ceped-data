@@ -48,7 +48,7 @@ ui <- fluidPage(
                                                          
                                                          tags$a("ver estadísticas",
                                                                 style=btn_style,
-                                                                onclick="fakeClick('estadisticas')",
+                                                                onclick="fakeClick('trabajo_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          )
                                                 )
@@ -57,7 +57,7 @@ ui <- fluidPage(
                                column(6,
                                       tags$div( class="panel panel-warning",
                                                 tags$div( class= "panel-heading",
-                                                          h3('Series del CEPED')),
+                                                          h3('Series')),
                                                 tags$div(class="panel-body",
                                                          #img(height = 250, width = 250,src = "img/methods_preview.png"),
                                                          p('Datos que surgen de líneas de investigación desarrolladas por integrantes del CEPED'),
@@ -111,12 +111,12 @@ ui <- fluidPage(
                       )),
              
              
-             #sample_plot_ui('ejemplo'),
-#             estad_plot_ui('ejemplo1'),
              
              navbarMenu(title = 'Estadísticas',
-             
-                        estad_plot_ui(id ='estadisticas', title ='Mercado de Trabajo EPH', v_variables),           
+                        
+                        poblacion_eph_plot_ui(id ='poblacion_eph', title ='Población EPH', v_poblacion_eph) ,
+                        trabajo_eph_plot_ui(id ='trabajo_eph', title ='Mercado de Trabajo EPH', v_trabajo_eph)
+                         
 
                         
              ),
@@ -161,7 +161,8 @@ server <- function (input, output,session) {
   # 
   # # Output modules ----------------------------------------------------------
    #sample_plot_server('ejemplo')
-  estad_plot_server('estadisticas')
+  trabajo_eph_plot_server('trabajo_eph')
+  poblacion_eph_plot_server('poblacion_eph')
   #series_plot_server('salarios')
   series_plot_server('tc')
  # series_plot_server('bp')

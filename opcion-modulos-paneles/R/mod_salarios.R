@@ -1,8 +1,8 @@
 library(openxlsx)
 library(tidyverse)
 
-# salarios_internac <- readRDS("www/data/salarios.RDS")
-# diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
+salarios_internac <- readRDS("www/data/salarios.RDS")
+diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
 
 #Voy agregando a una lista los dataframes que vamos a subir
 

@@ -1,42 +1,33 @@
 library(ggplot2)
 library(tidyverse)
 library(openxlsx)
-library(cowplot)
-library(magick)
 
 
-mercado_de_trabajo_arg <- readRDS("www/data/Mercado_de_Trabajo_Arg.RDS") %>% 
-  group_by(ANO4, cod.variable) %>% 
-  mutate(valor=mean(valor, na.rm=TRUE)) %>% 
-  ungroup() %>% 
-  select(-ANO4.trim) %>% 
-  unique() 
-### PRUEBO PRIMERO CON PROMEDIO ANUAL
-
+base <- readRDS("www/data/Poblacion_eph.RDS") 
 
 diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
 
-v_variables <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>%  select(nombre.variable) 
-v_variables <- as.vector(v_variables[1])
+v_poblacion_eph <- diccionario_variables %>% filter(base=="Poblacion_eph") %>%  select(nombre.variable) 
+v_poblacion_eph <- as.vector(v_poblacion_eph[1])
 
 # Cambio cod.variable por nombre de la variable
-etiquetas <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>% select(nombre.variable, cod.variable)
+etiquetas <- diccionario_variables %>% filter(base=="Poblacion_eph") %>% select(nombre.variable, cod.variable)
 
-mercado_de_trabajo_arg <- left_join(mercado_de_trabajo_arg, etiquetas, by=c("cod.variable")) %>% 
+base <- left_join(base, etiquetas, by=c("cod.variable")) %>% 
   mutate(cod.variable=nombre.variable) %>% 
   select(-nombre.variable)
 
-estad_plot_server <- function(id) {
+poblacion_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
 
     armar_tabla <- function(variables, periodo_i, periodo_f){
-      mercado_de_trabajo_arg  %>%
+      base  %>%
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         rename("Serie" = "cod.variable",
                "País" = "nombre.pais",
-               "Período" = "ANO4") %>% 
+               "Período" = "ANO4.trim") %>% 
         select("País","iso3c","Período","Serie", "valor")
     }
     
@@ -45,18 +36,18 @@ estad_plot_server <- function(id) {
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0(lista_variables ,". Promedio anual. Años ", periodo_i, " - ", periodo_f)
+      titulo <- paste0(lista_variables ,". Información trimestral. Años ", periodo_i, " - ", periodo_f)
 
        }
     
     plot <- function(variables, periodo_i, periodo_f){
       
-      p <- mercado_de_trabajo_arg %>% 
+      p <- base %>% 
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
-          aes(x = as.factor(ANO4), y = valor, group = cod.variable, color = cod.variable,
-                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
+          aes(x = ANO4.trim, y = valor, group = cod.variable, color = cod.variable,
+                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4.trim)))+
         geom_line(size = 1) +
         geom_point(size = 2) +
         labs(y = "",
@@ -64,7 +55,7 @@ estad_plot_server <- function(id) {
              color = "")+
         theme_minimal()+
         theme(text = element_text(size = 9),
-              axis.text.x = element_text(size=10),
+              axis.text.x = element_text(size=6),
               axis.text.y = element_text(size=10),
               legend.position = "bottom",
               plot.title= element_text(size=12, face="bold"))+
@@ -129,7 +120,7 @@ estad_plot_server <- function(id) {
      })
 }
 
-estad_plot_ui <- function(id, title,v_variables) {
+poblacion_eph_plot_ui <- function(id, title,v_poblacion_eph) {
   ns <- NS(id)
   
   tabPanel(title,
@@ -139,8 +130,8 @@ estad_plot_ui <- function(id, title,v_variables) {
            sidebarLayout(
              sidebarPanel(
                selectInput(ns('var_serie'),label = 'Seleccionar una Serie',
-                           choices =  unique(mercado_de_trabajo_arg$cod.variable),
-                           selected = unique(mercado_de_trabajo_arg$cod.variable)[1],
+                           choices =  unique(base$cod.variable),
+                           selected = unique(base$cod.variable)[1],
                            width = "300px",
                            multiple = T
                ),
@@ -156,7 +147,7 @@ estad_plot_ui <- function(id, title,v_variables) {
                tabsetPanel(
                  
                  tabPanel("Gráfico",
-                          value = "g_estad",
+                          value = "g_poblacion_eph",
                           
                           box(width = NULL, textOutput(ns('titulo1'))), 
                           br(),
@@ -170,7 +161,7 @@ estad_plot_ui <- function(id, title,v_variables) {
                  ),
                  
                  tabPanel("Tabla",
-                          value = "t_estad",
+                          value = "t_poblacion_eph",
                           
                           box(width = NULL, textOutput(ns('titulo2'))), 
                           br(),
