@@ -2,27 +2,28 @@ library(ggplot2)
 library(tidyverse)
 library(openxlsx)
 
-
-poblacion_eph <- readRDS("www/data/Poblacion_eph.RDS") 
+categoria_ocup_eph <- readRDS("www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS") %>% 
+  mutate(ANO4.trim=ANO4,              ### Mover esto a script que crea la base desde raw data
+         ANO4=substr(ANO4, 1, 4))
 
 diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
 
-v_poblacion_eph <- diccionario_variables %>% filter(base=="Poblacion_eph") %>%  select(nombre.variable) 
-v_poblacion_eph <- as.vector(v_poblacion_eph[1])
+v_categoria_ocup_eph <- diccionario_variables %>% filter(base=="eph_mercado_de_trabajo_categoria_ocupacional") %>%  select(nombre.variable) 
+v_categoria_ocup_eph <- as.vector(v_categoria_ocup_eph[1])
 
 # Cambio cod.variable por nombre de la variable
-etiquetas <- diccionario_variables %>% filter(base=="Poblacion_eph") %>% select(nombre.variable, cod.variable)
+etiquetas <- diccionario_variables %>% filter(base=="eph_mercado_de_trabajo_categoria_ocupacional") %>% select(nombre.variable, cod.variable)
 
-poblacion_eph <- left_join(poblacion_eph, etiquetas, by=c("cod.variable")) %>% 
+categoria_ocup_eph <- left_join(categoria_ocup_eph, etiquetas, by=c("cod.variable")) %>% 
   mutate(cod.variable=nombre.variable) %>% 
   select(-nombre.variable)
 
-poblacion_eph_plot_server <- function(id) {
+categoria_ocup_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
 
     armar_tabla <- function(variables, periodo_i, periodo_f){
-      poblacion_eph  %>%
+      categoria_ocup_eph  %>%
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         rename("Serie" = "cod.variable",
@@ -42,7 +43,7 @@ poblacion_eph_plot_server <- function(id) {
     
     plot <- function(variables, periodo_i, periodo_f){
       
-      p <- poblacion_eph %>% 
+      p <- categoria_ocup_eph %>% 
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
@@ -120,7 +121,7 @@ poblacion_eph_plot_server <- function(id) {
      })
 }
 
-poblacion_eph_plot_ui <- function(id, title,v_poblacion_eph) {
+categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
   ns <- NS(id)
   
   tabPanel(title,
@@ -130,8 +131,8 @@ poblacion_eph_plot_ui <- function(id, title,v_poblacion_eph) {
            sidebarLayout(
              sidebarPanel(
                selectInput(ns('var_serie'),label = 'Seleccionar una Serie',
-                           choices =  unique(poblacion_eph$cod.variable),
-                           selected = unique(poblacion_eph$cod.variable)[1],
+                           choices =  unique(categoria_ocup_eph$cod.variable),
+                           selected = unique(categoria_ocup_eph$cod.variable)[1],
                            width = "300px",
                            multiple = T
                ),
@@ -147,7 +148,7 @@ poblacion_eph_plot_ui <- function(id, title,v_poblacion_eph) {
                tabsetPanel(
                  
                  tabPanel("Gráfico",
-                          value = "g_poblacion_eph",
+                          value = "g_categoria_ocup_eph",
                           
                           box(width = NULL, textOutput(ns('titulo1'))), 
                           br(),
@@ -161,7 +162,7 @@ poblacion_eph_plot_ui <- function(id, title,v_poblacion_eph) {
                  ),
                  
                  tabPanel("Tabla",
-                          value = "t_poblacion_eph",
+                          value = "t_categoria_ocup_eph",
                           
                           box(width = NULL, textOutput(ns('titulo2'))), 
                           br(),

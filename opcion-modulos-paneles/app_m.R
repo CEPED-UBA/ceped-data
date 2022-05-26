@@ -8,7 +8,9 @@ library(gridExtra)
 library(shinyjs)
 library(shinydashboard)
 library(openxlsx)
+library(tidyverse)
 
+options(scipen=999)
 
 btn_style <- "float:right;border-radius: 15px;"
 
@@ -115,6 +117,7 @@ ui <- fluidPage(
              navbarMenu(title = 'Estadísticas',
                         
                         poblacion_eph_plot_ui(id ='poblacion_eph', title ='Población EPH', v_poblacion_eph) ,
+                        categoria_ocup_eph_plot_ui(id ='categoria_ocup_eph', title ='Categorías ocupacionales EPH', v_categoria_ocup_eph),
                         trabajo_eph_plot_ui(id ='trabajo_eph', title ='Mercado de Trabajo EPH', v_trabajo_eph)
                          
 
@@ -161,6 +164,7 @@ server <- function (input, output,session) {
   # 
   # # Output modules ----------------------------------------------------------
    #sample_plot_server('ejemplo')
+  categoria_ocup_eph_plot_server('categoria_ocup_eph')
   trabajo_eph_plot_server('trabajo_eph')
   poblacion_eph_plot_server('poblacion_eph')
   #series_plot_server('salarios')

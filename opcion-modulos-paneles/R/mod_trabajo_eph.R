@@ -2,7 +2,7 @@ library(ggplot2)
 library(tidyverse)
 library(openxlsx)
 
-base <- readRDS("www/data/Mercado_de_Trabajo_Arg.RDS") 
+trabajo_eph <- readRDS("www/data/Mercado_de_Trabajo_Arg.RDS") 
 
 diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
 
@@ -12,7 +12,7 @@ v_trabajo_eph <- as.vector(v_trabajo_eph[1])
 # Cambio cod.variable por nombre de la variable
 etiquetas <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>% select(nombre.variable, cod.variable)
 
-base <- left_join(base, etiquetas, by=c("cod.variable")) %>% 
+trabajo_eph <- left_join(trabajo_eph, etiquetas, by=c("cod.variable")) %>% 
   mutate(cod.variable=nombre.variable) %>% 
   select(-nombre.variable)
 
@@ -21,7 +21,7 @@ trabajo_eph_plot_server <- function(id) {
     
 
     armar_tabla <- function(variables, periodo_i, periodo_f){
-      base  %>%
+      trabajo_eph  %>%
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         rename("Serie" = "cod.variable",
@@ -41,7 +41,7 @@ trabajo_eph_plot_server <- function(id) {
     
     plot <- function(variables, periodo_i, periodo_f){
       
-      p <- base %>% 
+      p <- trabajo_eph %>% 
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
@@ -129,8 +129,8 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
            sidebarLayout(
              sidebarPanel(
                selectInput(ns('var_serie'),label = 'Seleccionar una Serie',
-                           choices =  unique(base$cod.variable),
-                           selected = unique(base$cod.variable)[1],
+                           choices =  unique(trabajo_eph$cod.variable),
+                           selected = unique(trabajo_eph$cod.variable)[1],
                            width = "300px",
                            multiple = T
                ),
