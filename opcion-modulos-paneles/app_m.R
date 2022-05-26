@@ -48,9 +48,21 @@ ui <- fluidPage(
                                                          p('Estadísticas derivadas de bases de datos e información pública procesadas por el CEPED'),
                                                          
                                                          
-                                                         tags$a("ver estadísticas",
+                                                         tags$a("EPH | Mercado de Trabajo",
                                                                 style=btn_style,
                                                                 onclick="fakeClick('trabajo_eph')",
+                                                                class="btn btn-primary btn-s"
+                                                         ),
+                                                         
+                                                         tags$a("EPH | Población",
+                                                                style=btn_style,
+                                                                onclick="fakeClick('poblacion_eph')",
+                                                                class="btn btn-primary btn-s"
+                                                         ), 
+                                                         
+                                                         tags$a("EPH | Categorías ocupacionales",
+                                                                style=btn_style,
+                                                                onclick="fakeClick('categoria_ocup_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          )
                                                 )
