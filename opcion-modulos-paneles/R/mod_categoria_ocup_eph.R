@@ -37,7 +37,7 @@ categoria_ocup_eph_plot_server <- function(id) {
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0(lista_variables ,". Información trimestral. Años ", periodo_i, " - ", periodo_f)
+      titulo <- paste0("<font size='+2'>",lista_variables ,". Información trimestral. Años ", periodo_i, " - ", periodo_f,"</font>")
 
        }
     
@@ -131,11 +131,17 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
            
            sidebarLayout(
              sidebarPanel(
-               selectInput(ns('var_serie'),label = 'Seleccionar una Serie',
+               selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
                            choices =  unique(categoria_ocup_eph$cod.variable),
                            selected = unique(categoria_ocup_eph$cod.variable)[1],
                            width = "300px",
                            multiple = T
+               ),
+               selectInput(ns('var_tipo_serie'),label = 'Seleccionar un tipo de serie:',
+                           choices =  c("Absoluto","Tasa"),
+                           selected = "Absoluto",
+                           width = "300px",
+                           multiple = F
                ),
                sliderInput(ns('id_periodo'), "Período:",
                            value = c(2003,2021),
@@ -151,7 +157,7 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                  tabPanel("Gráfico",
                           value = "g_categoria_ocup_eph",
                           
-                          box(width = NULL, textOutput(ns('titulo1'))), 
+                          box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
                           br(),
                           plotlyOutput(ns('plot')),
                           br(),
@@ -165,7 +171,7 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                  tabPanel("Tabla",
                           value = "t_categoria_ocup_eph",
                           
-                          box(width = NULL, textOutput(ns('titulo2'))), 
+                          box(width = NULL, br(),htmlOutput(ns('titulo2'))), 
                           br(),
                           fluidRow(
                             column(12,

@@ -35,7 +35,7 @@ salarios_plot_server <- function(id) {
     generar_titulo <- function(variables, periodo_i, periodo_f){
       nombre_variable <-  paste0(variables, collapse = ", ")
       nombre_variable <- sub(",([^,]*)$", " y\\1", nombre_variable)   
-      titulo <- paste0(nombre_variable ," desde ", periodo_i, " hasta ", periodo_f)
+      titulo <- paste0("<font size='+2'>",nombre_variable ," desde ", periodo_i, " hasta ", periodo_f,"</font>")
     }
    
     
@@ -162,7 +162,8 @@ salarios_plot_ui <- function(id, title,v_variables) {
                    
                    tabPanel(title = "Gráfico",
                             value = "Gráfico",
-                            box(width = NULL, textOutput(ns('titulo1'))),
+                            br(),
+                            box(width = NULL, htmlOutput(ns('titulo1'))),
                             br(),
                             plotlyOutput(ns('plot')),
                             br(),
@@ -170,7 +171,6 @@ salarios_plot_ui <- function(id, title,v_variables) {
                             br(),
                             box(width = NULL,
                                 downloadButton(ns('downloadPlot'),'Descargar gráfico'))
-                            
                    ),
                    
                    tabPanel(title = "Tabla",
@@ -178,7 +178,8 @@ salarios_plot_ui <- function(id, title,v_variables) {
                             fluidRow(
                               column(12,
                                      column(9, 
-                                            box(width = NULL, textOutput(ns('titulo2'))),
+                                            br(),
+                                            box(width = NULL, htmlOutput(ns('titulo2'))),
                                             br(),
                                             box(tableOutput(ns('tabla')))),
                                      column(3,          

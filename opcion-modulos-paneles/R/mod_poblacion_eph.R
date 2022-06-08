@@ -36,7 +36,7 @@ poblacion_eph_plot_server <- function(id) {
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0(lista_variables ,". Información trimestral. Años ", periodo_i, " - ", periodo_f)
+      titulo <- paste0("<font size='+2'>",lista_variables ,". Información trimestral. Años ", periodo_i, " - ", periodo_f,"</font>")
 
        }
     
@@ -150,7 +150,7 @@ poblacion_eph_plot_ui <- function(id, title,v_poblacion_eph) {
                  tabPanel("Gráfico",
                           value = "g_poblacion_eph",
                           
-                          box(width = NULL, textOutput(ns('titulo1'))), 
+                          box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
                           br(),
                           plotlyOutput(ns('plot')),
                           br(),
@@ -164,7 +164,7 @@ poblacion_eph_plot_ui <- function(id, title,v_poblacion_eph) {
                  tabPanel("Tabla",
                           value = "t_poblacion_eph",
                           
-                          box(width = NULL, textOutput(ns('titulo2'))), 
+                          box(width = NULL,br(), htmlOutput(ns('titulo2'))), 
                           br(),
                           fluidRow(
                             column(12,

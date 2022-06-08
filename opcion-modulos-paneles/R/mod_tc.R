@@ -54,7 +54,7 @@ tc_plot_server <- function(id) {
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0(lista_variables , ". Años: ", periodo_i, " al ", periodo_f)
+      titulo <- paste0("<font size='+2'>",lista_variables , ". Años: ", periodo_i, " al ", periodo_f,"</font>")
     }
     
     plot <- function(variables, periodo_i, periodo_f){
@@ -162,7 +162,7 @@ tc_plot_ui <- function(id, title) {
                  tabPanel("Gráfico",
                           value = "g_series",
                           
-               box(width = NULL, textOutput(ns('titulo1'))),
+               box(width = NULL,br(), htmlOutput(ns('titulo1'))),
                br(),
                plotlyOutput(ns('plot')),
                br(),
@@ -179,7 +179,7 @@ tc_plot_ui <- function(id, title) {
                fluidRow(
                  column(12,
                         column(8, 
-                               box(width = NULL, textOutput(ns('titulo2'))),
+                               box(width = NULL, br(),htmlOutput(ns('titulo2'))),
                                br(),
                                box(tableOutput(ns('tabla')))),
                         column(4,          

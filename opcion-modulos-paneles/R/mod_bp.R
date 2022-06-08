@@ -43,7 +43,7 @@ bp_plot_server <- function(id) {
     generar_titulo <- function(variables, valu, periodo_i, periodo_f){
       nombre_variable <-  paste0(variables, collapse = ", ")
       nombre_variable <- sub(",([^,]*)$", " y\\1", nombre_variable)   
-      titulo <- paste0(nombre_variable , " en ",valu," desde ", periodo_i, " hasta ", periodo_f)
+      titulo <- paste0("<font size='+2'>",nombre_variable , " en ",valu," desde ", periodo_i, " hasta ", periodo_f,"</font>")
     }
    
     
@@ -160,7 +160,7 @@ bp_plot_ui <- function(id, title,v_variables) {
                    tabPanel("Gráfico",
                             value = "g_bp",
                             
-                            box(width = NULL, textOutput(ns('titulo1'))),
+                            box(width = NULL,br(), htmlOutput(ns('titulo1'))),
                             br(),
                             plotlyOutput(ns('plot')),
                             br(),
@@ -177,7 +177,7 @@ bp_plot_ui <- function(id, title,v_variables) {
                             fluidRow(
                               column(12,
                                      column(9, 
-                                            box(width = NULL, textOutput(ns('titulo2'))),
+                                            box(width = NULL,br(), htmlOutput(ns('titulo2'))),
                                             br(),
                                             box(tableOutput(ns('tabla')))),
                                      column(3,          

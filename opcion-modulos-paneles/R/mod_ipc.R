@@ -44,7 +44,7 @@ ipc_plot_server <- function(id) {
     
     generar_titulo <- function(variables, periodo_i, periodo_f){
       nombre_variable <- unique(diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==variables])
-      titulo <- paste0(variables ," desde ", periodo_i, " hasta ", periodo_f)
+      titulo <- paste0("<font size='+2'>",variables ," desde ", periodo_i, " hasta ", periodo_f,"</font>")
     }
     
     plot <- function(variables, periodo_i, periodo_f){
@@ -149,7 +149,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                  tabPanel("Gráfico",
                           value = "g_ipc",
                           
-               box(width = NULL, textOutput(ns('titulo1'))), 
+               box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
                br(),
                plotlyOutput(ns('plot')),
                br(),
@@ -163,7 +163,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                tabPanel("Tabla",
                         value = "t_ipc",
                
-               box(width = NULL, textOutput(ns('titulo2'))), 
+               box(width = NULL,br(), htmlOutput(ns('titulo2'))), 
                br(),
                fluidRow(
                  column(12,
