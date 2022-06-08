@@ -47,6 +47,8 @@ ui <- fluidPage(
                                                          #img(height = 250, width = 250,src = "img/data_preview.png"),
                                                          p('Estadísticas derivadas de bases de datos e información pública procesadas por el CEPED'),
                                                          
+                                                         br(),
+                                                         
                                                          
                                                          tags$a("EPH | Mercado de Trabajo",
                                                                 style=btn_style,
@@ -54,11 +56,19 @@ ui <- fluidPage(
                                                                 class="btn btn-primary btn-s"
                                                          ),
                                                          
+                                                         br(),
+                                                         p(''),
+                                                         br(),
+                                                         
                                                          tags$a("EPH | Población",
                                                                 style=btn_style,
                                                                 onclick="fakeClick('poblacion_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          ), 
+                                                         
+                                                         br(),
+                                                         p(''),
+                                                         br(),
                                                          
                                                          tags$a("EPH | Categorías ocupacionales",
                                                                 style=btn_style,
@@ -75,9 +85,34 @@ ui <- fluidPage(
                                                 tags$div(class="panel-body",
                                                          #img(height = 250, width = 250,src = "img/methods_preview.png"),
                                                          p('Datos que surgen de líneas de investigación desarrolladas por integrantes del CEPED'),
-                                                         tags$a("ver series", style=btn_style,
+                                                         tags$a("Internacional | Salarios", style=btn_style,
                                                                 onclick="fakeClick('salarios')",
+                                                                class="btn btn-warning btn-s"), 
+                                                         
+                                                         br(),
+                                                         p(''),
+                                                         br(),
+                                                         
+                                                         tags$a("Argentina | Tipo de cambio", style=btn_style,
+                                                                onclick="fakeClick('tc')",
+                                                                class="btn btn-warning btn-s"), 
+                                                         
+                                                         br(),
+                                                         p(''),
+                                                         br(),
+                                                         
+                                                         tags$a("Argentina | Balance de Pagos", style=btn_style,
+                                                                onclick="fakeClick('bp')",
+                                                                class="btn btn-warning btn-s"), 
+                                                         
+                                                         br(),
+                                                         p(''),
+                                                         br(),
+                                                         
+                                                         tags$a("Argentina | IPC", style=btn_style,
+                                                                onclick="fakeClick('ipc')",
                                                                 class="btn btn-warning btn-s")
+                                                         
                                                 )
                                       )
                                )
@@ -93,7 +128,7 @@ ui <- fluidPage(
                                                   
                                                   #img(height = 250, width = 250,src = "img/data_preview.png"),
                                                   p('Presentación interactiva de datos que fueron publicados en artículos de integrantes del CEPED'),
-                                                  tags$a("ver presentación",
+                                                  tags$a("Ver publicaciones!",
                                                          style=btn_style,
                                                          onclick="fakeClick('pres')",
                                                          class="btn btn-danger btn-s"
@@ -110,7 +145,7 @@ ui <- fluidPage(
                                                 #img(height = 250, width = 250,src = "img/data_preview.png"),
                                                 p('¿Quiénes somos?'),
                                                 
-                                                tags$a("conocer",
+                                                tags$a("Conocer",
                                                        style=btn_style,
                                                        onclick="fakeClick('CEPED')",
                                                        class="btn btn-default btn-s"
@@ -141,7 +176,7 @@ ui <- fluidPage(
                         
              #series_plot_ui(id ='salarios', title ='Serie de salarios', v_salarios),
              salarios_plot_ui(id ='salarios', title ='Salarios Internacionales'),
-             series_plot_ui(id ='tc', title ='Tipo de cambio',v_tc),
+             tc_plot_ui(id ='tc', title ='Tipo de cambio'),
              #series_plot_ui(id ='bp', title ='Balanza de pagos',v_bp),
              bp_plot_ui(id ='bp', title ='Balance de Pagos Argentina'),
              ipc_plot_ui(id ='ipc', title ='IPC Argentina', v_ipc)
@@ -180,7 +215,7 @@ server <- function (input, output,session) {
   trabajo_eph_plot_server('trabajo_eph')
   poblacion_eph_plot_server('poblacion_eph')
   #series_plot_server('salarios')
-  series_plot_server('tc')
+  tc_plot_server('tc')
  # series_plot_server('bp')
   bp_plot_server('bp')
   salarios_plot_server('salarios')
