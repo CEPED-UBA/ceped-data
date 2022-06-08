@@ -22,6 +22,7 @@ papers_plot_ui <- function(id) {
   
   tabPanel('Publicaciones',
            value = 'pres',
+           titlePanel("Publicaciones"),
            sidebarLayout(
              sidebarPanel(
                selectInput(ns('publicacion_id'),label = 'Elegir una publicación:',

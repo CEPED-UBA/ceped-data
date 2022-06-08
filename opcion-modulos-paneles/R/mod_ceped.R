@@ -25,6 +25,7 @@ ceped_plot_ui <- function(id) {
   
   tabPanel('CEPED',
                       value = 'CEPED',
+           titlePanel("CEPED"),
                       sidebarLayout(
                         sidebarPanel(
                           selectInput(ns('input1'),label = 'select cut',

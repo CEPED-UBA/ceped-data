@@ -73,7 +73,8 @@ bp_plot_server <- function(id) {
     }
     
     plot_interact <- function(p){
-      ggplotly(p, tooltip = c("text"))
+      ggplotly(p, tooltip = c("text"))%>% 
+        layout(font = list(family ="Times New Roman"))
     }
     
     # generar_metadata <- function(variables){
@@ -130,6 +131,7 @@ bp_plot_ui <- function(id, title,v_variables) {
 
     tabPanel(title,
              value = id,
+             titlePanel(title),
              sidebarLayout(
                sidebarPanel(
                  selectInput(ns('variables_serie'),label = 'Seleccionar Series',

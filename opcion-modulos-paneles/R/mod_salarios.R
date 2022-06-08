@@ -66,7 +66,12 @@ salarios_plot_server <- function(id) {
     }
     
     plot_interact <- function(p){
-      ggplotly(p, tooltip = c("text"))
+      ggplotly(p, tooltip = c("text"))%>% 
+        layout(font = list(family ="Times New Roman"))
+    }
+    
+    generar_metadata <- function(variables){
+      diccionario_variables$metadata[diccionario_variables$nombre.variable == variables] 
     }
     
     
@@ -77,32 +82,34 @@ salarios_plot_server <- function(id) {
       generar_titulo(input$variables_serie, input$id_periodo[1],input$id_periodo[2])
     })
     output$plot <- renderPlotly({
-      plot_interact(plot(input$variables_serie,input$pais_id ,input$id_periodo[1],input$id_periodo[2]))
+      plot_interact(plot(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie],input$pais_id ,input$id_periodo[1],input$id_periodo[2]))
     })
     
     output$tabla <- renderTable({
-      armar_tabla(input$variables_serie, input$id_periodo[1],input$id_periodo[2])
+      armar_tabla(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie], input$id_periodo[1],input$id_periodo[2])
     })
-    # output$metadata1 <- renderText({
-    #   generar_metadata(input$var_serie)
-    # })
-    # output$metadata2 <- renderText({
-    #   generar_metadata(input$var_serie)
-    # })
+    
+    output$metadata1 <- renderText({
+      generar_metadata(input$variables_serie)
+    })
+    output$metadata2 <- renderText({
+      generar_metadata(input$variables_serie)
+    })
+    
     output$downloadTable <- downloadHandler(
       
-      filename = function(){paste(input$variables_serie[1],'.xlsx',sep='')},
+      filename = function(){paste(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie][1],'.xlsx',sep='')},
       content = function(file){
         
-        write.xlsx(armar_tabla(input$variables_serie,input$id_periodo[1],input$id_periodo[2]), 
+        write.xlsx(armar_tabla(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie],input$id_periodo[1],input$id_periodo[2]), 
                    file)    }
     )
     output$downloadPlot <- downloadHandler(
-      filename = function(){paste(input$variables_serie[1],'.png',sep='')},
+      filename = function(){paste(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie][1],'.png',sep='')},
       content = function(file){
         
         
-        ggsave(file,plot=plot(input$variables_serie,input$pais_id,input$id_periodo[1],input$id_periodo[2]), 
+        ggsave(file,plot=plot(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie],input$pais_id,input$id_periodo[1],input$id_periodo[2]), 
                width=8, height=4)
       }
     )
@@ -115,11 +122,14 @@ salarios_plot_server <- function(id) {
 
 ####genero ui########
 
+diccionario_variables$nombre.variable[diccionario_variables$cod.variable %in%  unique(salarios$cod.variable)]
+
 salarios_plot_ui <- function(id, title,v_variables) {
   ns <- NS(id)
 
     tabPanel(title = title,
              value = id,
+             titlePanel(title),
              sidebarLayout(
                sidebarPanel(
   #               conditionalPanel(
@@ -127,8 +137,8 @@ salarios_plot_ui <- function(id, title,v_variables) {
   #                 ns = NS(id),
                  
                  selectInput(ns('variables_serie'),label = 'Seleccionar Serie',
-                             choices =  unique(salarios$cod.variable),
-                             selected = unique(salarios$cod.variable)[1],
+                             choices =  unique(diccionario_variables$nombre.variable[diccionario_variables$cod.variable %in%  unique(salarios$cod.variable)]),
+                             selected = unique(diccionario_variables$nombre.variable[diccionario_variables$cod.variable %in%  unique(salarios$cod.variable)])[1],
                              width = "300px",
                              multiple = F
                              ),
