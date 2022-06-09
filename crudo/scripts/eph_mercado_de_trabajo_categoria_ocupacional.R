@@ -49,7 +49,7 @@ base3 <- base3 %>%
   mutate(nombre.pais="Argentina", 
          iso3c="ARG")
 
-saveRDS(base3,file = "data/eph_mercado_de_trabajo_categoria_ocupacional.RDS")
+saveRDS(base3,file = "~/GitHub/ceped-data/opcion-modulos-paneles/www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS")
 
 
 
@@ -104,8 +104,18 @@ base3 <- base3 %>%
 
 #### JOIN DE DATAFRAMES ####
 
-eph_mercado_de_trabajo_categoria_ocupacional <- readRDS(file = "data/eph_mercado_de_trabajo_categoria_ocupacional.RDS")
+eph_mercado_de_trabajo_categoria_ocupacional <- readRDS(file = '~/GitHub/ceped-data/opcion-modulos-paneles/www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS')
 
 eph_mercado_de_trabajo_categoria_ocupacional <- rbind(eph_mercado_de_trabajo_categoria_ocupacional, base3)
 
-saveRDS(eph_mercado_de_trabajo_categoria_ocupacional, file = "data/eph_mercado_de_trabajo_categoria_ocupacional.RDS")
+# Agrego identificador de tipo de variable (Absoluto/Tasa) para filtrar en la ui categoria_ocup_eph
+
+absolutas <- c("patron" ,  "cuenta_propia" ,  "asalariado", "TFSS", "desconocido", "total")
+tasas <- c("porc_patron", "porc_cuenta_propia", "porc_asalariado", "porc_TFSS",  "porc_esconocido", "porc_total" )
+
+mercado_de_trabajo_arg <- mercado_de_trabajo_arg %>% 
+  mutate(tipo=case_when(
+    cod.variable %in% absolutas ~ 'Absoluto', 
+    cod.variable %in% tasas ~ 'Tasa'))
+
+saveRDS(eph_mercado_de_trabajo_categoria_ocupacional, file = "~/GitHub/ceped-data/opcion-modulos-paneles/www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS")

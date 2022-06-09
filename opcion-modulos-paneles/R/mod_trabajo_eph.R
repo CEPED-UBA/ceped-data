@@ -20,8 +20,9 @@ trabajo_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
 
-    armar_tabla <- function(variables, periodo_i, periodo_f){
+    armar_tabla <- function(variables, var_tipo_serie, periodo_i, periodo_f){
       trabajo_eph  %>%
+        filter(tipo == var_tipo_serie) %>% 
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         rename("Serie" = "cod.variable",
@@ -39,9 +40,10 @@ trabajo_eph_plot_server <- function(id) {
 
        }
     
-    plot <- function(variables, periodo_i, periodo_f){
+    plot <- function(variables, var_tipo_serie, periodo_i, periodo_f){
       
-      p <- trabajo_eph %>% 
+      p <- trabajo_eph %>%
+        filter(tipo == var_tipo_serie) %>% 
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
@@ -79,6 +81,14 @@ trabajo_eph_plot_server <- function(id) {
       
     }
     
+    observeEvent(input$var_tipo_serie, {
+      
+      updateSelectInput(session, 'var_serie',
+                        choices =  unique(trabajo_eph$cod.variable[trabajo_eph$tipo==input$var_tipo_serie]),
+                        selected = unique(trabajo_eph$cod.variable[trabajo_eph$tipo==input$var_tipo_serie])[1])
+      
+    })
+    
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
     })
@@ -86,11 +96,11 @@ trabajo_eph_plot_server <- function(id) {
        generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
      })
     output$plot <- renderPlotly({
-      plot_interact(plot(input$var_serie,input$id_periodo[1],input$id_periodo[2]))
+      plot_interact(plot(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2]))
     })
     
     output$tabla <- renderTable({
-      armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+      armar_tabla(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2])
     })
     output$metadata1 <- renderText({
       generar_metadata(input$var_serie)
@@ -129,17 +139,17 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
            
            sidebarLayout(
              sidebarPanel(
-               selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
-                           choices =  unique(trabajo_eph$cod.variable),
-                           selected = unique(trabajo_eph$cod.variable)[1],
-                           width = "300px",
-                           multiple = T
-               ),
                selectInput(ns('var_tipo_serie'),label = 'Seleccionar un tipo de serie:',
                            choices =  c("Absoluto","Tasa"),
                            selected = "Absoluto",
                            width = "300px",
                            multiple = F
+               ),
+               selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
+                           choices =  unique(trabajo_eph$cod.variable),
+                           selected = unique(trabajo_eph$cod.variable)[1],
+                           width = "300px",
+                           multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
                            value = c(2003,2021),

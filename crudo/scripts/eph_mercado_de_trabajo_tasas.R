@@ -53,9 +53,8 @@ base3 <- base3 %>%
   mutate(nombre.pais="Argentina", 
          iso3c="ARG")
 
-saveRDS(base3,file = "data/Mercado_de_Trabajo_Arg.RDS")
-
-
+#saveRDS(base3,file = "data/Mercado_de_Trabajo_Arg.RDS")
+saveRDS(base3,file = "~/GitHub/ceped-data/opcion-modulos-paneles/www/data/Mercado_de_Trabajo_Arg.RDS")
 
 
 #### TASAS ####
@@ -106,8 +105,19 @@ base3 <- base3 %>%
          iso3c="ARG")
 
 
-mercado_de_trabajo_arg <- readRDS(file = "data/Mercado_de_Trabajo_Arg.RDS")
+mercado_de_trabajo_arg <- readRDS(file = "~/GitHub/ceped-data/opcion-modulos-paneles/www/data/Mercado_de_Trabajo_Arg.RDS")
 
 mercado_de_trabajo_arg <- rbind(mercado_de_trabajo_arg, base3)
 
-saveRDS(mercado_de_trabajo_arg, file = "data/Mercado_de_Trabajo_Arg.RDS")
+
+# Agrego identificador de tipo de variable (Absoluto/Tasa) para filtrar en la ui trabajo_eph
+
+absolutas <- c('desocupados_abs', 'ocupados_abs', 'pea_abs', 'subocupados_abs')
+tasas <- c('t_actividad', 't_desocupacion', 't_empleo', 't_subocupacion')
+
+mercado_de_trabajo_arg <- mercado_de_trabajo_arg %>% 
+  mutate(tipo=case_when(
+    cod.variable %in% absolutas ~ 'Absoluto', 
+    cod.variable %in% tasas ~ 'Tasa'))
+
+saveRDS(mercado_de_trabajo_arg, file = "~/GitHub/ceped-data/opcion-modulos-paneles/www/data/Mercado_de_Trabajo_Arg.RDS")

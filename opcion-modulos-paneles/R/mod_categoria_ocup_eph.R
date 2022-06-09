@@ -81,6 +81,14 @@ categoria_ocup_eph_plot_server <- function(id) {
       
     }
     
+    observeEvent(input$var_tipo_serie, {
+      
+      updateSelectInput(session, 'var_serie',
+                        choices =  unique(categoria_ocup_eph$cod.variable[categoria_ocup_eph$tipo==input$var_tipo_serie]),
+                        selected = unique(categoria_ocup_eph$cod.variable[categoria_ocup_eph$tipo==input$var_tipo_serie])[1])
+      
+    })
+    
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
     })
@@ -131,17 +139,17 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
            
            sidebarLayout(
              sidebarPanel(
-               selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
-                           choices =  unique(categoria_ocup_eph$cod.variable),
-                           selected = unique(categoria_ocup_eph$cod.variable)[1],
-                           width = "300px",
-                           multiple = T
-               ),
                selectInput(ns('var_tipo_serie'),label = 'Seleccionar un tipo de serie:',
                            choices =  c("Absoluto","Tasa"),
                            selected = "Absoluto",
                            width = "300px",
                            multiple = F
+               ),
+               selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
+                           choices =  unique(categoria_ocup_eph$cod.variable),
+                           selected = unique(categoria_ocup_eph$cod.variable)[1],
+                           width = "300px",
+                           multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
                            value = c(2003,2021),

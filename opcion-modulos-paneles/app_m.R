@@ -45,12 +45,12 @@ ui <- fluidPage(
                                                 tags$div(class="panel-body",
                                                          
                                                          #img(height = 250, width = 250,src = "img/data_preview.png"),
-                                                         p('Estadísticas derivadas de bases de datos e información pública procesadas por el CEPED'),
+                                                         p('Estadísticas procesadas por el CEPED en base a microdatos de la Encuesta Permanente de Hogares (EPH-INDEC)'),
                                                          
                                                          br(),
                                                          
                                                          
-                                                         tags$a("EPH | Mercado de Trabajo",
+                                                         tags$a("Mercado de Trabajo",
                                                                 style=btn_style,
                                                                 onclick="fakeClick('trabajo_eph')",
                                                                 class="btn btn-primary btn-s"
@@ -60,7 +60,7 @@ ui <- fluidPage(
                                                          p(''),
                                                          br(),
                                                          
-                                                         tags$a("EPH | Población",
+                                                         tags$a("Población",
                                                                 style=btn_style,
                                                                 onclick="fakeClick('poblacion_eph')",
                                                                 class="btn btn-primary btn-s"
@@ -70,7 +70,7 @@ ui <- fluidPage(
                                                          p(''),
                                                          br(),
                                                          
-                                                         tags$a("EPH | Categorías ocupacionales",
+                                                         tags$a("Categorías ocupacionales",
                                                                 style=btn_style,
                                                                 onclick="fakeClick('categoria_ocup_eph')",
                                                                 class="btn btn-primary btn-s"
