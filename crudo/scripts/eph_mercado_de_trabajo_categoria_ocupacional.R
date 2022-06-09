@@ -1,7 +1,7 @@
 options(scipen = 999)
 library(readxl)
 
-
+setwd("~/GitHub/ceped-data")
 
 #### VALORES ABSOLUTOS ####
 
@@ -47,7 +47,8 @@ base3 <- gather(base2, key="cod.variable", value="valor", 2:7 )
 
 base3 <- base3 %>% 
   mutate(nombre.pais="Argentina", 
-         iso3c="ARG")
+         iso3c="ARG", 
+         tipo="Absoluto")
 
 saveRDS(base3,file = "~/GitHub/ceped-data/opcion-modulos-paneles/www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS")
 
@@ -98,7 +99,8 @@ base3 <- gather(base2, key="cod.variable", value="valor", 2:7 )
 
 base3 <- base3 %>% 
   mutate(nombre.pais="Argentina", 
-         iso3c="ARG")
+         iso3c="ARG", 
+         tipo="Tasa")
 
 
 

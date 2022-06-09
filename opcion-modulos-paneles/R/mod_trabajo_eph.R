@@ -22,7 +22,6 @@ trabajo_eph_plot_server <- function(id) {
 
     armar_tabla <- function(variables, var_tipo_serie, periodo_i, periodo_f){
       trabajo_eph  %>%
-        filter(tipo == var_tipo_serie) %>% 
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         rename("Serie" = "cod.variable",
@@ -43,7 +42,6 @@ trabajo_eph_plot_server <- function(id) {
     plot <- function(variables, var_tipo_serie, periodo_i, periodo_f){
       
       p <- trabajo_eph %>%
-        filter(tipo == var_tipo_serie) %>% 
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
@@ -95,9 +93,14 @@ trabajo_eph_plot_server <- function(id) {
      output$titulo2 <- renderText({
        generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
      })
+     
+     observeEvent(input$var_serie, {
+     
     output$plot <- renderPlotly({
       plot_interact(plot(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2]))
     })
+    
+     })
     
     output$tabla <- renderTable({
       armar_tabla(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2])

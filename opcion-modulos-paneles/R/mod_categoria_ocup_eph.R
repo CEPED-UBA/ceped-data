@@ -95,7 +95,8 @@ categoria_ocup_eph_plot_server <- function(id) {
      output$titulo2 <- renderText({
        generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
      })
-    output$plot <- renderPlotly({
+    
+     output$plot <- renderPlotly({
       plot_interact(plot(input$var_serie,input$id_periodo[1],input$id_periodo[2]))
     })
     
