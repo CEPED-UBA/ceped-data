@@ -1,22 +1,22 @@
-library(ggplot2)
-library(tidyverse)
-library(openxlsx)
-
-categoria_ocup_eph <- readRDS("www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS") %>% 
-  mutate(ANO4.trim=ANO4,              ### Mover esto a script que crea la base desde raw data
-         ANO4=substr(ANO4, 1, 4))
-
-diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
-
-v_categoria_ocup_eph <- diccionario_variables %>% filter(base=="eph_mercado_de_trabajo_categoria_ocupacional") %>%  select(nombre.variable) 
-v_categoria_ocup_eph <- as.vector(v_categoria_ocup_eph[1])
-
-# Cambio cod.variable por nombre de la variable
-etiquetas <- diccionario_variables %>% filter(base=="eph_mercado_de_trabajo_categoria_ocupacional") %>% select(nombre.variable, cod.variable)
-
-categoria_ocup_eph <- left_join(categoria_ocup_eph, etiquetas, by=c("cod.variable")) %>% 
-  mutate(cod.variable=nombre.variable) %>% 
-  select(-nombre.variable)
+# library(ggplot2)
+# library(tidyverse)
+# library(openxlsx)
+# 
+# categoria_ocup_eph <- readRDS("www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS") %>% 
+#   mutate(ANO4.trim=ANO4,              ### Mover esto a script que crea la base desde raw data
+#          ANO4=substr(ANO4, 1, 4))
+# 
+# diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
+# 
+# v_categoria_ocup_eph <- diccionario_variables %>% filter(base=="eph_mercado_de_trabajo_categoria_ocupacional") %>%  select(nombre.variable) 
+# v_categoria_ocup_eph <- as.vector(v_categoria_ocup_eph[1])
+# 
+# # Cambio cod.variable por nombre de la variable
+# etiquetas <- diccionario_variables %>% filter(base=="eph_mercado_de_trabajo_categoria_ocupacional") %>% select(nombre.variable, cod.variable)
+# 
+# categoria_ocup_eph <- left_join(categoria_ocup_eph, etiquetas, by=c("cod.variable")) %>% 
+#   mutate(cod.variable=nombre.variable) %>% 
+#   select(-nombre.variable)
 
 categoria_ocup_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {

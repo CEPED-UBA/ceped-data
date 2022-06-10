@@ -1,28 +1,3 @@
-library(openxlsx)
-
-bop_arg_dolares <- readRDS("www/data/bop_arg_dolares.RDS")
-diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
-
-#Voy agregando a una lista los dataframes que vamos a subir
-
-
-v_bp <- c() #cuales?
-
-# v_salarios <- diccionario_variables %>% filter(base== "Serie_salarios") %>%  select(nombre.variable) %>% 
-#   filter(nombre.variable != "Indice de Precios al Consumidor (base 2005)")
-# 
-# 
-# 
-# v_monetario <- diccionario_variables %>% filter(base=="Tipo_Cambio_Arg") %>%  select(cod.variable) 
-# 
-# v_ipc <- grep("IPC",v_monetario$cod.variable, value = T)
-# v_tc <- v_monetario$cod.variable[!v_monetario$cod.variable %in% v_ipc]
-# 
-# v_ipc <- diccionario_variables %>% filter(cod.variable %in% v_ipc | nombre.variable == "Indice de Precios al Consumidor (base 2005)") %>%  select(nombre.variable)
-# 
-# v_tc <- diccionario_variables %>% filter(cod.variable %in% v_tc) %>%  select(nombre.variable)
-# 
-
 ####genero server######
 
 bp_plot_server <- function(id) {

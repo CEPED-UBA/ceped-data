@@ -1,21 +1,3 @@
-library(openxlsx)
-library(tidyverse)
-
-salarios_internac <- readRDS("www/data/salarios.RDS")
-diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
-
-#Voy agregando a una lista los dataframes que vamos a subir
-
-
-salarios <- salarios_internac %>% 
-  filter(cod.variable %in%  c("salario_relativo_usa_c_actual",
-                              "salario_relativo_usa_c_priv"))
-# v_salarios <- diccionario_variables %>% filter(base== "Serie_salarios") %>%  select(nombre.variable) %>% 
-#   filter(nombre.variable != "Indice de Precios al Consumidor (base 2005)")
-# 
-# 
-# 
-
 ####genero server######
 
 salarios_plot_server <- function(id) {

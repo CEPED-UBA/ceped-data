@@ -1,20 +1,20 @@
-library(ggplot2)
-library(tidyverse)
-library(openxlsx)
-
-trabajo_eph <- readRDS("www/data/Mercado_de_Trabajo_Arg.RDS") 
-
-diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
-
-v_trabajo_eph <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>%  select(nombre.variable) 
-v_trabajo_eph <- as.vector(v_trabajo_eph[1])
-
-# Cambio cod.variable por nombre de la variable
-etiquetas <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>% select(nombre.variable, cod.variable)
-
-trabajo_eph <- left_join(trabajo_eph, etiquetas, by=c("cod.variable")) %>% 
-  mutate(cod.variable=nombre.variable) %>% 
-  select(-nombre.variable)
+# library(ggplot2)
+# library(tidyverse)
+# library(openxlsx)
+# 
+# trabajo_eph <- readRDS("www/data/Mercado_de_Trabajo_Arg.RDS") 
+# 
+# diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
+# 
+# v_trabajo_eph <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>%  select(nombre.variable) 
+# v_trabajo_eph <- as.vector(v_trabajo_eph[1])
+# 
+# # Cambio cod.variable por nombre de la variable
+# etiquetas <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>% select(nombre.variable, cod.variable)
+# 
+# trabajo_eph <- left_join(trabajo_eph, etiquetas, by=c("cod.variable")) %>% 
+#   mutate(cod.variable=nombre.variable) %>% 
+#   select(-nombre.variable)
 
 trabajo_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {

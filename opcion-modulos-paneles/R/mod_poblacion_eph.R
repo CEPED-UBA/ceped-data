@@ -1,21 +1,20 @@
-library(ggplot2)
-library(tidyverse)
-library(openxlsx)
-
-
-poblacion_eph <- readRDS("www/data/Poblacion_eph.RDS") 
-
-diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
-
-v_poblacion_eph <- diccionario_variables %>% filter(base=="Poblacion_eph") %>%  select(nombre.variable) 
-v_poblacion_eph <- as.vector(v_poblacion_eph[1])
-
-# Cambio cod.variable por nombre de la variable
-etiquetas <- diccionario_variables %>% filter(base=="Poblacion_eph") %>% select(nombre.variable, cod.variable)
-
-poblacion_eph <- left_join(poblacion_eph, etiquetas, by=c("cod.variable")) %>% 
-  mutate(cod.variable=nombre.variable) %>% 
-  select(-nombre.variable)
+# library(ggplot2)
+# library(tidyverse)
+# library(openxlsx)
+# 
+# 
+# poblacion_eph <- readRDS("www/data/Poblacion_eph.RDS") 
+# 
+# diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
+# v_poblacion_eph <- diccionario_variables %>% filter(base=="Poblacion_eph") %>%  select(nombre.variable) 
+# v_poblacion_eph <- as.vector(v_poblacion_eph[1])
+# 
+# # Cambio cod.variable por nombre de la variable
+# etiquetas <- diccionario_variables %>% filter(base=="Poblacion_eph") %>% select(nombre.variable, cod.variable)
+# 
+# poblacion_eph <- left_join(poblacion_eph, etiquetas, by=c("cod.variable")) %>% 
+#   mutate(cod.variable=nombre.variable) %>% 
+#   select(-nombre.variable)
 
 poblacion_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
