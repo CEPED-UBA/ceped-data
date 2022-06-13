@@ -38,9 +38,12 @@ v_salarios <- diccionario_variables %>% filter(base== "Serie_salarios") %>%  sel
   filter(nombre.variable != "Indice de Precios al Consumidor (base 2005)")
 v_monetario <- diccionario_variables %>% filter(base=="Tipo_Cambio_Arg") %>%  select(cod.variable) 
 v_ipc <- grep("IPC",v_monetario$cod.variable, value = T)
-v_tc <- v_monetario$cod.variable[!v_monetario$cod.variable %in% v_ipc]
+#v_tc <- v_monetario$cod.variable[!v_monetario$cod.variable %in% v_ipc]
 v_ipc <- diccionario_variables %>% filter(cod.variable %in% v_ipc | nombre.variable == "Indice de Precios al Consumidor (base 2005)") %>%  select(nombre.variable)
-v_tc <- diccionario_variables %>% filter(cod.variable %in% v_tc) %>%  select(nombre.variable)
+#v_tc <- diccionario_variables %>% filter(cod.variable %in% v_tc) %>%  select(nombre.variable)
+v_tc_cod <- unique(grep("TC",base_binded$cod.variable, value = T,ignore.case = T))
+
+v_tc <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable %in% v_tc_cod]            
 
 #EPH####
 #Poblacion####

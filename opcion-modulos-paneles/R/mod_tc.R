@@ -33,6 +33,10 @@
 
 #base_binded_tc <- base_binded %>% filter(cod.variable %in% v_tc)
 
+
+
+
+
 ####genero server######
 
 tc_plot_server <- function(id) {
@@ -148,7 +152,7 @@ tc_plot_ui <- function(id, title) {
              sidebarPanel(
                selectInput(ns('var_serie'),label = 'Seleccionar una Serie',
                            choices =  v_tc, 
-                           selected = v_tc[1],
+                           selected = v_tc[2],
                            width = "300px",
                            multiple = T),
                sliderInput(ns('id_periodo'), "Período:", value = c(1980,2005), min = 1882, max = 2019)
