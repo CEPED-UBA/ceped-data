@@ -20,7 +20,7 @@ papers_plot_server <- function(id) {
 papers_plot_ui <- function(id) {
   ns <- NS(id)
   
-  tabPanel('Publicaciones',
+  tabPanel('Datos de Artículos',
            value = 'pres',
            titlePanel("Publicaciones"),
            sidebarLayout(

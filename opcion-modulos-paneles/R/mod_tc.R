@@ -151,7 +151,10 @@ tc_plot_ui <- function(id, title) {
                            selected = v_tc[1],
                            width = "300px",
                            multiple = T),
-               sliderInput(ns('id_periodo'), "Período:", value = c(1980,2005), min = 1882, max = 2019)
+               sliderInput(ns('id_periodo'), "Período:", value = c(1980,2005), min = 1882, max = 2019), 
+               hr(), 
+               h4(strong(titulo_cita)), 
+               h5(cita)
              ),
              
              

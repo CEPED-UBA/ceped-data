@@ -31,10 +31,16 @@ ui <- fluidPage(
                                                          };
                                                          '))) ),
   
-          navbarPage('ceped-data', id = "pag",
+          navbarPage('', id = "pag",
              
              
              tabPanel('Home',
+                      
+                      tags$div(
+                        h1("ceped.data | Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED)")),
+                      
+                      hr(),
+                      
                       fluidRow(
                         
                         column(12,
@@ -128,9 +134,9 @@ ui <- fluidPage(
                                                   
                                                   #img(height = 250, width = 250,src = "img/data_preview.png"),
                                                   p('Presentación interactiva de datos que fueron publicados en artículos de integrantes del CEPED'),
-                                                  tags$a("Ver publicaciones!",
+                                                  tags$a("Precariedad mundial",
                                                          style=btn_style,
-                                                         onclick="fakeClick('pres')",
+                                                         onclick="fakeClick('precariedad')",
                                                          class="btn btn-danger btn-s"
                                                   )
                                          )
@@ -183,10 +189,14 @@ ui <- fluidPage(
              
              ),
              
-             papers_plot_ui('ejemplo3'),
-             ceped_plot_ui('ejemplo4'),
+             navbarMenu(title = 'Publicaciones',
+                        
+              precariedad_ui(id='precariedad', title='Precariedad mundial')
+                        
+             ),
+             ceped_plot_ui('ejemplo4')#,
              
-             #etc
+            
              
              #footer = "Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED-UBA)"
   )
