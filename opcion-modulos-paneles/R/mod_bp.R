@@ -126,7 +126,10 @@ bp_plot_ui <- function(id, title,v_variables) {
                              value = c(1993,2005),
                              min = 1993, 
                              max = 2020
-                             )
+                             ),
+                 hr(), 
+                 h4(strong(titulo_cita)), 
+                 h5(cita)
                  ),
                mainPanel(
                  

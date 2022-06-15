@@ -113,7 +113,10 @@ ipc_plot_ui <- function(id, title,v_variables) {
                            selected = v_variables[1],
                            width = "300px",
                            multiple = F),
-               sliderInput(ns('id_periodo'), "Período:", value = c(1980,2005), min = 1950, max = 2010)
+               sliderInput(ns('id_periodo'), "Período:", value = c(1980,2005), min = 1950, max = 2010), 
+               hr(), 
+               h4(strong(titulo_cita)), 
+               h5(cita)
              ),
              
              mainPanel( 

@@ -135,8 +135,10 @@ salarios_plot_ui <- function(id, title,v_variables) {
                              value = c(1970,2018),
                              min = 1960, 
                              max = 2020
-                             )
-          #       )
+                             ), 
+                 hr(), 
+                 h4(strong(titulo_cita)), 
+                 h5(cita)
                  ),
                mainPanel(
                  

@@ -139,7 +139,13 @@ poblacion_eph_plot_ui <- function(id, title,v_poblacion_eph) {
                            value = c(2003,2021),
                            min = 2003, 
                            max = 2021
-               )
+               ), 
+               hr(), 
+               h4("Nota aclaratoria"), 
+               h5(nota_aclaratoria_eph),
+               hr(), 
+               h4(strong(titulo_cita)), 
+               h5(cita)
              ),
              
              mainPanel( 

@@ -10,6 +10,9 @@ library(shinyjs)
 library(shinydashboard)
 library(openxlsx)
 library(tidyverse)
+library(ggthemes)
+library(colorspace)
+
 options(scipen=999)
 
 #Importacion####
@@ -79,3 +82,12 @@ etiquetas_catocup <- diccionario_variables %>% filter(base=="eph_mercado_de_trab
 categoria_ocup_eph <- left_join(categoria_ocup_eph, etiquetas_catocup, by=c("cod.variable")) %>% 
   mutate(cod.variable=nombre.variable) %>% 
   select(-nombre.variable)
+
+
+# Cómo citar? 
+titulo_cita <- "Cómo cito estos datos?"
+cita <- "CEPED (2022). Ceped.data. Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED-UBA), Universidad de Buenos Aires, Buenos Aires. Recuperado de www.ceped-data.shinyapps.io/"
+
+# Nota aclaratoria eph
+
+nota_aclaratoria_eph <- "El relevamiento de la EPH durante el año 2020 fue realizado con dificultades debido a la pandemia. Se recomienda consultar ... etc.. completar"
