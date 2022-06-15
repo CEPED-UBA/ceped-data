@@ -161,8 +161,9 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
                ), 
                hr(), 
                h4("Nota aclaratoria"), 
-               h5(nota_aclaratoria_eph),
-               hr(), 
+               h5(nota_aclaratoria_eph1),
+               h5(nota_aclaratoria_eph2),
+               hr(),  
                h4(strong(titulo_cita)), 
                h5(cita)
              ),

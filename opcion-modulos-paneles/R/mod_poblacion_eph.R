@@ -142,7 +142,8 @@ poblacion_eph_plot_ui <- function(id, title,v_poblacion_eph) {
                ), 
                hr(), 
                h4("Nota aclaratoria"), 
-               h5(nota_aclaratoria_eph),
+               h5(nota_aclaratoria_eph1),
+               h5(nota_aclaratoria_eph2),
                hr(), 
                h4(strong(titulo_cita)), 
                h5(cita)
