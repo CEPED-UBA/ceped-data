@@ -1,44 +1,34 @@
-
-vector_publis <- c("Reproducción familiar", "Precariedad mundial")
-
-base_resumenes <- data.frame() #hacer un excel
-
-papers_plot_server <- function(id) {
+publicaciones_server <- function(id) {
   moduleServer(id, function(input, output, session) {
-    
-    resumen <- function(publi){
-      base_resumenes %>% 
-        filter(publicacion == publi) %>% 
-        select(resumen)
-    }
-    
-    #output$resumen_publi <- renderText({resumen(input$publicacion_id)})
   })
 }
 
 
-papers_plot_ui <- function(id) {
+publicaciones_ui <- function(id) {
   ns <- NS(id)
   
-  tabPanel('Datos de Artículos',
-           value = 'pres',
-           titlePanel("Publicaciones"),
-           sidebarLayout(
-             sidebarPanel(
-               selectInput(ns('publicacion_id'),label = 'Elegir una publicación:',
-                           choices = vector_publis,
-                           selected = vector_publis[1],
-                           multiple = FALSE)
-             ),
-             mainPanel(
-               box(title = "Resumen", width = NULL, textOutput(ns('resumen_publi'))),
-               box(title = "Acceder a publicación completa", width = NULL, textOutput(ns('link_revista'))),
-               box(title = "Acceder a app interactiva", width = NULL, textOutput(ns('link_app')))
-                           
-                                    
-                                    
+  tabPanel('Líneas de investigación',
+           value = 'publicaciones',
+           
+           fluidPage(
+             
+             tags$div(
+              
+               
+               h3("Líneas de investigación actuales"),
+               hr(), 
+               h4("Reproducción familiar"), 
+               p("Se estudia relación entre las condiciones de inserción laboral de las personas y las condiciones de reproducción de los hogares."),
+               
+               a(href="https://caropradier.shinyapps.io/app_ALAST/", "Ver datos interactivos") , 
+               
+               h4("Precariedad mundial"), 
+               p("Esta línea de investigación busca realizar estimaciones y comparaciones internacionales de la calidad del empleo en todo el mundo."),
+               #dejo puesto el de reproducción familiar porque no tengo el link
+               a(href="https://caropradier.shinyapps.io/app_ALAST/", "Ver datos interactivos") , 
              )
            )
+           
   )
   
   

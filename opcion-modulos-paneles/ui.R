@@ -134,9 +134,9 @@ ui <- fluidPage(
                                                   
                                                   #img(height = 250, width = 250,src = "img/data_preview.png"),
                                                   p('Presentación interactiva de datos que fueron publicados en artículos de integrantes del CEPED'),
-                                                  tags$a("Precariedad mundial",
+                                                  tags$a("Explorar líneas de investigación",
                                                          style=btn_style,
-                                                         onclick="fakeClick('precariedad')",
+                                                         onclick="fakeClick('publicaciones')",
                                                          class="btn btn-danger btn-s"
                                                   )
                                          )
@@ -189,12 +189,9 @@ ui <- fluidPage(
              
              ),
              
-             navbarMenu(title = 'Publicaciones',
-                        
-              precariedad_ui(id='precariedad', title='Precariedad mundial')
-                        
-             ),
-             ceped_plot_ui('ejemplo4')#,
+            publicaciones_ui('publicaciones'),
+            
+             ceped_plot_ui('ceped_presenta')#,
              
             
              
