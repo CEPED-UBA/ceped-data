@@ -47,7 +47,7 @@ ui <- fluidPage(
                                column(6,
                                       tags$div( class="panel panel-primary",
                                                 tags$div(class= "panel-heading",
-                                                         h3('Estadísticas procesadas')),
+                                                         h3('Encuesta Permanente de Hogares')),
                                                 tags$div(class="panel-body",
                                                          
                                                          #img(height = 250, width = 250,src = "img/data_preview.png"),
@@ -167,7 +167,7 @@ ui <- fluidPage(
              
              
              
-             navbarMenu(title = 'Estadísticas',
+             navbarMenu(title = 'Encuesta Permanente de Hogares',
                         
                         poblacion_eph_plot_ui(id ='poblacion_eph', title ='Población', v_poblacion_eph) ,
                         categoria_ocup_eph_plot_ui(id ='categoria_ocup_eph', title ='Categorías ocupacionales', v_categoria_ocup_eph),

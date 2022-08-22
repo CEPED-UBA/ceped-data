@@ -142,12 +142,6 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
            
            sidebarLayout(
              sidebarPanel(
-               selectInput(ns('var_tipo_serie'),label = 'Seleccionar un tipo de serie:',
-                           choices =  c("Absoluto","Tasa"),
-                           selected = "Absoluto",
-                           width = "300px",
-                           multiple = F
-               ),
                selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
                            choices =  unique(trabajo_eph$cod.variable),
                            selected = unique(trabajo_eph$cod.variable)[1],
