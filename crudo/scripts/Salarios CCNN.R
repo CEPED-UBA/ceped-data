@@ -93,8 +93,25 @@ PPA_2017_Cpriv_Cefect<- PPA_WB %>%
 names(PPA_2017_Cpriv_Cefect)[2] <- "PPA_2017_c_actual"
 names(PPA_2017_Cpriv_Cefect)[3] <- "PPA_2017_c_privado"
 
+PPA_2011_Cpriv_Cefect<- PPA_WB %>%
+  filter(Classification.Code == "PPPGlob",
+         Series.Code %in% c(9260000,9020000)) %>%
+  pivot_longer(cols = 7:ncol(.),
+               names_to = "Año",
+               values_to = "PPA.2011") %>%
+  mutate(ANO4 = as.numeric(str_extract(Año,"[[:digit:]]{4}")),
+         PPA.2011 = as.numeric(as.character(PPA.2011))) %>% 
+  filter(ANO4 == 2011) %>%
+  select(iso3c,Series.Name,PPA.2011) %>% 
+  pivot_wider(names_from = "Series.Name",values_from = "PPA.2011")
+
+names(PPA_2011_Cpriv_Cefect)[2] <- "PPA_2011_c_actual"
+names(PPA_2011_Cpriv_Cefect)[3] <- "PPA_2011_c_privado"
+
+
 
 PPA_extrapolados <- IPC_corregido %>% 
+  filter(iso3c != c("VEN")) %>% 
   left_join(PPA_2017_Cpriv_Cefect) %>% 
   group_by(ANO4) %>% 
   mutate(IPC_2005_USA = IPC_2005[iso3c == "USA"]) %>% 
@@ -111,9 +128,32 @@ PPA_extrapolados <- IPC_corregido %>%
              TRUE ~ PPA_2017_c_privado[ANO4 == 2017]*
                (IPC_2005/IPC_2005[ANO4 == 2017])/
                (IPC_2005_USA/IPC_2005_USA[ANO4 == 2017])))
-                     
+    
+PPA_extrapolados_venezuela <- IPC_corregido %>% 
+  left_join(PPA_2011_Cpriv_Cefect) %>% 
+  filter(iso3c  %in%  c("VEN","USA")) %>% 
+  group_by(ANO4) %>% 
+  mutate(IPC_2005_USA = IPC_2005[iso3c == "USA"]) %>% 
+  group_by(iso3c) %>%
+  mutate(PPA_c_actual_serie =
+           case_when(
+             ANO4 == 2011 ~ PPA_2011_c_actual,
+             TRUE ~ PPA_2011_c_actual[ANO4 == 2011]*
+               (IPC_2005/IPC_2005[ANO4 == 2011])/
+               (IPC_2005_USA/IPC_2005_USA[ANO4 == 2011])),
+         PPA_c_priv_serie =
+           case_when(
+             ANO4 == 2011 ~ PPA_2011_c_privado,
+             TRUE ~ PPA_2011_c_privado[ANO4 == 2011]*
+               (IPC_2005/IPC_2005[ANO4 == 2011])/
+               (IPC_2005_USA/IPC_2005_USA[ANO4 == 2011]))) %>% 
+  filter(iso3c == "VEN")
+
+
+                 
   
 PPA_series<- PPA_extrapolados %>% 
+  bind_rows(PPA_extrapolados_venezuela) %>% 
   select(iso3c,
          ANO4,
          PPA_c_actual_serie,

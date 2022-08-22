@@ -123,11 +123,14 @@ bp_plot_ui <- function(id, title,v_variables) {
                              ),
                  sliderInput(ns('id_periodo'),
                              "Período:",
-                             value = c(1993,2005),
-                             min = 1993, 
+                             value = c(1992,2005),
+                             min = 1992, 
                              max = 2020
                              ),
                  hr(), 
+                 #h5(nota_aclaratoria_bp),
+                 p("La compatibilización de las series de las metodologías 2017 y 2007 del INDEC y su clasificación por sector institucional (público y privado) a partir de una reclasificación propia de las partidas se encuentra detallada en el ",
+                   a(href = 'https://drive.google.com/file/d/1m2yybwPTtkJTmtdnWH5DisY9-x1mQ02f/view', 'Documento de Trabajo N°25 del CEPED', .noWS = "outside"), '. Para la presentación de los datos en dólares constantes se utilizó el Índice de Precios al Consumidor (CPI-U) publicado por el Bureau of Labor Statistics (BLS).', .noWS = c("after-begin", "before-end")), 
                  h4(strong(titulo_cita)), 
                  h5(cita)
                  ),
