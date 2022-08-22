@@ -140,12 +140,6 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
            
            sidebarLayout(
              sidebarPanel(
-               selectInput(ns('var_tipo_serie'),label = 'Seleccionar un tipo de serie:',
-                           choices =  c("Absoluto","Tasa"),
-                           selected = "Absoluto",
-                           width = "300px",
-                           multiple = F
-               ),
                selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
                            choices =  unique(categoria_ocup_eph$cod.variable),
                            selected = unique(categoria_ocup_eph$cod.variable)[1],
