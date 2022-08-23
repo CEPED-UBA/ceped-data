@@ -5,17 +5,36 @@ ipc_plot_server <- function(id) {
     
     
     armar_tabla <- function(variables, periodo_i, periodo_f){
-      base_binded %>% ungroup() %>%
+      
+      tabla <- base_ipc %>% ungroup() %>%
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables]) ) %>% 
         filter(nombre.pais == "Argentina") %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-        mutate(ANO4 = round(ANO4,0)) %>% 
+        mutate(ANO4 = paste0(round(ANO4,0))) %>% 
         rename("Serie" = "cod.variable",
                "Período" = "ANO4",
-               "País" = "nombre.pais") %>% 
-        select(-iso3c)
+               "País" = "nombre.pais",
+               "Valor" = "valor")
+      
+      if (variables == v_ipc[1]) {
+        
+        tabla <- tabla %>% 
+          select(-MES)
+        
+      } else if (variables == v_ipc[2]) {
+        
+        tabla <- tabla %>% 
+          mutate(MES = paste0(round(MES,0))) %>% 
+          rename("Mes"= "MES")
+        
+      }
+      
+      
+      return(tabla)
+      
     }
     
+   
     generar_titulo <- function(variables, periodo_i, periodo_f){
       nombre_variable <- unique(diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==variables])
       titulo <- paste0("</br><font size='+2'>",variables,".</font>" ,
@@ -24,14 +43,18 @@ ipc_plot_server <- function(id) {
     
     plot <- function(variables, periodo_i, periodo_f){
       
-      p <- base_binded %>% ungroup() %>%
+      p <- base_ipc %>% ungroup() %>%
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+        rowwise() %>% 
+        mutate(Per = ifelse(is.na(MES), paste0(ANO4),paste0(ANO4,"-",MES))) %>% 
+        ungroup() %>% 
+        
         filter(nombre.pais == "Argentina") %>% 
         ggplot(
-          aes(x = as.factor(ANO4), y = valor, group = nombre.pais, color = nombre.pais
-              ,text=paste0('</br>',nombre.pais,'</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
+          aes(x = as.factor(Per), y = valor, group = nombre.pais, color = nombre.pais
+              ,text=paste0('</br>',nombre.pais,'</br>Valor: ',round(valor,1), '</br>Período: ',Per)))+
         geom_line(size = 1) +
         labs(color= "País",
              y = "",
@@ -115,7 +138,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                            selected = v_variables[1],
                            width = "300px",
                            multiple = F),
-               sliderInput(ns('id_periodo'), "Período:", value = c(1980,2005), min = 1950, max = 2010), 
+               sliderInput(ns('id_periodo'), "Período:", value = c(2000,2010), min = min_ipc, max = max_ipc), 
                hr(), 
                h4(strong(titulo_cita)), 
                h5(cita)
@@ -146,9 +169,9 @@ ipc_plot_ui <- function(id, title,v_variables) {
                br(),
                fluidRow(
                  column(12,
-                        column(6, 
+                        column(8, 
                                box(tableOutput(ns('tabla')))),
-                        column(6,          
+                        column(4,          
                                box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
                                br(),
                                box(width = NULL,

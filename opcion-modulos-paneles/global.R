@@ -12,6 +12,7 @@ library(openxlsx)
 library(tidyverse)
 library(ggthemes)
 library(colorspace)
+library(readxl)
 
 options(scipen=999)
 
@@ -30,7 +31,7 @@ trabajo_eph <- readRDS("www/data/Mercado_de_Trabajo_Arg.RDS")
 categoria_ocup_eph <- readRDS("www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS") %>% 
   mutate(ANO4.trim=ANO4,              ### Mover esto a script que crea la base desde raw data
          ANO4=substr(ANO4, 1, 4))
-
+base_ipc <- read_excel("www/data/ipc_argentina_ceped.xlsx")
 
 # SALARIOS #####
 salarios <- serie_salarios %>% 
@@ -38,20 +39,12 @@ salarios <- serie_salarios %>%
                               "salario_relativo_usa_c_priv"))
 
 #IPC_TIPO_CAMBIO####
-base_binded <- bind_rows(serie_salarios,tipo_cambio_argentina)
+#base_binded <- bind_rows(serie_salarios,tipo_cambio_argentina)
 
-v_bp <- c() #cuales?
+v_ipc <- diccionario_variables %>% filter(base=="IPC_Argentina") %>%  pull(nombre.variable)      
 
-v_salarios <- diccionario_variables %>% filter(base== "Serie_salarios") %>%  select(nombre.variable) %>% 
-  filter(nombre.variable != "Indice de Precios al Consumidor (base 2005)")
-v_monetario <- diccionario_variables %>% filter(base=="Tipo_Cambio_Arg") %>%  select(cod.variable) 
-v_ipc <- grep("IPC",v_monetario$cod.variable, value = T)
-#v_tc <- v_monetario$cod.variable[!v_monetario$cod.variable %in% v_ipc]
-v_ipc <- diccionario_variables %>% filter(cod.variable %in% v_ipc | nombre.variable == "Indice de Precios al Consumidor (base 2005)") %>%  select(nombre.variable)
-#v_tc <- diccionario_variables %>% filter(cod.variable %in% v_tc) %>%  select(nombre.variable)
-v_tc_cod <- unique(grep("TC",base_binded$cod.variable, value = T,ignore.case = T))
-
-v_tc <- diccionario_variables$nombre.variable[diccionario_variables$cod.variable %in% v_tc_cod]            
+min_ipc <- min(base_ipc$ANO4)
+max_ipc <- max(base_ipc$ANO4)
 
 #EPH####
 #Poblacion####
