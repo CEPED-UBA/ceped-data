@@ -15,6 +15,11 @@ library(colorspace)
 
 options(scipen=999)
 
+paleta_colores <- c("#41bdcd","#7ccb29","#cce45b","#f9cb27","#fc941d","#e45335")
+
+paleta_colores_extendida <- c(paleta_colores,"#cc0000","#e69138", "#4169e1" ,"#3d85c6","#000080", "#c576f6", "#3a7480", "#0c4f5d","#005c29","#7a1606","#ff9cd1")
+
+
 #Importacion####
 diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
 bop_arg_dolares <- readRDS("www/data/bop_arg_dolares.RDS")

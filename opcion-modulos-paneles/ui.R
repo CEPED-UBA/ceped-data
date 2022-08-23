@@ -34,10 +34,10 @@ ui <- fluidPage(
           navbarPage('', id = "pag",
              
              
-             tabPanel('Home',
+             tabPanel('Inicio',
                       
                       tags$div(
-                        h1("ceped.data | Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED)")),
+                        h1("Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED)", style ="text-align: center" )),
                       
                       hr(),
                       
@@ -46,18 +46,24 @@ ui <- fluidPage(
                         column(12,
                                column(6,
                                       tags$div( class="panel panel-primary",
+                                                style = "border-color: #1a3f5f",
+                                                
                                                 tags$div(class= "panel-heading",
+                                                         style="background:#1a3f5f;border-color: #1a3f5f",
                                                          h3('Encuesta Permanente de Hogares')),
                                                 tags$div(class="panel-body",
                                                          
+                                                         
                                                          #img(height = 250, width = 250,src = "img/data_preview.png"),
-                                                         p('Estadísticas procesadas por el CEPED en base a microdatos de la Encuesta Permanente de Hogares (EPH-INDEC)'),
+                                                         p('Estadísticas procesadas por el CEPED en base a microdatos de la Encuesta Permanente de Hogares (EPH-INDEC)', style = "color: black")),
+                                                tags$div(class="panel-body",
+                                                         style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                                          
                                                          br(),
                                                          
                                                          
                                                          tags$a("Mercado de Trabajo",
-                                                                style=btn_style,
+                                                                style=paste0(btn_style,"background:#1a3f5f;border-color: #1a3f5f;color: black;font-size:14px"),
                                                                 onclick="fakeClick('trabajo_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          ),
@@ -66,18 +72,18 @@ ui <- fluidPage(
                                                          p(''),
                                                          br(),
                                                          
-                                                         tags$a("Población",
-                                                                style=btn_style,
-                                                                onclick="fakeClick('poblacion_eph')",
-                                                                class="btn btn-primary btn-s"
-                                                         ), 
-                                                         
-                                                         br(),
-                                                         p(''),
-                                                         br(),
+                                                         # tags$a("Población",
+                                                         #        style=paste0(btn_style,"background:#1a3f5f;border-color: #1a3f5f;color: black;font-size:14px"),
+                                                         #        onclick="fakeClick('poblacion_eph')",
+                                                         #        class="btn btn-primary btn-s"
+                                                         # ), 
+                                                         # 
+                                                         # br(),
+                                                         # p(''),
+                                                         # br(),
                                                          
                                                          tags$a("Categorías ocupacionales",
-                                                                style=btn_style,
+                                                                style=paste0(btn_style,"background:#1a3f5f;border-color: #1a3f5f;color: black;font-size:14px"),
                                                                 onclick="fakeClick('categoria_ocup_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          )
@@ -86,12 +92,18 @@ ui <- fluidPage(
                                ),  
                                column(6,
                                       tags$div( class="panel panel-warning",
+                                                style = "border-color: #20639b",
+                                                
                                                 tags$div( class= "panel-heading",
+                                                          style="background:#20639b;border-color: #20639b",
                                                           h3('Series')),
                                                 tags$div(class="panel-body",
                                                          #img(height = 250, width = 250,src = "img/methods_preview.png"),
-                                                         p('Datos que surgen de líneas de investigación desarrolladas por integrantes del CEPED'),
-                                                         tags$a("Internacional | Salarios", style=btn_style,
+                                                         p('Datos que surgen de líneas de investigación desarrolladas por integrantes del CEPED', style = "color: black")),
+                                                         
+                                                         tags$div(class="panel-body",
+                                                                  style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
+                                                         tags$a("Internacional | Salarios", style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
                                                                 onclick="fakeClick('salarios')",
                                                                 class="btn btn-warning btn-s"), 
                                                          
@@ -99,15 +111,16 @@ ui <- fluidPage(
                                                          p(''),
                                                          br(),
                                                          
-                                                         tags$a("Argentina | Tipo de cambio", style=btn_style,
-                                                                onclick="fakeClick('tc')",
-                                                                class="btn btn-warning btn-s"), 
+                                                         # tags$a("Argentina | Tipo de cambio", style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                         #        onclick="fakeClick('tc')",
+                                                         #        class="btn btn-warning btn-s"), 
+                                                         # 
+                                                         # br(),
+                                                         # p(''),
+                                                         # br()
+                                                        
                                                          
-                                                         br(),
-                                                         p(''),
-                                                         br(),
-                                                         
-                                                         tags$a("Argentina | Balance de Pagos", style=btn_style,
+                                                         tags$a("Argentina | Balance de Pagos", style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
                                                                 onclick="fakeClick('bp')",
                                                                 class="btn btn-warning btn-s"), 
                                                          
@@ -115,7 +128,7 @@ ui <- fluidPage(
                                                          p(''),
                                                          br(),
                                                          
-                                                         tags$a("Argentina | IPC", style=btn_style,
+                                                         tags$a("Argentina | IPC", style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
                                                                 onclick="fakeClick('ipc')",
                                                                 class="btn btn-warning btn-s")
                                                          
@@ -128,14 +141,19 @@ ui <- fluidPage(
                         column(12,
                         column(6,
                                tags$div( class="panel panel-danger",
+                                         style = "border-color: #f6d55c",
+                                         
                                          tags$div(class= "panel-heading",
+                                                  style="background:#f6d55c;border-color: #f6d55c",
                                                   h3('Datos de artículos')),
                                          tags$div(class="panel-body",
                                                   
                                                   #img(height = 250, width = 250,src = "img/data_preview.png"),
-                                                  p('Presentación interactiva de datos que fueron publicados en artículos de integrantes del CEPED'),
+                                                  p('Presentación interactiva de datos que fueron publicados en artículos de integrantes del CEPED', style = "color: black")),
+                                         tags$div(class="panel-body",
+                                                  style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                                   tags$a("Explorar líneas de investigación",
-                                                         style=btn_style,
+                                                         style=paste0(btn_style,"background:#f6d55c;border-color: #f6d55c;color: black;font-size:14px"),
                                                          onclick="fakeClick('publicaciones')",
                                                          class="btn btn-danger btn-s"
                                                   )
@@ -144,15 +162,21 @@ ui <- fluidPage(
                       ),
                       column(6,
                              tags$div( class="panel panel-default",
+                                       style = "border-color: #3caea3",
+                                       
                                        tags$div(class= "panel-heading",
+                                                style="background:#3caea3;border-color: #3caea3",
                                                 h3('Sobre el CEPED')),
                                        tags$div(class="panel-body",
                                                 
                                                 #img(height = 250, width = 250,src = "img/data_preview.png"),
-                                                p('¿Quiénes somos?'),
+                                                p('¿Quiénes somos?', style = "color: black")),
+                                       
+                                       tags$div(class="panel-body",
+                                                style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                                 
                                                 tags$a("Conocer",
-                                                       style=btn_style,
+                                                       style=paste0(btn_style,"background:#3caea3;border-color: #3caea3;color: black;font-size:14px"),
                                                        onclick="fakeClick('CEPED')",
                                                        class="btn btn-default btn-s"
                                                 )
@@ -169,7 +193,7 @@ ui <- fluidPage(
              
              navbarMenu(title = 'Encuesta Permanente de Hogares',
                         
-                        poblacion_eph_plot_ui(id ='poblacion_eph', title ='Población', v_poblacion_eph) ,
+                        #poblacion_eph_plot_ui(id ='poblacion_eph', title ='Población', v_poblacion_eph) ,
                         categoria_ocup_eph_plot_ui(id ='categoria_ocup_eph', title ='Categorías ocupacionales', v_categoria_ocup_eph),
                         trabajo_eph_plot_ui(id ='trabajo_eph', title ='Mercado de Trabajo', v_trabajo_eph)
                          
@@ -180,10 +204,10 @@ ui <- fluidPage(
              
              navbarMenu(title = 'Series',
                         
-             #series_plot_ui(id ='salarios', title ='Serie de salarios', v_salarios),
+        
              salarios_plot_ui(id ='salarios', title ='Salarios Internacionales'),
-             tc_plot_ui(id ='tc', title ='Tipo de cambio'),
-             #series_plot_ui(id ='bp', title ='Balanza de pagos',v_bp),
+             #tc_plot_ui(id ='tc', title ='Tipo de cambio'),
+             
              bp_plot_ui(id ='bp', title ='Balance de Pagos Argentina'),
              ipc_plot_ui(id ='ipc', title ='IPC Argentina', v_ipc)
              

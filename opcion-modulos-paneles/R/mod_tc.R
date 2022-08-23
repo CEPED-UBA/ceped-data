@@ -58,7 +58,8 @@ tc_plot_server <- function(id) {
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0("<font size='+2'>",lista_variables , ". Años: ", periodo_i, " al ", periodo_f,"</font>")
+      titulo <- paste0("</br><font size='+2'>",lista_variables,".</font>" , 
+                       "</br><font size='+1'>Años: ", periodo_i, " al ", periodo_f,"</font>")
     }
     
     plot <- function(variables, periodo_i, periodo_f){
@@ -84,7 +85,8 @@ tc_plot_server <- function(id) {
               axis.text.y = element_text(size=10),
               legend.position = "bottom",
               plot.title= element_text(size=12, face="bold"))+
-        theme(axis.text.x = element_text(angle = 90))
+        theme(axis.text.x = element_text(angle = 90))+
+        scale_color_manual(values =paleta_colores_extendida)
       
       p
       #ggplotly(p, tooltip = c("text"))

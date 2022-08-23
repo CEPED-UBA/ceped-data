@@ -17,7 +17,8 @@ salarios_plot_server <- function(id) {
     generar_titulo <- function(variables, periodo_i, periodo_f){
       nombre_variable <-  paste0(variables, collapse = ", ")
       nombre_variable <- sub(",([^,]*)$", " y\\1", nombre_variable)   
-      titulo <- paste0("<font size='+2'>",nombre_variable ," desde ", periodo_i, " hasta ", periodo_f,"</font>")
+      titulo <- paste0("</br><font size='+2'>",nombre_variable ,".</font>",
+                       "</br><font size='+1'>Desde ", periodo_i, " hasta ", periodo_f,"</font>")
     }
    
     
@@ -41,7 +42,8 @@ salarios_plot_server <- function(id) {
               axis.text.y = element_text(size=10),
               legend.position = "bottom",
               plot.title= element_text(size=12, face="bold"))+
-        theme(axis.text.x = element_text(angle = 90))
+        theme(axis.text.x = element_text(angle = 90))+
+        scale_color_manual(values =paleta_colores_extendida)
       
       p
       #ggplotly(p, tooltip = c("text"))

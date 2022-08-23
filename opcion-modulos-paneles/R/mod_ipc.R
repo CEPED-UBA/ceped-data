@@ -18,7 +18,8 @@ ipc_plot_server <- function(id) {
     
     generar_titulo <- function(variables, periodo_i, periodo_f){
       nombre_variable <- unique(diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==variables])
-      titulo <- paste0("<font size='+2'>",variables ," desde ", periodo_i, " hasta ", periodo_f,"</font>")
+      titulo <- paste0("</br><font size='+2'>",variables,".</font>" ,
+                       "</br><font size='+1'>Desde ", periodo_i, " hasta ", periodo_f,"</font>")
     }
     
     plot <- function(variables, periodo_i, periodo_f){
@@ -31,7 +32,7 @@ ipc_plot_server <- function(id) {
         ggplot(
           aes(x = as.factor(ANO4), y = valor, group = nombre.pais, color = nombre.pais
               ,text=paste0('</br>',nombre.pais,'</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
-        geom_line(size = 1, color = "blue") +
+        geom_line(size = 1) +
         labs(color= "País",
              y = "",
              x = "Año")+
@@ -41,7 +42,8 @@ ipc_plot_server <- function(id) {
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
-        theme(axis.text.x = element_text(angle = 90))
+        theme(axis.text.x = element_text(angle = 90))+
+        scale_color_manual(values =paleta_colores)
       
       p
       #ggplotly(p, tooltip = c("text"))
