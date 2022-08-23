@@ -5,9 +5,9 @@ account: ceped-data
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6467835
-bundleId: 6226722
+bundleId: 6230230
 url: https://ceped-data.shinyapps.io/CEPED-DATA-v2/
-when: 1661197199.60637
-lastSyncTime: 1661197199.60637
+when: 1661274659.64444
+lastSyncTime: 1661274659.64544
 asMultiple: FALSE
 asStatic: FALSE
