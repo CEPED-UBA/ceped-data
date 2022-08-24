@@ -171,12 +171,20 @@ base <- paises_trabajados %>%
   left_join(IPC_corregido) %>% 
   left_join(PPA_series) %>% 
   left_join(series_tcn_corregidas) %>% 
-  mutate(salario_real_2005 = Salario.UMN/IPC_2005*100,
+  group_by(iso3c) %>% 
+  mutate(IPC_2017 = IPC_2005/IPC_2005[ANO4 == 2017]*100) %>% 
+  group_by(ANO4) %>% 
+  mutate(IPC_2017_USA = IPC_2017[iso3c == "USA"]) %>% 
+  ungroup() %>% 
+  mutate(salario_real_2017 = Salario.UMN/IPC_2017*100,
          salario_dolares = Salario.UMN/TCN,
          salario_ppa_c_priv_corr = Salario.UMN/PPA_c_priv_serie,
-         salario_ppa_c_actual_corr = Salario.UMN/PPA_c_actual_serie) %>% 
+         salario_ppa_c_actual_corr = Salario.UMN/PPA_c_actual_serie,
+         salario_ppa_c_priv_real  = salario_ppa_c_priv_corr/IPC_2017_USA*100,
+         salario_ppa_c_actual_real = salario_ppa_c_actual_corr/IPC_2017_USA*100
+         ) %>%   
   group_by(iso3c) %>% 
-  mutate(indice_salario_real_2005 = 100*salario_real_2005/salario_real_2005[ANO4 == 2005]) %>% 
+  mutate(indice_salario_real_2017 = 100*salario_real_2017/salario_real_2017[ANO4 == 2017]) %>% 
   filter(!is.na(ANO4)) %>% 
   group_by(ANO4) %>% 
   mutate(tcn_ppa_cpriv = TCN/PPA_c_priv_serie,
@@ -184,6 +192,7 @@ base <- paises_trabajados %>%
          salario_relativo_usa_c_priv = salario_ppa_c_priv_corr/salario_ppa_c_priv_corr[iso3c == "USA"],
          salario_relativo_usa_c_actual = salario_ppa_c_actual_corr/salario_ppa_c_actual_corr[iso3c == "USA"])
 
+  
 base_export <- base %>% 
   pivot_longer(4:ncol(.),
                names_to = "cod.variable",values_to = "valor") %>% 

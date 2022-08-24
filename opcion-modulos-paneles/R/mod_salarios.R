@@ -17,7 +17,7 @@ salarios_plot_server <- function(id) {
     generar_titulo <- function(variables, periodo_i, periodo_f){
       nombre_variable <-  paste0(variables, collapse = ", ")
       nombre_variable <- sub(",([^,]*)$", " y\\1", nombre_variable)   
-      titulo <- paste0("</br><font size='+2'>",nombre_variable ,".</font>",
+      titulo <- paste0("</br><font size='+2'>",nombre_variable ,
                        "</br><font size='+1'>Desde ", periodo_i, " hasta ", periodo_f,"</font>")
     }
    

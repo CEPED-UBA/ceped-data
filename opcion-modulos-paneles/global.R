@@ -36,8 +36,9 @@ base_ipc <- read_excel("www/data/ipc_argentina_ceped.xlsx")
 # SALARIOS #####
 salarios <- serie_salarios %>% 
   filter(cod.variable %in%  c("salario_relativo_usa_c_actual",
-                              "salario_relativo_usa_c_priv"))
-
+                              "salario_relativo_usa_c_priv",
+                              "salario_ppa_c_priv_real",
+                              "salario_ppa_c_actual_real"))
 #IPC_TIPO_CAMBIO####
 #base_binded <- bind_rows(serie_salarios,tipo_cambio_argentina)
 
