@@ -70,11 +70,11 @@ ipc_plot_server <- function(id) {
              x = "Año")+
         theme_minimal()+
         theme(text = element_text(size = 9),
-              axis.text.x = element_text(size=10),
+              axis.text.x = element_text(size=10,angle = 90),
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
-        theme(axis.text.x = element_text(angle = 90))
+        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
       
       p
       
@@ -103,12 +103,12 @@ ipc_plot_server <- function(id) {
              x = "Año")+
         theme_minimal()+
         theme(text = element_text(size = 9),
-              axis.text.x = element_text(size=10),
+              axis.text.x = element_text(size=10,angle = 90),
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
-        theme(axis.text.x = element_text(angle = 90))+
-        scale_y_continuous(labels = function(x) paste0(x,"%"))
+        scale_y_continuous(labels = function(x) paste0(x,"%"))+
+        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
       
       p
 
@@ -211,14 +211,14 @@ ipc_plot_ui <- function(id, title,v_variables) {
                           
                box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
                br(),
-               plotlyOutput(ns('plot_var')),
+               plotlyOutput(ns('plot_var'))%>% withSpinner(type = 7, color =paleta_colores[2]),
                br(),
                box(width = NULL,
                    downloadButton(ns('downloadPlot_var'),'Descargar gráfico')),
                br(),
                box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
                br(),
-               plotlyOutput(ns('plot')),
+               plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                br(),
                box(width = NULL,
                    downloadButton(ns('downloadPlot'),'Descargar gráfico')),

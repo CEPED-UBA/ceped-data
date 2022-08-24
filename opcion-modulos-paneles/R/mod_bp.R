@@ -145,7 +145,7 @@ bp_plot_ui <- function(id, title,v_variables) {
                             
                             box(width = NULL,br(), htmlOutput(ns('titulo1'))),
                             br(),
-                            plotlyOutput(ns('plot')),
+                            plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                             br(),
                             box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
                             br(),
