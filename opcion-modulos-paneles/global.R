@@ -31,7 +31,7 @@ trabajo_eph <- readRDS("www/data/Mercado_de_Trabajo_Arg.RDS")
 categoria_ocup_eph <- readRDS("www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS") %>% 
   mutate(ANO4.trim=ANO4,              ### Mover esto a script que crea la base desde raw data
          ANO4=substr(ANO4, 1, 4))
-base_ipc <- read_excel("www/data/ipc_argentina_ceped.xlsx")
+base_ipc <- read_excel("www/data/ipc_argentina_ceped_var.xlsx")
 
 # SALARIOS #####
 salarios <- serie_salarios %>% 
