@@ -37,8 +37,8 @@ categoria_ocup_eph_plot_server <- function(id) {
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0("<font size='+2'></br>",lista_variables ,". Información trimestral.</font>",
-                       "</br><font size='+1'>Años ", periodo_i, " - ", periodo_f,"</font>")
+      titulo <- paste0("<font size='+2'></br>", "Porcentaje de personas ocupadas como ", lista_variables ," sobre total de ocupados.</font>",
+                       "</br><font size='+1'>Información trimestral. Años ", periodo_i, " - ", periodo_f,"</font>")
 
        }
     
@@ -48,10 +48,12 @@ categoria_ocup_eph_plot_server <- function(id) {
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
-          aes(x = ANO4.trim, y = valor, group = cod.variable, color = cod.variable,
+          aes(x = ANO4.trim, y = valor/100, fill = cod.variable, 
                 text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4.trim)))+
-        geom_line(size = 1) +
-        geom_point(size = 2) +
+        # geom_line(size = 1) +
+        # geom_point(size = 2) + 
+        scale_fill_manual(values =paleta_colores) +
+        geom_bar(stat="identity") +
         labs(y = "",
              x = "Año",
              color = "")+
@@ -59,11 +61,11 @@ categoria_ocup_eph_plot_server <- function(id) {
         theme(text = element_text(size = 9),
               axis.text.x = element_text(size=6),
               axis.text.y = element_text(size=10),
-              legend.position = "bottom",
               plot.title= element_text(size=12, face="bold"))+
-        theme(axis.text.x = element_text(angle = 90))+
-        scale_color_manual(values =paleta_colores)
-      
+        theme(axis.text.x = element_text(angle = 90)) +
+        guides(fill=guide_legend(title=NULL)) +
+        theme(legend.title=element_blank()) +
+        scale_y_continuous(labels=scales::percent)
       
       p
       #ggplotly(p, tooltip = c("text"))
@@ -75,13 +77,13 @@ categoria_ocup_eph_plot_server <- function(id) {
         layout(font = list(family ="Times New Roman"))
     }
     
-    generar_metadata <- function(variables){
-    
-    i <- length(variables)  
-        
-    paste0( variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
-      
-    }
+    # generar_metadata <- function(variables){
+    # 
+    # i <- length(variables)  
+    # 
+    # paste0( variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
+    #   
+    # }
     
     observeEvent(input$var_tipo_serie, {
       
@@ -105,12 +107,12 @@ categoria_ocup_eph_plot_server <- function(id) {
     output$tabla <- renderTable({
       armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
-    output$metadata1 <- renderText({
-      generar_metadata(input$var_serie)
-    })
-    output$metadata2 <- renderText({
-      generar_metadata(input$var_serie)
-    })
+    # output$metadata1 <- renderText({
+    #   generar_metadata(input$var_serie)
+    # })
+    # output$metadata2 <- renderText({
+    #   generar_metadata(input$var_serie)
+    # })
     output$downloadTable <- downloadHandler(
 
       filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
@@ -174,7 +176,9 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                           br(),
                           plotlyOutput(ns('plot')),
                           br(),
-                          box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+                         # box(title = "Metadata", width = NULL, textOutput(ns('metadata1')), 
+                          box(title = "Metadata", width = NULL, 
+                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas trimestrales para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados."),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -191,7 +195,8 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                                    column(6, 
                                           box(tableOutput(ns('tabla')))),
                                    column(6,          
-                                          box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
+                                          box(title = "Metadata", width = NULL, 
+                                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas trimestrales para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados."),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))

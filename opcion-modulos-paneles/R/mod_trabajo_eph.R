@@ -35,8 +35,8 @@ trabajo_eph_plot_server <- function(id) {
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0("<font size='+2'></br>",lista_variables ,". Información trimestral.</font>", 
-                       "</br><font size='+1'>Años ", periodo_i, " - ", periodo_f,"</font>")
+      titulo <- paste0("<font size='+2'></br>",lista_variables ,".</font>",
+                       "</br><font size='+1'>Información trimestral. Años ", periodo_i, " - ", periodo_f,"</font>")
 
        }
     
@@ -46,7 +46,7 @@ trabajo_eph_plot_server <- function(id) {
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
-          aes(x = ANO4.trim, y = valor, group = cod.variable, color = cod.variable,
+          aes(x = ANO4.trim, y = valor/100, group = cod.variable, color = cod.variable,
                 text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4.trim)))+
         geom_line(size = 1) +
         geom_point(size = 2) +
@@ -60,7 +60,8 @@ trabajo_eph_plot_server <- function(id) {
               legend.position = "bottom",
               plot.title= element_text(size=12, face="bold"))+
         theme(axis.text.x = element_text(angle = 90))+
-        scale_color_manual(values =paleta_colores)
+        scale_color_manual(values =paleta_colores) +
+        scale_y_continuous(labels=scales::percent)
       
       
       p
@@ -73,13 +74,13 @@ trabajo_eph_plot_server <- function(id) {
         layout(font = list(family ="Times New Roman"))
     }
     
-    generar_metadata <- function(variables){
-    
-    i <- length(variables)  
-        
-    paste0( variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
-      
-    }
+    # generar_metadata <- function(variables){
+    # 
+    # i <- length(variables)  
+    #     
+    # paste0( variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
+    #   
+    # }
     
     observeEvent(input$var_tipo_serie, {
       
@@ -107,12 +108,12 @@ trabajo_eph_plot_server <- function(id) {
     output$tabla <- renderTable({
       armar_tabla(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2])
     })
-    output$metadata1 <- renderText({
-      generar_metadata(input$var_serie)
-    })
-    output$metadata2 <- renderText({
-      generar_metadata(input$var_serie)
-    })
+    # output$metadata1 <- renderText({
+    #   generar_metadata(input$var_serie)
+    # })
+    # output$metadata2 <- renderText({
+    #   generar_metadata(input$var_serie)
+    # })
     output$downloadTable <- downloadHandler(
 
       filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
@@ -175,7 +176,9 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
                           br(),
                           plotlyOutput(ns('plot')),
                           br(),
-                          box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+                          #box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+                          box(title = "Metadata", width = NULL, 
+                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados."),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -192,7 +195,8 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
                                    column(6, 
                                           box(tableOutput(ns('tabla')))),
                                    column(6,          
-                                          box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
+                                          box(title = "Metadata", width = NULL, 
+                                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados."),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))

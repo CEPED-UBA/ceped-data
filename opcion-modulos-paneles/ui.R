@@ -9,6 +9,7 @@ library(shinyjs)
 library(shinydashboard)
 library(openxlsx)
 library(tidyverse)
+library(scales)
 
 options(scipen=999)
 
@@ -17,7 +18,7 @@ btn_style <- "float:right;border-radius: 15px;"
 
 
 ui <- fluidPage( 
-  theme = shinytheme("journal"),
+  theme = shinytheme("journal"), 
   
   #define fakeClick for buttons
         (tags$head(tags$script(HTML('var fakeClick = function(tabName) {
@@ -36,9 +37,13 @@ ui <- fluidPage(
              
              tabPanel('Inicio',
                       
+                      fluidRow(column(12, 
+                               column(10, 
                       tags$div(
-                        h1("Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED)", style ="text-align: center" )),
-                      
+                        h1("Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo", 
+                           style ="text-align: center" ))), 
+                               column(2,
+                          img(src = "img/logo_ceped2.png", width = 270)))),
                       hr(),
                       
                       fluidRow(
