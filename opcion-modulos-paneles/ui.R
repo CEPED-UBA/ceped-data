@@ -15,9 +15,34 @@ options(scipen=999)
 
 btn_style <- "float:right;border-radius: 15px;"
 
+jscode <- "
+shinyjs.disableTab = function(name) {
+var tab = $('.nav li a[data-value=' + name + ']');
+tab.bind('click.tab', function(e) {
+e.preventDefault();
+return false;
+});
+tab.addClass('disabled');
+}
+
+shinyjs.enableTab = function(name) {
+var tab = $('.nav li a[data-value=' + name + ']');
+tab.unbind('click.tab');
+tab.removeClass('disabled');
+}
+"
+css <- "
+.nav li a.disabled {
+background-color: #FFFFFF !important;
+color: #333 !important;
+cursor: default  !important;
+border-color: #FFFFFF !important;
+}"
 
 
 ui <- fluidPage( 
+  
+
   theme = shinytheme("journal"), 
   
   #define fakeClick for buttons
@@ -32,18 +57,28 @@ ui <- fluidPage(
                                                          };
                                                          '))) ),
   
+  shinyjs::useShinyjs(),
+  shinyjs::extendShinyjs(text = jscode, functions = c("disableTab","enableTab")),
+  shinyjs::inlineCSS(css),
+  
+ 
+  
+  
+  
           navbarPage('', id = "pag",
-             
-             
+                     
+                    
              tabPanel('Inicio',
                       
-                      fluidRow(column(12, 
-                               column(10, 
+                      fluidRow(#column(12, 
+                               #column(10, 
                       tags$div(
                         h1("Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo", 
-                           style ="text-align: center" ))), 
-                               column(2,
-                          img(src = "img/logo_ceped2.png", width = 270)))),
+                           style ="text-align: center" ))#), 
+                          #      column(2,
+                          # img(src = "img/logo_ceped2.png", width = 270))
+                      #)
+                      ),
                       hr(),
                       
                       fluidRow(
@@ -220,7 +255,14 @@ ui <- fluidPage(
              
             publicaciones_ui('publicaciones'),
             
-             ceped_plot_ui('ceped_presenta')#,
+             ceped_plot_ui('ceped_presenta'),
+            
+            tabPanel(value = "logo_ceped",title=div(style = "display:flex; flex-direction: row; justify-content: flex-end; align-items: start; width: 100px", 
+                                                    img(src="img/logo_ceped2.png",height="100%", width="100%", style = "add padding: 0px")
+            ))
+            
+            
+            
              
             
              

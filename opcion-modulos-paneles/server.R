@@ -1,4 +1,6 @@
 server <- function (input, output,session) {
+  
+  shinyjs::js$disableTab("logo_ceped")
 
   categoria_ocup_eph_plot_server('categoria_ocup_eph')
   trabajo_eph_plot_server('trabajo_eph')
