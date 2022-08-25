@@ -14,7 +14,8 @@ ipc_plot_server <- function(id) {
         rename("Serie" = "cod.variable",
                "Período" = "ANO4",
                "País" = "nombre.pais",
-               "Valor" = "valor")
+               "Valor" = "valor",
+               "Variación (%)" = "var")
       
       if (variables == v_ipc[1]) {
         
@@ -41,36 +42,78 @@ ipc_plot_server <- function(id) {
                        "</br><font size='+1'>Desde ", periodo_i, " hasta ", periodo_f,"</font>")
     }
     
+    generar_titulob <- function(variables, periodo_i, periodo_f){
+      nombre_variable <- unique(diccionario_variables$nombre.variable[diccionario_variables$cod.variable ==variables])
+      titulo <- paste0("</br><font size='+2'> Variación del ",variables,".</font>" ,
+                       "</br><font size='+1'>Desde ", periodo_i, " hasta ", periodo_f,"</font>")
+    }
+    
     plot <- function(variables, periodo_i, periodo_f){
       
       p <- base_ipc %>% ungroup() %>%
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
-        filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+        filter(ANO4 %in% c(periodo_i:periodo_f)) %>%
+        arrange(ANO4, MES) %>% 
         rowwise() %>% 
         mutate(Per = ifelse(is.na(MES), paste0(ANO4),paste0(ANO4,"-",MES))) %>% 
         ungroup() %>% 
+        mutate(id = row_number()) %>% 
+        
         
         filter(nombre.pais == "Argentina") %>% 
         ggplot(
-          aes(x = as.factor(Per), y = valor, group = nombre.pais, color = nombre.pais
+          aes(x = fct_reorder(as.factor(Per), id), y = valor, group = nombre.pais
               ,text=paste0('</br>',nombre.pais,'</br>Valor: ',round(valor,1), '</br>Período: ',Per)))+
-        geom_line(size = 1) +
-        labs(color= "País",
-             y = "",
+        geom_line(size = 1, color = paleta_colores[1]) +
+        labs(y = "",
              x = "Año")+
         theme_minimal()+
         theme(text = element_text(size = 9),
-              axis.text.x = element_text(size=10),
+              axis.text.x = element_text(size=10,angle = 90),
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
-        theme(axis.text.x = element_text(angle = 90))+
-        scale_color_manual(values =paleta_colores)
+        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
       
       p
-      #ggplotly(p, tooltip = c("text"))
+      
     }
+    
+    
+    
+    plot_var <- function(variables, periodo_i, periodo_f){
+      
+      p <- base_ipc %>% ungroup() %>%
+        filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
+        
+        filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+        arrange(ANO4, MES) %>% 
+        rowwise() %>% 
+        mutate(Per = ifelse(is.na(MES), paste0(ANO4),paste0(ANO4,"-",MES))) %>% 
+        ungroup() %>% 
+        mutate(id = row_number()) %>% 
+        
+        filter(nombre.pais == "Argentina") %>% 
+        ggplot(
+          aes(x = fct_reorder(as.factor(Per), id), y = var, group = nombre.pais
+              ,text=paste0('</br>',nombre.pais,'</br>Variación: ',round(var,1),'%' ,'</br>Período: ',Per)))+
+        geom_col(size = 1, fill = paleta_colores[2]) +
+        labs(y = "",
+             x = "Año")+
+        theme_minimal()+
+        theme(text = element_text(size = 9),
+              axis.text.x = element_text(size=10,angle = 90),
+              axis.text.y = element_text(size=10),
+              legend.position = "none",
+              plot.title= element_text(size=12, face="bold"))+
+        scale_y_continuous(labels = function(x) paste0(x,"%"))+
+        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
+      
+      p
+
+    }
+
     
     plot_interact <- function(p){
       ggplotly(p, tooltip = c("text"))%>% 
@@ -80,6 +123,9 @@ ipc_plot_server <- function(id) {
     generar_metadata <- function(variables){
       diccionario_variables$metadata[diccionario_variables$nombre.variable == variables] 
     }
+    output$titulob1 <- renderText({
+      generar_titulob(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+    })
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
@@ -88,6 +134,9 @@ ipc_plot_server <- function(id) {
     })
     output$plot <- renderPlotly({
       plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
+    })
+    output$plot_var <- renderPlotly({
+      plot_interact(plot_var(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
     })
     output$tabla <- renderTable({
       armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
@@ -112,6 +161,15 @@ ipc_plot_server <- function(id) {
         
         
         ggsave(file,plot=plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
+               width=8, height=4)
+      }
+    )
+    output$downloadPlot_var <- downloadHandler(
+      filename = function(){paste(input$var_serie,'.png',sep='')},
+      content = function(file){
+        
+        
+        ggsave(file,plot=plot_var(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
                width=8, height=4)
       }
     )
@@ -151,14 +209,23 @@ ipc_plot_ui <- function(id, title,v_variables) {
                  tabPanel("Gráfico",
                           value = "g_ipc",
                           
-               box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
+               box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
                br(),
-               plotlyOutput(ns('plot')),
-               br(),
-               box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+               plotlyOutput(ns('plot_var'))%>% withSpinner(type = 7, color =paleta_colores[2]),
                br(),
                box(width = NULL,
-                   downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+                   downloadButton(ns('downloadPlot_var'),'Descargar gráfico')),
+               br(),
+               box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
+               br(),
+               plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
+               br(),
+               box(width = NULL,
+                   downloadButton(ns('downloadPlot'),'Descargar gráfico')),
+               br(),
+               box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+               br()
+               
                
                ),
                
