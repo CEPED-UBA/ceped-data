@@ -47,7 +47,7 @@ bop_spub_dolares_constantes <-
 bop_dol_corr <- bop_dolares_corrientes %>% 
   rename(cod.variable = Año,nombre.pais = País) %>% 
   mutate(cod.variable = str_trim(cod.variable,side = "both")) %>% 
-  pivot_longer(cols = 5:ncol(.),
+  pivot_longer(cols = 6:ncol(.),
                names_to = "ANO4",
                values_to = "valor") %>% 
   mutate(iso3c = "ARG",
@@ -57,7 +57,7 @@ bop_dol_corr <- bop_dolares_corrientes %>%
 bop_dol_cons <- bop_dolares_constantes %>% 
   rename(cod.variable = Año,nombre.pais = País) %>% 
   mutate(cod.variable = str_trim(cod.variable,side = "both")) %>% 
-  pivot_longer(cols = 5:ncol(.),
+  pivot_longer(cols = 6:ncol(.),
                names_to = "ANO4",
                values_to = "valor") %>% 
   mutate(iso3c = "ARG",

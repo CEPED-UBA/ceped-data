@@ -18,21 +18,28 @@ bp_plot_server <- function(id) {
     generar_titulo <- function(variables, valu, periodo_i, periodo_f){
       nombre_variable <-  paste0(variables, collapse = ", ")
       nombre_variable <- sub(",([^,]*)$", " y\\1", nombre_variable)   
-      titulo <- paste0("</br><font size='+2'>",nombre_variable , " en ",valu,".</font>",
+      titulo <- paste0("</br><font size='+2'>",nombre_variable , " en millones de ",valu,".</font>",
                        "</br><font size='+1'>Desde ", periodo_i, " hasta ", periodo_f,".</font>")
     }
    
     
-    plot <- function(variables,valu, periodo_i, periodo_f){
+    plot <- function(tipog,variables,valu, periodo_i, periodo_f){
+      
+      if(tipog== "Barra apilada"){
+        tipo  <- geom_col()
+      }
+      if(tipog  == "Linea"){
+        tipo  <- geom_line()
+      }
+      
       
       p <- bop_arg_dolares %>%
-        filter(cod.variable  %in%   variables,valuacion == valu) %>% 
+        filter(codigo_y_variable  %in%   variables,valuacion == valu) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
-          aes(x = as.factor(ANO4), y = valor, shape = Sector,group = cod.variable, color = cod.variable,
+          aes(x = as.factor(ANO4), y = valor, shape = Sector,group = cod.variable, color = cod.variable,fill = cod.variable,
               text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
-        geom_line(size = 1) +
-        geom_point(size = 2) +
+        tipo+
         labs(y = "",
              x = "Año",
              color = "")+
@@ -43,8 +50,9 @@ bp_plot_server <- function(id) {
               legend.position = "bottom",
               plot.title= element_text(size=12, face="bold"))+
         theme(axis.text.x = element_text(angle = 90))+
-        scale_color_manual(values =paleta_colores_extendida)
-      
+        scale_color_manual(values =paleta_colores_extendida)+
+        scale_fill_manual(values =paleta_colores_extendida)
+        
       p
       #ggplotly(p, tooltip = c("text"))
     }
@@ -59,13 +67,19 @@ bp_plot_server <- function(id) {
     # }
     
     output$titulo1 <- renderText({
-      generar_titulo(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2])
+      generar_titulo(paste0(unique(
+          bop_arg_dolares$cod.variable[bop_arg_dolares$codigo_y_variable %in% input$variables_serie]),
+        collapse = " - "),
+                    #input$variables_serie,
+                     input$valuacion,
+                     input$id_periodo[1],
+                     input$id_periodo[2])
     })
     output$titulo2 <- renderText({
       generar_titulo(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2])
     })
     output$plot <- renderPlotly({
-      plot_interact(plot(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2]))
+      plot_interact(plot(input$tipo_graf,input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2]))
     })
     
     output$tabla <- renderTable({
@@ -111,12 +125,18 @@ bp_plot_ui <- function(id, title,v_variables) {
              titlePanel(title),
              sidebarLayout(
                sidebarPanel(
+                 selectInput(ns('tipo_graf'),label =  "Tipo de Grafico: ",
+                              choices = c("Linea","Barra apilada"),
+                              selected = "Linea",
+                              width = "300px",
+                              multiple = F
+                             ),
                  selectInput(ns('variables_serie'),label = 'Seleccionar Series',
-                             choices =  unique(bop_arg_dolares$cod.variable),
-                             selected = unique(bop_arg_dolares$cod.variable)[1],
+                             choices =  unique(bop_arg_dolares$codigo_y_variable),
+                             selected = unique(bop_arg_dolares$codigo_y_variable)[5:8],
                              width = "300px",
                              multiple = T
-                             ),
+                 ),
                  selectInput(ns('valuacion'),label = 'Elegir valuacion',
                              choices =  unique(bop_arg_dolares$valuacion),
                              selected = unique(bop_arg_dolares$valuacion)[1],
@@ -125,7 +145,7 @@ bp_plot_ui <- function(id, title,v_variables) {
                              ),
                  sliderInput(ns('id_periodo'),
                              "Período:",
-                             value = c(1992,2005),
+                             value = c(1992,2020),
                              min = 1992, 
                              max = 2020
                              ),
