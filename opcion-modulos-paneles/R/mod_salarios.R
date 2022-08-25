@@ -135,7 +135,7 @@ salarios_plot_ui <- function(id, title,v_variables) {
                  sliderInput(ns('id_periodo'),
                              "Período:",
                              value = c(1970,2018),
-                             min = 1960, 
+                             min = 1955, 
                              max = 2020
                              ), 
                  hr(), 
