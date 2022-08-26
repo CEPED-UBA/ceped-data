@@ -8,27 +8,42 @@ ipc_plot_server <- function(id) {
       
       tabla <- base_ipc %>% ungroup() %>%
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables]) ) %>% 
-        filter(nombre.pais == "Argentina") %>% 
+        
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         mutate(ANO4 = paste0(round(ANO4,0))) %>% 
         rename("Serie" = "cod.variable",
                "Período" = "ANO4",
-               "País" = "nombre.pais",
+               
                "Valor" = "valor",
                "Variación (%)" = "var")
       
       if (variables == v_ipc[1]) {
         
         tabla <- tabla %>% 
-          select(-MES)
+          select(-sub)
         
       } else if (variables == v_ipc[2]) {
         
         tabla <- tabla %>% 
-          mutate(MES = paste0(round(MES,0))) %>% 
-          rename("Mes"= "MES")
+         
+          rename("Mes"= "sub")
+        
+      } else if (variables == v_ipc[3]) {
+        
+        tabla <- tabla %>% 
+         
+          rename("Trimestre"= "sub") %>% 
+          select(-c( "Variación (%)" ))
+        
+      } else if (variables == v_ipc[4]) {
+        
+        tabla <- tabla %>% 
+         
+          rename("Onda"= "sub") %>% 
+          select(-c( "Variación (%)" ))
         
       }
+      
       
       
       return(tabla)
@@ -54,17 +69,17 @@ ipc_plot_server <- function(id) {
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>%
-        arrange(ANO4, MES) %>% 
+        arrange(ANO4, sub) %>% 
         rowwise() %>% 
-        mutate(Per = ifelse(is.na(MES), paste0(ANO4),paste0(ANO4,"-",MES))) %>% 
+        mutate(Per = ifelse(is.na(sub), paste0(ANO4),paste0(ANO4,"-",sub))) %>% 
         ungroup() %>% 
         mutate(id = row_number()) %>% 
         
         
-        filter(nombre.pais == "Argentina") %>% 
+       
         ggplot(
-          aes(x = fct_reorder(as.factor(Per), id), y = valor, group = nombre.pais
-              ,text=paste0('</br>',nombre.pais,'</br>Valor: ',round(valor,1), '</br>Período: ',Per)))+
+          aes(x = fct_reorder(as.factor(Per), id), y = valor, group = cod.variable
+              ,text=paste0('</br>',cod.variable,'</br>Valor: ',round(valor,1), '</br>Período: ',Per)))+
         geom_line(size = 1, color = paleta_colores[1]) +
         labs(y = "",
              x = "Año")+
@@ -74,7 +89,7 @@ ipc_plot_server <- function(id) {
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
-        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
+        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)|grepl("-Mayo", x)|grepl("-T1", x)),paste0(x),paste0("") ))
       
       p
       
@@ -88,16 +103,16 @@ ipc_plot_server <- function(id) {
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-        arrange(ANO4, MES) %>% 
+        arrange(ANO4, sub) %>% 
         rowwise() %>% 
-        mutate(Per = ifelse(is.na(MES), paste0(ANO4),paste0(ANO4,"-",MES))) %>% 
+        mutate(Per = ifelse(is.na(sub), paste0(ANO4),paste0(ANO4,"-",sub))) %>% 
         ungroup() %>% 
         mutate(id = row_number()) %>% 
         
-        filter(nombre.pais == "Argentina") %>% 
+       
         ggplot(
-          aes(x = fct_reorder(as.factor(Per), id), y = var, group = nombre.pais
-              ,text=paste0('</br>',nombre.pais,'</br>Variación: ',round(var,1),'%' ,'</br>Período: ',Per)))+
+          aes(x = fct_reorder(as.factor(Per), id), y = var, group = cod.variable
+              ,text=paste0('</br>',cod.variable,'</br>Variación: ',round(var,1),'%' ,'</br>Período: ',Per)))+
         geom_col(size = 1, fill = paleta_colores[2]) +
         labs(y = "",
              x = "Año")+
@@ -117,27 +132,98 @@ ipc_plot_server <- function(id) {
     
     plot_interact <- function(p){
       ggplotly(p, tooltip = c("text"))%>% 
-        layout(font = list(family ="Times New Roman"))
+        layout(font = list(family ="Tisub New Roman"))
     }
     
     generar_metadata <- function(variables){
       diccionario_variables$metadata[diccionario_variables$nombre.variable == variables] 
     }
-    output$titulob1 <- renderText({
-      generar_titulob(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+    
+    
+    
+    observe({
+      if (input$var_serie %in% c(v_ipc[1],v_ipc[2])) {
+        
+        output$titulob1 <- renderText({
+          generar_titulob(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+        })
+        output$titulo1 <- renderText({
+          generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+        })
+       
+        output$plot <- renderPlotly({
+          plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
+        })
+        output$plot_var <- renderPlotly({
+          plot_interact(plot_var(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
+        })
+        output$downloadPlot <- downloadHandler(
+          filename = function(){paste(input$var_serie,'.png',sep='')},
+          content = function(file){
+            
+            
+            ggsave(file,plot=plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
+                   width=8, height=4)
+          }
+        )
+        # output$downloadPlot_var <- downloadHandler(
+        #   filename = function(){paste(input$var_serie,'.png',sep='')},
+        #   content = function(file){
+        #     
+        #     
+        #     ggsave(file,plot=plot_var(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
+        #            width=8, height=4)
+        #   }
+        # )
+        
+      } else if (input$var_serie %in% c(v_ipc[3],v_ipc[4])) {
+        
+        output$titulob1 <- NULL
+        output$titulo1 <- renderText({
+          generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+        })
+        
+        output$plot <- renderPlotly({
+          plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
+        })
+        output$plot_var <- NULL
+        output$downloadPlot <- downloadHandler(
+          filename = function(){paste(input$var_serie,'.png',sep='')},
+          content = function(file){
+            
+            
+            ggsave(file,plot=plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
+                   width=8, height=4)
+          }
+        )
+        #output$downloadPlot_var <- NULL
+        #shinyjs::disable("downloadPlot_var")
+        
+      }
+      
     })
-    output$titulo1 <- renderText({
-      generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+    
+    output$downloadPlot_var <- renderUI({
+      if(input$var_serie %in% c(v_ipc[1],v_ipc[2])) {
+        downloadButton('ipc-downloadPlot_var_b','Descargar gráfico')
+      }
     })
+    
+    output$downloadPlot_var_b <- downloadHandler(
+      filename = function(){paste(input$var_serie,'.png',sep='')},
+      content = function(file){
+
+
+        ggsave(file,plot=plot_var(input$var_serie, input$id_periodo[1],input$id_periodo[2]),
+               width=8, height=4)
+      }
+    )
+    
+    
     output$titulo2 <- renderText({
       generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
-    output$plot <- renderPlotly({
-      plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
-    })
-    output$plot_var <- renderPlotly({
-      plot_interact(plot_var(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
-    })
+    
     output$tabla <- renderTable({
       armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
@@ -155,24 +241,7 @@ ipc_plot_server <- function(id) {
         write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
                    file)    }
     )
-    output$downloadPlot <- downloadHandler(
-      filename = function(){paste(input$var_serie,'.png',sep='')},
-      content = function(file){
-        
-        
-        ggsave(file,plot=plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
-               width=8, height=4)
-      }
-    )
-    output$downloadPlot_var <- downloadHandler(
-      filename = function(){paste(input$var_serie,'.png',sep='')},
-      content = function(file){
-        
-        
-        ggsave(file,plot=plot_var(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
-               width=8, height=4)
-      }
-    )
+    
     
     
   })
@@ -209,13 +278,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                  tabPanel("Gráfico",
                           value = "g_ipc",
                           
-               box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
-               br(),
-               plotlyOutput(ns('plot_var'))%>% withSpinner(type = 7, color =paleta_colores[2]),
-               br(),
-               box(width = NULL,
-                   downloadButton(ns('downloadPlot_var'),'Descargar gráfico')),
-               br(),
+               
                box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
                br(),
                plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
@@ -224,6 +287,15 @@ ipc_plot_ui <- function(id, title,v_variables) {
                    downloadButton(ns('downloadPlot'),'Descargar gráfico')),
                br(),
                box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+               br(),
+               box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
+               br(),
+               plotlyOutput(ns('plot_var'))%>% withSpinner(type = 7, color =paleta_colores[2]),
+               br(),
+               box(width = NULL,
+                   #downloadButton(ns('downloadPlot_var'),'Descargar gráfico')
+                   uiOutput(ns('downloadPlot_var'))
+                   ),
                br()
                
                
@@ -242,7 +314,8 @@ ipc_plot_ui <- function(id, title,v_variables) {
                                box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
                                br(),
                                box(width = NULL,
-                                   downloadButton(ns('downloadTable'),'Descargar tabla'))
+                                   downloadButton(ns('downloadTable'),'Descargar tabla')
+                                   )
                                
                                
                         ))
