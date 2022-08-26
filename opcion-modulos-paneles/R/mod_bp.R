@@ -98,6 +98,11 @@ bp_plot_server <- function(id) {
     output$tabla <- renderTable({
       armar_tabla(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2])
     })
+    output$diccionario_bp <- renderTable({
+      
+      bop_arg_dolares %>% select(Nivel,Sector,Codigo,cod.variable) %>% unique() 
+      })
+    
     # output$metadata1 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
@@ -193,6 +198,16 @@ bp_plot_ui <- function(id, title,v_variables) {
                                 downloadButton(ns('downloadPlot'),'Descargar gráfico'))
                             
                    ),
+                   tabPanel("Diccionario",
+                            value = "d_bp",
+                            
+                            fluidRow(
+                              column(12,
+                                     column(9, 
+                                            box(width = NULL,br(), htmlOutput(ns('titulo_dc'))),
+                                            br(),
+                                            box(tableOutput(ns('diccionario_bp')))))
+                            )),
                    tabPanel("Tabla",
                             value = "t_bp",
                             
