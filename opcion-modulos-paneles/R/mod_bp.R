@@ -11,7 +11,7 @@ bp_plot_server <- function(id) {
       # dataframe <- input$df
       updateSelectizeInput(session, 
                            inputId = "variables_serie",
-                           label = "'Seleccionar Series'", 
+                           label = "Seleccionar Series", 
                            choices = unique(df$codigo_y_variable),
                            selected = unique(df$codigo_y_variable)[1])
     })
