@@ -9,25 +9,31 @@ bop_dolares_corrientes <-
             sheet = "BP_mill U$ corr",startRow = 3,rows = 3:81,
                     skipEmptyRows = T) 
 
-
-bop_spriv_dolares_corrientes <- 
-  read.xlsx("crudo/datos/Balance de Pagos.xlsx",
-            sheet = "BP_mill U$ corr",rows = c(3,83:96),
-            skipEmptyRows = T) 
-
-bop_spub_dolares_corrientes <- 
-  read.xlsx("crudo/datos/Balance de Pagos.xlsx",
-            sheet = "BP_mill U$ corr",rows = c(3,97:105),
-            skipEmptyRows = T) 
-
-
-
 bop_dolares_constantes <- 
   read.xlsx("crudo/datos/Balance de Pagos.xlsx",
             sheet = "BP_mill U$ const",
             startRow = 3,rows = 3:81,
             skipEmptyRows = T)
 
+
+bop_dolares_diccionario <-  read.xlsx("crudo/datos/Balance de Pagos.xlsx",
+                                        sheet = "Metadata BP",
+                                        startRow = 9,rows = 9:78,cols = 2:4,
+                                        skipEmptyRows = T)
+
+saveRDS(bop_dolares_diccionario,
+        file = "opcion-modulos-paneles/www/data/bop_dolares_diccionario.RDS")
+
+
+bop_sectores_diccionario <-  read.xlsx("crudo/datos/Balance de Pagos.xlsx",
+                                      sheet = "Metadata BP",
+                                      startRow = 9,rows = 9:33,cols = 6:8,
+                                      skipEmptyRows = T)
+saveRDS(bop_sectores_diccionario,
+        file = "opcion-modulos-paneles/www/data/bop_sectores_diccionario.RDS")
+
+
+  
 bop_sectores_corrientes <- 
   read.xlsx("crudo/datos/Balance de Pagos.xlsx",
             sheet = "BP_mill U$ corr",

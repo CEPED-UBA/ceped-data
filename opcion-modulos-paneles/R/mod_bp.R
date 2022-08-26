@@ -17,15 +17,13 @@ bp_plot_server <- function(id) {
     })
     
     
-    armar_tabla <- function(variables, valu, periodo_i, periodo_f){
+    armar_tabla <- function(valu, periodo_i, periodo_f){
       df() %>%
-        filter(cod.variable  %in%   variables,valuacion == valu) %>% 
+        filter(valuacion == valu) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-        rename("Serie" = "cod.variable",
-               "País" = "nombre.pais",
-               "Período" = "ANO4",
+        rename("Período" = "ANO4",
                "Valuación" = "valuacion") %>% 
-        select("País","iso3c","Período","Serie","Valuación", "valor")
+        select("codigo_y_variable","Valuación", "valor","Período")
     }
     
     generar_titulo <- function(variables, valu, periodo_i, periodo_f){
@@ -96,14 +94,14 @@ bp_plot_server <- function(id) {
     })
     
     output$tabla <- renderTable({
-      armar_tabla(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2])
+      armar_tabla(input$valuacion, input$id_periodo[1],input$id_periodo[2])
+        
     })
     output$diccionario_bp <- renderTable({
-      
-      bop_arg_dolares %>% select(Nivel,Sector,Codigo,cod.variable) %>% unique() 
+      bop_dolares_diccionario
       })
     
-    # output$metadata1 <- renderText({
+# output$metadata1 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
     # output$metadata2 <- renderText({
@@ -184,7 +182,15 @@ bp_plot_ui <- function(id, title,v_variables) {
                mainPanel(
                  
                  tabsetPanel(
-                   
+                   tabPanel("Diccionario",
+                            value = "d_bp",
+                            
+                            fluidRow(
+                                     column(width = 12, 
+                                            box(tableOutput(ns('diccionario_bp')),
+                                                width = 12)
+                                            ))
+                            ),
                    tabPanel("Gráfico",
                             value = "g_bp",
                             
@@ -198,17 +204,7 @@ bp_plot_ui <- function(id, title,v_variables) {
                                 downloadButton(ns('downloadPlot'),'Descargar gráfico'))
                             
                    ),
-                   tabPanel("Diccionario",
-                            value = "d_bp",
-                            
-                            fluidRow(
-                              column(12,
-                                     column(9, 
-                                            box(width = NULL,br(), htmlOutput(ns('titulo_dc'))),
-                                            br(),
-                                            box(tableOutput(ns('diccionario_bp')))))
-                            )),
-                   tabPanel("Tabla",
+                    tabPanel("Tabla Completa",
                             value = "t_bp",
                             
                             fluidRow(

@@ -29,6 +29,9 @@ bop_arg_dolares <- readRDS("www/data/bop_arg_dolares.RDS") %>%
          Nivel = as.character(Nivel))
 bop_sectores <- readRDS("www/data/bop_sectores.RDS") %>% 
   mutate(codigo_y_variable = paste0(Codigo," - ",cod.variable))
+bop_dolares_diccionario <- readRDS("www/data/bop_dolares_diccionario.RDS") 
+bop_sectores_diccionario <- readRDS("www/data/bop_sectores_diccionario.RDS") 
+
 serie_salarios <- readRDS("www/data/salarios.RDS")
 tipo_cambio_argentina <- readRDS("www/data/Tipo_Cambio_Arg.RDS")
 base_ipc <- readRDS("www/data/base_ipc.RDS")
