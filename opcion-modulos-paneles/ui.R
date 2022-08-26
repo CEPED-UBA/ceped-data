@@ -112,21 +112,24 @@ ui <- fluidPage(
                                                          p(''),
                                                          br(),
                                                          
-                                                         # tags$a("Población",
-                                                         #        style=paste0(btn_style,"background:#1a3f5f;border-color: #1a3f5f;color: black;font-size:14px"),
-                                                         #        onclick="fakeClick('poblacion_eph')",
-                                                         #        class="btn btn-primary btn-s"
-                                                         # ), 
-                                                         # 
-                                                         # br(),
-                                                         # p(''),
-                                                         # br(),
-                                                         
                                                          tags$a("Categorías ocupacionales",
                                                                 style=paste0(btn_style,"background:#1a3f5f;border-color: #1a3f5f;color: black;font-size:14px"),
                                                                 onclick="fakeClick('categoria_ocup_eph')",
                                                                 class="btn btn-primary btn-s"
+                                                         ), 
+                                                         
+                                                         br(),
+                                                         p(''),
+                                                         br()
+                                                         
+                                                         ,
+
+                                                         tags$a("Precariedad laboral",
+                                                                style=paste0(btn_style,"background:#1a3f5f;border-color: #1a3f5f;color: black;font-size:14px"),
+                                                                onclick="fakeClick('precariedad_eph')",
+                                                                class="btn btn-primary btn-s"
                                                          )
+                                                         
                                                 )
                                       )
                                ),  
@@ -235,7 +238,8 @@ ui <- fluidPage(
                         
                         #poblacion_eph_plot_ui(id ='poblacion_eph', title ='Población', v_poblacion_eph) ,
                         categoria_ocup_eph_plot_ui(id ='categoria_ocup_eph', title ='Categorías ocupacionales', v_categoria_ocup_eph),
-                        trabajo_eph_plot_ui(id ='trabajo_eph', title ='Mercado de Trabajo', v_trabajo_eph)
+                        trabajo_eph_plot_ui(id ='trabajo_eph', title ='Mercado de Trabajo', v_trabajo_eph), 
+                        precariedad_eph_plot_ui(id ='precariedad_eph', title ='Percariedad laboral', v_precariedad_eph)
                          
 
                         

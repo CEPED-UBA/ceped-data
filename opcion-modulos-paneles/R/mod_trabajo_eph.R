@@ -1,20 +1,3 @@
-# library(ggplot2)
-# library(tidyverse)
-# library(openxlsx)
-# 
-# trabajo_eph <- readRDS("www/data/Mercado_de_Trabajo_Arg.RDS") 
-# 
-# diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
-# 
-# v_trabajo_eph <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>%  select(nombre.variable) 
-# v_trabajo_eph <- as.vector(v_trabajo_eph[1])
-# 
-# # Cambio cod.variable por nombre de la variable
-# etiquetas <- diccionario_variables %>% filter(base=="Mercado_de_Trabajo_Arg") %>% select(nombre.variable, cod.variable)
-# 
-# trabajo_eph <- left_join(trabajo_eph, etiquetas, by=c("cod.variable")) %>% 
-#   mutate(cod.variable=nombre.variable) %>% 
-#   select(-nombre.variable)
 
 trabajo_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
@@ -36,7 +19,7 @@ trabajo_eph_plot_server <- function(id) {
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
       titulo <- paste0("<font size='+2'></br>",lista_variables ,".</font>",
-                       "</br><font size='+1'>Información trimestral. Años ", periodo_i, " - ", periodo_f,"</font>")
+                       "</br><font size='+1'>Años ", periodo_i, " - ", periodo_f,"</font>")
 
        }
     
@@ -152,8 +135,8 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
-                           value = c(2003,2021),
-                           min = 2003, 
+                           value = c(1995,2021),
+                           min = 1995, 
                            max = 2021
                ), 
                hr(), 
@@ -178,7 +161,7 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
                           br(),
                           #box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
                           box(title = "Metadata", width = NULL, 
-                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados."),
+                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -196,7 +179,7 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
                                           box(tableOutput(ns('tabla')))),
                                    column(6,          
                                           box(title = "Metadata", width = NULL, 
-                                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados."),
+                                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))
