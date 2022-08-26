@@ -3,9 +3,22 @@
 bp_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
+    df <-  reactive({
+      Agrupam <- get(input$desagregacion)
+    })
+    observe({
+      df <- df()
+      # dataframe <- input$df
+      updateSelectizeInput(session, 
+                           inputId = "variables_serie",
+                           label = "'Seleccionar Series'", 
+                           choices = unique(df$codigo_y_variable),
+                           selected = unique(df$codigo_y_variable)[1])
+    })
+    
     
     armar_tabla <- function(variables, valu, periodo_i, periodo_f){
-      bop_arg_dolares %>%
+      df() %>%
         filter(cod.variable  %in%   variables,valuacion == valu) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         rename("Serie" = "cod.variable",
@@ -33,7 +46,7 @@ bp_plot_server <- function(id) {
       }
       
       
-      p <- bop_arg_dolares %>%
+      p <- df() %>%
         filter(codigo_y_variable  %in%   variables,valuacion == valu) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
@@ -68,7 +81,7 @@ bp_plot_server <- function(id) {
     
     output$titulo1 <- renderText({
       generar_titulo(paste0(unique(
-          bop_arg_dolares$cod.variable[bop_arg_dolares$codigo_y_variable %in% input$variables_serie]),
+        df()$cod.variable[df()$codigo_y_variable %in% input$variables_serie]),
         collapse = " - "),
                     #input$variables_serie,
                      input$valuacion,
@@ -126,7 +139,8 @@ bp_plot_ui <- function(id, title,v_variables) {
              sidebarLayout(
                sidebarPanel(
                  selectInput(ns('desagregacion'),label =  "Elegir clasificacion: ",
-                             choices = c("Partidas desagregadas","Sectores Institucionales"),
+                             choices = c("Partidas desagregadas" = 'bop_arg_dolares',
+                                         "Sectores Institucionales" = 'bop_sectores'),
                              selected = "Partidas desagregadas",
                              width = "300px",
                              multiple = F
