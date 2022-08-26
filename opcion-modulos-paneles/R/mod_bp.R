@@ -37,7 +37,7 @@ bp_plot_server <- function(id) {
         filter(codigo_y_variable  %in%   variables,valuacion == valu) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
-          aes(x = as.factor(ANO4), y = valor, shape = Sector,group = cod.variable, color = cod.variable,fill = cod.variable,
+          aes(x = as.factor(ANO4), y = valor,group = cod.variable, color = cod.variable,fill = cod.variable,
               text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
         tipo+
         labs(y = "",
@@ -125,6 +125,12 @@ bp_plot_ui <- function(id, title,v_variables) {
              titlePanel(title),
              sidebarLayout(
                sidebarPanel(
+                 selectInput(ns('desagregacion'),label =  "Elegir clasificacion: ",
+                             choices = c("Partidas desagregadas","Sectores Institucionales"),
+                             selected = "Partidas desagregadas",
+                             width = "300px",
+                             multiple = F
+                 ),
                  selectInput(ns('tipo_graf'),label =  "Tipo de Grafico: ",
                               choices = c("Linea","Barra apilada"),
                               selected = "Linea",
@@ -173,7 +179,6 @@ bp_plot_ui <- function(id, title,v_variables) {
                                 downloadButton(ns('downloadPlot'),'Descargar gráfico'))
                             
                    ),
-                   
                    tabPanel("Tabla",
                             value = "t_bp",
                             

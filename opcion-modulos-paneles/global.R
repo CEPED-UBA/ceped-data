@@ -25,6 +25,8 @@ paleta_colores_extendida <- c(paleta_colores,"#cc0000","#e69138", "#4169e1" ,"#3
 diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
 bop_arg_dolares <- readRDS("www/data/bop_arg_dolares.RDS") %>% 
   mutate(codigo_y_variable = paste0(Codigo," - ",cod.variable))
+bop_sectores <- readRDS("www/data/bop_sectores.RDS") %>% 
+  mutate(codigo_y_variable = paste0(Codigo," - ",cod.variable))
 serie_salarios <- readRDS("www/data/salarios.RDS")
 tipo_cambio_argentina <- readRDS("www/data/Tipo_Cambio_Arg.RDS")
 poblacion_eph <- readRDS("www/data/Poblacion_eph.RDS") 
