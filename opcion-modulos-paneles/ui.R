@@ -102,9 +102,9 @@ ui <- fluidPage(
                                                          br(),
                                                          
                                                          
-                                                         tags$a("Mercado de Trabajo",
+                                                         tags$a("Tasas básicas",
                                                                 style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
-                                                                onclick="fakeClick('trabajo_eph')",
+                                                                onclick="fakeClick('tasas_basicas_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          ),
                                                          
@@ -120,13 +120,34 @@ ui <- fluidPage(
                                                          
                                                          br(),
                                                          p(''),
-                                                         br()
+                                                         br(),
                                                          
-                                                         ,
+                                                         tags$a("Categorías ocupacionales (Pok)",
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                onclick="fakeClick('categoria_ocup_pok_eph')",
+                                                                class="btn btn-primary btn-s"
+                                                         ), 
+                                                         
+                                                         br(),
+                                                         p(''),
+                                                         br(),
+                                                         
 
                                                          tags$a("Precariedad laboral",
                                                                 style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
                                                                 onclick="fakeClick('precariedad_eph')",
+                                                                class="btn btn-primary btn-s"
+                                                         ), 
+                                                         
+                                                         br(),
+                                                         p(''),
+                                                         br()
+                                                         
+                                                         ,
+                                                         
+                                                         tags$a("Empleo por ramas de actividad",
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                onclick="fakeClick('rama_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          )
                                                          
@@ -236,10 +257,11 @@ ui <- fluidPage(
              
              navbarMenu(title = 'Encuesta Permanente de Hogares',
                         
-                        #poblacion_eph_plot_ui(id ='poblacion_eph', title ='Población', v_poblacion_eph) ,
                         categoria_ocup_eph_plot_ui(id ='categoria_ocup_eph', title ='Categorías ocupacionales', v_categoria_ocup_eph),
-                        trabajo_eph_plot_ui(id ='trabajo_eph', title ='Mercado de Trabajo', v_trabajo_eph), 
-                        precariedad_eph_plot_ui(id ='precariedad_eph', title ='Percariedad laboral', v_precariedad_eph)
+                        categoria_ocup_pok_eph_plot_ui(id ='categoria_ocup_pok_eph', title ='Categorías ocupacionales (Pok)', v_categoria_ocup_pok_eph),
+                        tasas_basicas_eph_plot_ui(id ='tasas_basicas_eph', title ='Tasas básicas', v_tasas_basicas_eph), 
+                        precariedad_eph_plot_ui(id ='precariedad_eph', title ='Percariedad laboral', v_precariedad_eph), 
+                        rama_eph_plot_ui(id ='rama_eph', title ='Empleo por ramas', v_rama_eph)
                          
 
                         
@@ -263,6 +285,13 @@ ui <- fluidPage(
             
             tabPanel(value = "logo_ceped",title=div(style = "display:flex; flex-direction: row; justify-content: flex-end; align-items: start; width: 100px", 
                                                     img(src="img/logo_ceped2.png",height="100%", width="100%", style = "add padding: 0px" )
+                                          
+                               # Intento fallido de poner link a la imagen logo_ceped      
+                                                    # tags$a(
+                                                    #   href="http://www.economicas.uba.ar/institutos_y_centros/ceped/", 
+                                                    #   tags$img(src="img/logo_ceped2.png",height="100%", width="100%" ))
+                                                    
+                                                    
             ))
             
             

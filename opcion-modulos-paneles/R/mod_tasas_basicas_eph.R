@@ -1,16 +1,34 @@
 
-trabajo_eph_plot_server <- function(id) {
+tasas_basicas_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-
-    armar_tabla <- function(variables, var_tipo_serie, periodo_i, periodo_f){
-      trabajo_eph  %>%
+    armar_tabla <- function(variables, var_tipo_serie, periodo_i, periodo_f, id_periodicidad){
+      
+      if(id_periodicidad == "Promedio anual"){
+     tabla <- tasas_basicas_eph  %>%
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+        group_by(ANO4, cod.variable) %>% 
+        mutate(valor=mean(valor, na.rm=TRUE)) %>% 
         rename("Serie" = "cod.variable",
                "País" = "nombre.pais",
-               "Período" = "ANO4.trim") %>% 
-        select("País","iso3c","Período","Serie", "valor")
+               "Período"= "ANO4") %>% 
+          select("País","iso3c", "Período","Serie", "valor") %>% 
+          unique()
+        
+      }
+      
+      if(id_periodicidad == "Trimestral/Onda"){
+      tabla <-   tasas_basicas_eph  %>%
+          filter(cod.variable  %in%   variables) %>% 
+          filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+          rename("Serie" = "cod.variable",
+                 "País" = "nombre.pais",
+                 "Período" = "ANO4.trim") %>% 
+          select("País","iso3c","Período","Serie", "valor")
+      }
+      
+      tabla 
     }
     
     generar_titulo <- function(variables, periodo_i, periodo_f){
@@ -23,9 +41,41 @@ trabajo_eph_plot_server <- function(id) {
 
        }
     
-    plot <- function(variables, var_tipo_serie, periodo_i, periodo_f){
+    plot <- function(variables, var_tipo_serie, periodo_i, periodo_f, id_periodicidad){
       
-      p <- trabajo_eph %>%
+      
+      if(id_periodicidad == "Promedio anual"){
+        
+        
+      p <- tasas_basicas_eph %>%
+          filter(cod.variable  %in%   variables) %>% 
+          filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+          group_by(ANO4, cod.variable) %>% 
+          mutate(valor=mean(valor, na.rm=TRUE)) %>% 
+          unique() %>% 
+          ggplot(
+            aes(x = ANO4, y = valor/100, group = cod.variable, color = cod.variable,
+                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
+          geom_line(size = 1) +
+          geom_point(size = 2) +
+          labs(y = "",
+               x = "Año",
+               color = "")+
+          theme_minimal()+
+          theme(text = element_text(size = 9),
+                axis.text.x = element_text(size=6),
+                axis.text.y = element_text(size=10),
+                legend.position = "bottom",
+                plot.title= element_text(size=12, face="bold"))+
+          theme(axis.text.x = element_text(angle = 90))+
+          scale_color_manual(values =paleta_colores_extendida) +
+          scale_y_continuous(labels=scales::percent)
+        
+      }
+      
+      if(id_periodicidad == "Trimestral/Onda"){
+      
+      p <- tasas_basicas_eph %>%
         filter(cod.variable  %in%   variables) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         ggplot(
@@ -43,9 +93,9 @@ trabajo_eph_plot_server <- function(id) {
               legend.position = "bottom",
               plot.title= element_text(size=12, face="bold"))+
         theme(axis.text.x = element_text(angle = 90))+
-        scale_color_manual(values =paleta_colores) +
+        scale_color_manual(values =paleta_colores_extendida) +
         scale_y_continuous(labels=scales::percent)
-      
+      }
       
       p
       #ggplotly(p, tooltip = c("text"))
@@ -65,38 +115,31 @@ trabajo_eph_plot_server <- function(id) {
     #   
     # }
     
-    observeEvent(input$var_tipo_serie, {
-      
-      updateSelectInput(session, 'var_serie',
-                        choices =  unique(trabajo_eph$cod.variable[trabajo_eph$tipo==input$var_tipo_serie]),
-                        selected = unique(trabajo_eph$cod.variable[trabajo_eph$tipo==input$var_tipo_serie])[1])
-      
-    })
-    
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
     })
-     output$titulo2 <- renderText({
+    
+    output$titulo2 <- renderText({
        generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
      })
      
-     observeEvent(input$var_serie, {
      
     output$plot <- renderPlotly({
-      plot_interact(plot(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2]))
+      plot_interact(plot(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad))
     })
-    
-     })
     
     output$tabla <- renderTable({
-      armar_tabla(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2])
+      armar_tabla(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad)
     })
-    # output$metadata1 <- renderText({
+
+      # output$metadata1 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
     # output$metadata2 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
+    
+    
     output$downloadTable <- downloadHandler(
 
       filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
@@ -119,7 +162,7 @@ trabajo_eph_plot_server <- function(id) {
      })
 }
 
-trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
+tasas_basicas_eph_plot_ui <- function(id, title,v_tasas_basicas_eph) {
   ns <- NS(id)
   
   tabPanel(title,
@@ -128,9 +171,15 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
            
            sidebarLayout(
              sidebarPanel(
+               selectInput(ns('id_periodicidad'),label = 'Tipo de infromación:',
+                           choices =  c("Promedio anual", "Trimestral/Onda"),
+                           selected = "Promedio Anual",
+                           width = "300px",
+                           multiple = F
+               ),
                selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
-                           choices =  unique(trabajo_eph$cod.variable),
-                           selected = unique(trabajo_eph$cod.variable)[1],
+                           choices =  unique(tasas_basicas_eph$cod.variable),
+                           selected = unique(tasas_basicas_eph$cod.variable)[1],
                            width = "300px",
                            multiple = T
                ),
@@ -153,7 +202,7 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
                tabsetPanel(
                  
                  tabPanel("Gráfico",
-                          value = "g_trabajo_eph",
+                          value = "g_tasas_basicas_eph",
                           
                           box(width = NULL, br(),htmlOutput(ns('titulo1'))), 
                           br(),
@@ -169,7 +218,7 @@ trabajo_eph_plot_ui <- function(id, title,v_trabajo_eph) {
                  ),
                  
                  tabPanel("Tabla",
-                          value = "t_trabajo_eph",
+                          value = "t_tasas_basicas_eph",
                           
                           box(width = NULL, br(),htmlOutput(ns('titulo2'))), 
                           br(),

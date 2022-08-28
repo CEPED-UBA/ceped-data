@@ -1,11 +1,11 @@
 
-precariedad_eph_plot_server <- function(id) {
+rama_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-
-    armar_tabla <- function(variables, var_tipo_serie, periodo_i, periodo_f, id_periodicidad){
+    armar_tabla <- function(variables, periodo_i, periodo_f, id_periodicidad){
+      
       if(id_periodicidad == "Promedio anual"){
-        tabla <- precariedad_eph  %>%
+        tabla <- rama_eph  %>%
           filter(cod.variable  %in%   variables) %>% 
           filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
           group_by(ANO4, cod.variable) %>% 
@@ -19,7 +19,7 @@ precariedad_eph_plot_server <- function(id) {
       }
       
       if(id_periodicidad == "Trimestral/Onda"){
-        tabla <-   precariedad_eph  %>%
+        tabla <-   rama_eph  %>%
           filter(cod.variable  %in%   variables) %>% 
           filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
           rename("Serie" = "cod.variable",
@@ -30,58 +30,63 @@ precariedad_eph_plot_server <- function(id) {
       
       tabla 
     }
+    
     generar_titulo <- function(variables, periodo_i, periodo_f){
       
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0("<font size='+2'></br>",lista_variables ,".</font>",
+      titulo <- paste0("<font size='+2'></br>", "Porcentaje de personas ocupadas en ", lista_variables ," sobre total de ocupados.</font>",
                        "</br><font size='+1'>Años ", periodo_i, " - ", periodo_f,"</font>")
 
        }
     
-    plot <- function(variables, var_tipo_serie, periodo_i, periodo_f, id_periodicidad){
+    plot <- function(variables, periodo_i, periodo_f, id_periodicidad){
       
       
       if(id_periodicidad == "Promedio anual"){
         
         
-        p <- precariedad_eph %>%
+        p <- rama_eph %>%
           filter(cod.variable  %in%   variables) %>% 
           filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
           group_by(ANO4, cod.variable) %>% 
           mutate(valor=mean(valor, na.rm=TRUE)) %>% 
           unique() %>% 
-          ggplot(
-            aes(x = ANO4, y = valor/100, group = cod.variable, color = cod.variable,
-                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
-          geom_line(size = 1) +
-          geom_point(size = 2) +
-          labs(y = "",
-               x = "Año",
-               color = "")+
-          theme_minimal()+
-          theme(text = element_text(size = 9),
-                axis.text.x = element_text(size=6),
-                axis.text.y = element_text(size=10),
-                legend.position = "bottom",
-                plot.title= element_text(size=12, face="bold"))+
-          theme(axis.text.x = element_text(angle = 90))+
-          scale_color_manual(values =paleta_colores_extendida) +
-          scale_y_continuous(labels=scales::percent)
-        
+        ggplot(
+          aes(x = ANO4.trim, y = valor/100, fill = cod.variable, 
+                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4.trim)))+
+        # geom_line(size = 1) +
+        # geom_point(size = 2) + 
+        scale_fill_manual(values =paleta_colores_extendida) +
+        geom_bar(stat="identity") +
+        labs(y = "",
+             x = "Año",
+             color = "")+
+        theme_minimal()+
+        theme(text = element_text(size = 9),
+              axis.text.x = element_text(size=6),
+              axis.text.y = element_text(size=10),
+              plot.title= element_text(size=12, face="bold"))+
+        theme(axis.text.x = element_text(angle = 90)) +
+        guides(fill=guide_legend(title=NULL)) +
+        theme(legend.title=element_blank()) +
+        scale_y_continuous(labels=scales::percent)
+      
       }
       
-      if(id_periodicidad == "Trimestral/Onda"){
+      if(id_periodicidad == "Trimestral/Onda"){    
         
-        p <- precariedad_eph %>%
+        p <- rama_eph %>%
           filter(cod.variable  %in%   variables) %>% 
           filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
           ggplot(
-            aes(x = ANO4.trim, y = valor/100, group = cod.variable, color = cod.variable,
+            aes(x = ANO4.trim, y = valor/100, fill = cod.variable, 
                 text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4.trim)))+
-          geom_line(size = 1) +
-          geom_point(size = 2) +
+          # geom_line(size = 1) +
+          # geom_point(size = 2) + 
+          scale_fill_manual(values =paleta_colores_extendida) +
+          geom_bar(stat="identity") +
           labs(y = "",
                x = "Año",
                color = "")+
@@ -89,15 +94,15 @@ precariedad_eph_plot_server <- function(id) {
           theme(text = element_text(size = 9),
                 axis.text.x = element_text(size=6),
                 axis.text.y = element_text(size=10),
-                legend.position = "bottom",
                 plot.title= element_text(size=12, face="bold"))+
-          theme(axis.text.x = element_text(angle = 90))+
-          scale_color_manual(values =paleta_colores_extendida) +
+          theme(axis.text.x = element_text(angle = 90)) +
+          guides(fill=guide_legend(title=NULL)) +
+          theme(legend.title=element_blank()) +
           scale_y_continuous(labels=scales::percent)
       }
-      
+        
       p
-      #ggplotly(p, tooltip = c("text"))
+
     }
     
     
@@ -109,37 +114,28 @@ precariedad_eph_plot_server <- function(id) {
     # generar_metadata <- function(variables){
     # 
     # i <- length(variables)  
-    #     
+    # 
     # paste0( variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
     #   
     # }
     
-    observeEvent(input$var_tipo_serie, {
-      
-      updateSelectInput(session, 'var_serie',
-                        choices =  unique(precariedad_eph$cod.variable[precariedad_eph$tipo==input$var_tipo_serie]),
-                        selected = unique(precariedad_eph$cod.variable[precariedad_eph$tipo==input$var_tipo_serie])[1])
-      
-    })
-    
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
     })
+    
      output$titulo2 <- renderText({
        generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
      })
-     
-     observeEvent(input$var_serie, {
-     
-    output$plot <- renderPlotly({
-      plot_interact(plot(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad ))
-    })
     
-     })
+     
+     output$plot <- renderPlotly({
+       plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad))
+    })
     
     output$tabla <- renderTable({
-      armar_tabla(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad)
+      armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad)
     })
+    
     # output$metadata1 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
@@ -168,7 +164,7 @@ precariedad_eph_plot_server <- function(id) {
      })
 }
 
-precariedad_eph_plot_ui <- function(id, title,v_precariedad_eph) {
+rama_eph_plot_ui <- function(id, title,v_rama_eph) {
   ns <- NS(id)
   
   tabPanel(title,
@@ -177,16 +173,15 @@ precariedad_eph_plot_ui <- function(id, title,v_precariedad_eph) {
            
            sidebarLayout(
              sidebarPanel(
-                 selectInput(ns('id_periodicidad'),label = 'Tipo de infromación:',
-                             choices =  c("Promedio anual", "Trimestral/Onda"),
-                             selected = "Promedio Anual",
-                             width = "300px",
-                             multiple = F
-                 ),
-               
+               selectInput(ns('id_periodicidad'),label = 'Tipo de infromación:',
+                           choices =  c("Promedio anual", "Trimestral/Onda"),
+                           selected = "Promedio Anual",
+                           width = "300px",
+                           multiple = F
+               ),
                selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
-                           choices =  unique(precariedad_eph$cod.variable),
-                           selected = unique(precariedad_eph$cod.variable)[1],
+                           choices =  unique(rama_eph$cod.variable),
+                           selected = unique(rama_eph$cod.variable)[1],
                            width = "300px",
                            multiple = T
                ),
@@ -198,8 +193,9 @@ precariedad_eph_plot_ui <- function(id, title,v_precariedad_eph) {
                hr(), 
                h4("Nota aclaratoria"), 
                h5(nota_aclaratoria_eph1),
+               
                h5(nota_aclaratoria_eph2),
-               hr(),  
+               hr(), 
                h4(strong(titulo_cita)), 
                h5(cita)
              ),
@@ -209,15 +205,15 @@ precariedad_eph_plot_ui <- function(id, title,v_precariedad_eph) {
                tabsetPanel(
                  
                  tabPanel("Gráfico",
-                          value = "g_precariedad_eph",
+                          value = "g_rama_eph",
                           
-                          box(width = NULL, br(),htmlOutput(ns('titulo1'))), 
+                          box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
                           br(),
                           plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                           br(),
-                          #box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+                         # box(title = "Metadata", width = NULL, textOutput(ns('metadata1')), 
                           box(title = "Metadata", width = NULL, 
-                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
+                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Los datos de 1995-2003 corresponden a la versión puntal de la EPH, mientras que el período 2003-actual corresponde a su versión continua. Estimaciones absolutas para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -225,7 +221,7 @@ precariedad_eph_plot_ui <- function(id, title,v_precariedad_eph) {
                  ),
                  
                  tabPanel("Tabla",
-                          value = "t_precariedad_eph",
+                          value = "t_rama_eph",
                           
                           box(width = NULL, br(),htmlOutput(ns('titulo2'))), 
                           br(),
@@ -235,7 +231,7 @@ precariedad_eph_plot_ui <- function(id, title,v_precariedad_eph) {
                                           box(tableOutput(ns('tabla')))),
                                    column(6,          
                                           box(title = "Metadata", width = NULL, 
-                                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
+                                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas trimestrales para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados."),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))

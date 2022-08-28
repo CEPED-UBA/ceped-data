@@ -2,8 +2,10 @@ server <- function (input, output,session) {
   
   shinyjs::js$disableTab("logo_ceped")
 
+  rama_eph_plot_server('rama_eph')
   categoria_ocup_eph_plot_server('categoria_ocup_eph')
-  trabajo_eph_plot_server('trabajo_eph')
+  categoria_ocup_pok_eph_plot_server('categoria_ocup_pok_eph')
+  tasas_basicas_eph_plot_server('tasas_basicas_eph')
   precariedad_eph_plot_server('precariedad_eph')
   
   #tc_plot_server('tc')
