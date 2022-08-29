@@ -35,11 +35,13 @@ bop_sectores_diccionario <- readRDS("www/data/bop_sectores_diccionario.RDS")
 serie_salarios <- readRDS("www/data/salarios.RDS")
 tipo_cambio_argentina <- readRDS("www/data/Tipo_Cambio_Arg.RDS")
 base_ipc <- readRDS("www/data/base_ipc.RDS")
+
 precariedad_eph <- readRDS("www/data/eph_precariedad.RDS") 
-trabajo_eph <- readRDS("www/data/eph_tasas_basicas.RDS") 
-categoria_ocup_eph <- readRDS("www/data/eph_mercado_de_trabajo_categoria_ocupacional.RDS") %>% 
-  mutate(ANO4.trim=ANO4,              ### Mover esto a script que crea la base desde raw data
-         ANO4=substr(ANO4, 1, 4))
+tasas_basicas_eph <- readRDS("www/data/eph_tasas_basicas.RDS")
+rama_eph <- readRDS("www/data/eph_rama.RDS") 
+categoria_ocup_eph <- readRDS("www/data/eph_categoria_ocupacional.RDS")
+categoria_ocup_pok_eph <- readRDS("www/data/eph_categoria_ocupacional_pok.RDS")
+
 
 
 # SALARIOS #####
@@ -56,39 +58,47 @@ v_ipc <- diccionario_variables %>% filter(base=="IPC_Argentina") %>%  pull(nombr
 min_ipc <- min(base_ipc$ANO4)
 max_ipc <- max(base_ipc$ANO4)
 
-#EPH####
+#EPH_ Creacion de etiquetas para cod.variable ###
 
 ## Tasas básicas
-v_trabajo_eph <- diccionario_variables %>% filter(base=="eph_tasas_basicas") %>%  select(nombre.variable) 
-v_trabajo_eph <- as.vector(v_trabajo_eph[1])
+v_tasas_basicas_eph <- diccionario_variables %>% filter(base=="eph_tasas_basicas") %>%  select(nombre.variable)
+v_tasas_basicas_eph <- as.vector(v_tasas_basicas_eph[1])
 
 # Cambio cod.variable por nombre de la variable
-etiquetas_trabajo <- diccionario_variables %>% filter(base=="eph_tasas_basicas") %>% select(nombre.variable, cod.variable)
+etiquetas_tasas_basicas <- diccionario_variables %>% filter(base=="eph_tasas_basicas") %>% select(nombre.variable, cod.variable)
 
-trabajo_eph <- left_join(trabajo_eph, etiquetas_trabajo, by=c("cod.variable")) %>% 
-  mutate(cod.variable=nombre.variable) %>% 
+tasas_basicas_eph <- left_join(tasas_basicas_eph, etiquetas_tasas_basicas, by=c("cod.variable")) %>%
+  mutate(cod.variable=nombre.variable) %>%
   select(-nombre.variable)
 
-## Categoria ocupacional 
-v_categoria_ocup_eph <- diccionario_variables %>% filter(base=="eph_mercado_de_trabajo_categoria_ocupacional") %>%  select(nombre.variable) 
+## Categoria ocupacional
+v_categoria_ocup_eph <- diccionario_variables %>% filter(base=="eph_categoria_ocupacional") %>%  select(nombre.variable)
 v_categoria_ocup_eph <- as.vector(v_categoria_ocup_eph[1])
+# Cambio cod.variable por nombre de la variable
+etiquetas_catocup <- diccionario_variables %>% filter(base=="eph_categoria_ocupacional") %>% select(nombre.variable, cod.variable)
+categoria_ocup_eph <- left_join(categoria_ocup_eph, etiquetas_catocup, by=c("cod.variable")) %>%
+  mutate(cod.variable=nombre.variable) %>%
+  select(-nombre.variable)
+
+## Categoria ocupacional POK
+v_categoria_ocup_pok_eph <- diccionario_variables %>% filter(base=="eph_categoria_ocupacional_pok") %>%  select(nombre.variable)
+v_categoria_ocup_pok_eph <- as.vector(v_categoria_ocup_pok_eph[1])
 
 # Cambio cod.variable por nombre de la variable
-etiquetas_catocup <- diccionario_variables %>% filter(base=="eph_mercado_de_trabajo_categoria_ocupacional") %>% select(nombre.variable, cod.variable)
-
-categoria_ocup_eph <- left_join(categoria_ocup_eph, etiquetas_catocup, by=c("cod.variable")) %>% 
-  mutate(cod.variable=nombre.variable) %>% 
+etiquetas_catocup_pok <- diccionario_variables %>% filter(base=="eph_categoria_ocupacional_pok") %>% select(nombre.variable, cod.variable)
+categoria_ocup_pok_eph <- left_join(categoria_ocup_pok_eph, etiquetas_catocup_pok, by=c("cod.variable")) %>%
+  mutate(cod.variable=nombre.variable) %>%
   select(-nombre.variable)
 
 ## Precariedad
-v_precariedad_eph <- diccionario_variables %>% filter(base=="eph_precariedad") %>%  select(nombre.variable) 
+v_precariedad_eph <- diccionario_variables %>% filter(base=="eph_precariedad") %>%  select(nombre.variable)
 v_precariedad_eph <- as.vector(v_precariedad_eph[1])
 
 # Cambio cod.variable por nombre de la variable
 etiquetas_precariedad <- diccionario_variables %>% filter(base=="eph_precariedad") %>% select(nombre.variable, cod.variable)
 
-precariedad_eph <- left_join(precariedad_eph, etiquetas_precariedad, by=c("cod.variable")) %>% 
-  mutate(cod.variable=nombre.variable) %>% 
+precariedad_eph <- left_join(precariedad_eph, etiquetas_precariedad, by=c("cod.variable")) %>%
+  mutate(cod.variable=nombre.variable) %>%
   select(-nombre.variable)
 
 # Cómo citar? 

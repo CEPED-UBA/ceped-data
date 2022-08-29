@@ -86,10 +86,10 @@ ui <- fluidPage(
                         column(12,
                                column(6,
                                       tags$div( class="panel panel-primary",
-                                                style = "border-color: #1a3f5f",
+                                                style = "border-color: #20639b",
                                                 
                                                 tags$div(class= "panel-heading",
-                                                         style="background:#1a3f5f;border-color: #1a3f5f",
+                                                         style="background:#20639b;border-color: #20639b",
                                                          h3('Encuesta Permanente de Hogares')),
                                                 tags$div(class="panel-body",
                                                          
@@ -102,9 +102,9 @@ ui <- fluidPage(
                                                          br(),
                                                          
                                                          
-                                                         tags$a("Mercado de Trabajo",
-                                                                style=paste0(btn_style,"background:#1a3f5f;border-color: #1a3f5f;color: black;font-size:14px"),
-                                                                onclick="fakeClick('trabajo_eph')",
+                                                         tags$a("Tasas básicas",
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                onclick="fakeClick('tasas_basicas_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          ),
                                                          
@@ -113,8 +113,28 @@ ui <- fluidPage(
                                                          br(),
                                                          
                                                          tags$a("Categorías ocupacionales",
-                                                                style=paste0(btn_style,"background:#1a3f5f;border-color: #1a3f5f;color: black;font-size:14px"),
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
                                                                 onclick="fakeClick('categoria_ocup_eph')",
+                                                                class="btn btn-primary btn-s"
+                                                         ), 
+                                                         
+                                                         br(),
+                                                         p(''),
+                                                         br(),
+                                                         
+                                                         tags$a("Categorías ocupacionales (Pok)",
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                onclick="fakeClick('categoria_ocup_pok_eph')",
+                                                                class="btn btn-primary btn-s"
+                                                         )), 
+                                                         
+                                                tags$div(class="panel-body",
+                                                         style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
+                                                         
+
+                                                         tags$a("Precariedad laboral",
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                onclick="fakeClick('precariedad_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          ), 
                                                          
@@ -123,10 +143,10 @@ ui <- fluidPage(
                                                          br()
                                                          
                                                          ,
-
-                                                         tags$a("Precariedad laboral",
-                                                                style=paste0(btn_style,"background:#1a3f5f;border-color: #1a3f5f;color: black;font-size:14px"),
-                                                                onclick="fakeClick('precariedad_eph')",
+                                                         
+                                                         tags$a("Empleo por ramas de actividad",
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                onclick="fakeClick('rama_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          )
                                                          
@@ -135,10 +155,10 @@ ui <- fluidPage(
                                ),  
                                column(6,
                                       tags$div( class="panel panel-warning",
-                                                style = "border-color: #20639b",
+                                                style = "border-color: #3e83b5",
                                                 
                                                 tags$div( class= "panel-heading",
-                                                          style="background:#20639b;border-color: #20639b",
+                                                          style="background:#3e83b5;border-color: #3e83b5",
                                                           h3('Series')),
                                                 tags$div(class="panel-body",
                                                          #img(height = 250, width = 250,src = "img/methods_preview.png"),
@@ -146,7 +166,7 @@ ui <- fluidPage(
                                                          
                                                          tags$div(class="panel-body",
                                                                   style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
-                                                         tags$a("Internacional | Salarios", style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                         tags$a("Internacional | Salarios", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
                                                                 onclick="fakeClick('salarios')",
                                                                 class="btn btn-warning btn-s"), 
                                                          
@@ -154,7 +174,7 @@ ui <- fluidPage(
                                                          p(''),
                                                          br(),
                                                          
-                                                         # tags$a("Argentina | Tipo de cambio", style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                         # tags$a("Argentina | Tipo de cambio", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
                                                          #        onclick="fakeClick('tc')",
                                                          #        class="btn btn-warning btn-s"), 
                                                          # 
@@ -163,7 +183,7 @@ ui <- fluidPage(
                                                          # br()
                                                         
                                                          
-                                                         tags$a("Argentina | Balance de Pagos", style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                         tags$a("Argentina | Balance de Pagos", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
                                                                 onclick="fakeClick('bp')",
                                                                 class="btn btn-warning btn-s"), 
                                                          
@@ -171,7 +191,7 @@ ui <- fluidPage(
                                                          p(''),
                                                          br(),
                                                          
-                                                         tags$a("Argentina | IPC", style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                         tags$a("Argentina | IPC", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
                                                                 onclick="fakeClick('ipc')",
                                                                 class="btn btn-warning btn-s")
                                                          
@@ -236,10 +256,11 @@ ui <- fluidPage(
              
              navbarMenu(title = 'Encuesta Permanente de Hogares',
                         
-                        #poblacion_eph_plot_ui(id ='poblacion_eph', title ='Población', v_poblacion_eph) ,
                         categoria_ocup_eph_plot_ui(id ='categoria_ocup_eph', title ='Categorías ocupacionales', v_categoria_ocup_eph),
-                        trabajo_eph_plot_ui(id ='trabajo_eph', title ='Mercado de Trabajo', v_trabajo_eph), 
-                        precariedad_eph_plot_ui(id ='precariedad_eph', title ='Percariedad laboral', v_precariedad_eph)
+                        categoria_ocup_pok_eph_plot_ui(id ='categoria_ocup_pok_eph', title ='Categorías ocupacionales (Pok)', v_categoria_ocup_pok_eph),
+                        tasas_basicas_eph_plot_ui(id ='tasas_basicas_eph', title ='Tasas básicas', v_tasas_basicas_eph), 
+                        precariedad_eph_plot_ui(id ='precariedad_eph', title ='Percariedad laboral', v_precariedad_eph), 
+                        rama_eph_plot_ui(id ='rama_eph', title ='Empleo por ramas', v_rama_eph)
                          
 
                         
@@ -262,7 +283,14 @@ ui <- fluidPage(
              ceped_plot_ui('ceped_presenta'),
             
             tabPanel(value = "logo_ceped",title=div(style = "display:flex; flex-direction: row; justify-content: flex-end; align-items: start; width: 100px", 
-                                                    img(src="img/logo_ceped2.png",height="100%", width="100%", style = "add padding: 0px")
+                                                    img(src="img/logo_ceped2.png",height="100%", width="100%", style = "add padding: 0px" )
+                                          
+                               # Intento fallido de poner link a la imagen logo_ceped      
+                                                    # tags$a(
+                                                    #   href="http://www.economicas.uba.ar/institutos_y_centros/ceped/", 
+                                                    #   tags$img(src="img/logo_ceped2.png",height="100%", width="100%" ))
+                                                    
+                                                    
             ))
             
             
