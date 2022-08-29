@@ -126,11 +126,10 @@ ui <- fluidPage(
                                                                 style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
                                                                 onclick="fakeClick('categoria_ocup_pok_eph')",
                                                                 class="btn btn-primary btn-s"
-                                                         ), 
+                                                         )), 
                                                          
-                                                         br(),
-                                                         p(''),
-                                                         br(),
+                                                tags$div(class="panel-body",
+                                                         style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                                          
 
                                                          tags$a("Precariedad laboral",
