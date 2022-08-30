@@ -58,6 +58,13 @@ v_ipc <- diccionario_variables %>% filter(base=="IPC_Argentina") %>%  pull(nombr
 min_ipc <- min(base_ipc$ANO4)
 max_ipc <- max(base_ipc$ANO4)
 
+min_trim <- min(base_ipc$ANO4[base_ipc$cod.variable == "Trimestres_EPH_2017"])
+max_trim <- max(base_ipc$ANO4[base_ipc$cod.variable == "Trimestres_EPH_2017"])
+
+min_ondas<- min(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
+max_ondas <- max(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
+
+
 #EPH_ Creacion de etiquetas para cod.variable ###
 
 ## Tasas básicas
