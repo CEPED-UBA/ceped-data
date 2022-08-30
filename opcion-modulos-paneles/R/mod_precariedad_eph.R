@@ -3,58 +3,52 @@ precariedad_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
 
-    armar_tabla <- function(variables, var_tipo_serie, periodo_i, periodo_f, id_periodicidad){
-      if(id_periodicidad == "Promedio anual"){
-        tabla <- precariedad_eph  %>%
-          filter(cod.variable  %in%   variables) %>% 
-          filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-          group_by(ANO4, cod.variable) %>% 
-          mutate(valor=mean(valor, na.rm=TRUE)) %>% 
-          rename("Serie" = "cod.variable",
-                 "País" = "nombre.pais",
-                 "Período"= "ANO4") %>% 
-          select("País","iso3c", "Período","Serie", "valor") %>% 
-          unique()
+    df <-  reactive({
+      
+      if(input$id_periodicidad == "Promedio anual"){
+               
+              base <- precariedad_eph  %>%
+                 filter(cod.variable  %in%   input$var_serie) %>% 
+                 filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
+                 group_by(ANO4, cod.variable) %>% 
+                 mutate(valor=mean(valor, na.rm=TRUE)) %>% 
+                 rename("Serie" = "cod.variable",
+                        "Pais" = "nombre.pais",
+                        "Periodo"= "ANO4") %>% 
+                 select("Pais","iso3c", "Periodo","Serie", "valor") %>% 
+                 unique()                                                   
+               }
+      
+      if(input$id_periodicidad == "Trimestral/Onda"){
         
-      }
+                base <-  precariedad_eph  %>%
+                  filter(cod.variable  %in%   input$var_serie) %>% 
+                  filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
+                  rename("Serie" = "cod.variable",
+                         "Pais" = "nombre.pais",
+                         "Periodo" = "ANO4.trim") %>% 
+                  select("Pais","iso3c","Periodo","Serie", "valor")
+              }
       
-      if(id_periodicidad == "Trimestral/Onda"){
-        tabla <-   precariedad_eph  %>%
-          filter(cod.variable  %in%   variables) %>% 
-          filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-          rename("Serie" = "cod.variable",
-                 "País" = "nombre.pais",
-                 "Período" = "ANO4.trim") %>% 
-          select("País","iso3c","Período","Serie", "valor")
-      }
+      base
       
-      tabla 
-    }
+    })
+    
+    
     generar_titulo <- function(variables, periodo_i, periodo_f){
-      
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
       titulo <- paste0("<font size='+2'></br>",lista_variables ,".</font>",
                        "</br><font size='+1'>Años ", periodo_i, " - ", periodo_f,"</font>")
-
        }
     
-    plot <- function(variables, var_tipo_serie, periodo_i, periodo_f, id_periodicidad){
+    plot <- function(variables){
       
-      
-      if(id_periodicidad == "Promedio anual"){
-        
-        
-        p <- precariedad_eph %>%
-          filter(cod.variable  %in%   variables) %>% 
-          filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-          group_by(ANO4, cod.variable) %>% 
-          mutate(valor=mean(valor, na.rm=TRUE)) %>% 
-          unique() %>% 
+          p <- df() %>%
           ggplot(
-            aes(x = ANO4, y = valor/100, group = cod.variable, color = cod.variable,
-                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4)))+
+            aes(x = Periodo, y = valor/100, group = Serie, color = Serie,
+                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',Periodo)))+
           geom_line(size = 1) +
           geom_point(size = 2) +
           labs(y = "",
@@ -69,35 +63,9 @@ precariedad_eph_plot_server <- function(id) {
           theme(axis.text.x = element_text(angle = 90))+
           scale_color_manual(values =paleta_colores_extendida) +
           scale_y_continuous(labels=scales::percent)
-        
-      }
-      
-      if(id_periodicidad == "Trimestral/Onda"){
-        
-        p <- precariedad_eph %>%
-          filter(cod.variable  %in%   variables) %>% 
-          filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-          ggplot(
-            aes(x = ANO4.trim, y = valor/100, group = cod.variable, color = cod.variable,
-                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4.trim)))+
-          geom_line(size = 1) +
-          geom_point(size = 2) +
-          labs(y = "",
-               x = "Año",
-               color = "")+
-          theme_minimal()+
-          theme(text = element_text(size = 9),
-                axis.text.x = element_text(size=6),
-                axis.text.y = element_text(size=10),
-                legend.position = "bottom",
-                plot.title= element_text(size=12, face="bold"))+
-          theme(axis.text.x = element_text(angle = 90))+
-          scale_color_manual(values =paleta_colores_extendida) +
-          scale_y_continuous(labels=scales::percent)
-      }
       
       p
-      #ggplotly(p, tooltip = c("text"))
+ 
     }
     
     
@@ -114,14 +82,6 @@ precariedad_eph_plot_server <- function(id) {
     #   
     # }
     
-    observeEvent(input$var_tipo_serie, {
-      
-      updateSelectInput(session, 'var_serie',
-                        choices =  unique(precariedad_eph$cod.variable[precariedad_eph$tipo==input$var_tipo_serie]),
-                        selected = unique(precariedad_eph$cod.variable[precariedad_eph$tipo==input$var_tipo_serie])[1])
-      
-    })
-    
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
     })
@@ -132,26 +92,28 @@ precariedad_eph_plot_server <- function(id) {
      observeEvent(input$var_serie, {
      
     output$plot <- renderPlotly({
-      plot_interact(plot(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad ))
+      plot_interact(plot(input$var_serie))
     })
     
      })
     
     output$tabla <- renderTable({
-      armar_tabla(input$var_serie, input$var_tipo_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad)
+      df()
     })
+    
     # output$metadata1 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
     # output$metadata2 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
+    
     output$downloadTable <- downloadHandler(
 
       filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
       content = function(file){
 
-        write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2]),
+        write.xlsx(df(),
                    file)    }
     )
     output$downloadPlot <- downloadHandler(
@@ -159,7 +121,7 @@ precariedad_eph_plot_server <- function(id) {
       content = function(file){
 
 
-        ggsave(file,plot=plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]),
+        ggsave(file,plot=plot(input$var_serie),
                width=8, height=4)
       }
     )
