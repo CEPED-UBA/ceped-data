@@ -2,36 +2,37 @@
 categoria_ocup_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-
-    armar_tabla <- function(variables, periodo_i, periodo_f, id_periodicidad){
+    df <-  reactive({
       
-      if(id_periodicidad == "Promedio anual"){
-        tabla <- categoria_ocup_eph  %>%
-          filter(cod.variable  %in%   variables) %>% 
-          filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+      if(input$id_periodicidad == "Promedio anual"){
+        
+        base <- categoria_ocup_eph  %>%
+          filter(cod.variable  %in%   input$var_serie) %>% 
+          filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
+          filter(!(ANO4==2003 & tipo.eph=="Puntual")) %>% 
           group_by(ANO4, cod.variable) %>% 
           mutate(valor=mean(valor, na.rm=TRUE)) %>% 
           rename("Serie" = "cod.variable",
-                 "País" = "nombre.pais",
-                 "Período"= "ANO4") %>% 
-          select("País","iso3c", "Período","Serie", "valor") %>% 
-          unique()
-        
+                 "Pais" = "nombre.pais",
+                 "Periodo"= "ANO4") %>% 
+          select("Pais","iso3c", "Periodo","Serie", "valor") %>% 
+          unique()                                                   
       }
       
-      if(id_periodicidad == "Trimestral/Onda"){
-      categoria_ocup_eph  %>%
-        filter(cod.variable  %in%   variables) %>% 
-        filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-        rename("Serie" = "cod.variable",
-               "País" = "nombre.pais",
-               "Período" = "ANO4.trim") %>% 
-        select("País","iso3c","Período","Serie", "valor")
+      if(input$id_periodicidad == "Trimestral/Onda"){
         
+        base <-  categoria_ocup_eph  %>%
+          filter(cod.variable  %in%   input$var_serie) %>% 
+          filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
+          rename("Serie" = "cod.variable",
+                 "Pais" = "nombre.pais",
+                 "Periodo" = "ANO4.trim") %>% 
+          select("Pais","iso3c","Periodo","Serie", "valor")
       }
       
-      tabla 
-    }
+      base
+      
+    })
     
     generar_titulo <- function(variables, periodo_i, periodo_f){
       
@@ -43,22 +44,15 @@ categoria_ocup_eph_plot_server <- function(id) {
 
        }
     
-    plot <- function(variables, periodo_i, periodo_f, id_periodicidad){
-      
-      if(id_periodicidad == "Promedio anual"){
-        
-        p <- categoria_ocup_eph %>% 
-        filter(cod.variable  %in%   variables) %>% 
-        filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-        group_by(ANO4, cod.variable) %>% 
-        mutate(valor=mean(valor, na.rm=TRUE)) %>% 
-        unique() %>% 
+    plot <- function(variables){
+       
+        p <- df() %>% 
         ggplot(
-          aes(x = ANO4.trim, y = valor/100, fill = cod.variable, 
-                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4.trim)))+
+          aes(x = Periodo, y = valor/100, fill = Serie, 
+                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ', Periodo)))+
         # geom_line(size = 1) +
         # geom_point(size = 2) + 
-        scale_fill_manual(values =paleta_colores) +
+        scale_fill_manual(values =paleta_colores_extendida) +
         geom_bar(stat="identity") +
         labs(y = "",
              x = "Año",
@@ -73,37 +67,8 @@ categoria_ocup_eph_plot_server <- function(id) {
         theme(legend.title=element_blank()) +
         scale_y_continuous(labels=scales::percent)
         
-      }
-      
-      if(id_periodicidad == "Trimestral/Onda"){
-        
-        p <- categoria_ocup_eph %>% 
-          filter(cod.variable  %in%   variables) %>% 
-          filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-          ggplot(
-            aes(x = ANO4.trim, y = valor/100, fill = cod.variable, 
-                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4.trim)))+
-          # geom_line(size = 1) +
-          # geom_point(size = 2) + 
-          scale_fill_manual(values =paleta_colores) +
-          geom_bar(stat="identity") +
-          labs(y = "",
-               x = "Año",
-               color = "")+
-          theme_minimal()+
-          theme(text = element_text(size = 9),
-                axis.text.x = element_text(size=6),
-                axis.text.y = element_text(size=10),
-                plot.title= element_text(size=12, face="bold"))+
-          theme(axis.text.x = element_text(angle = 90)) +
-          guides(fill=guide_legend(title=NULL)) +
-          theme(legend.title=element_blank()) +
-          scale_y_continuous(labels=scales::percent)
-        
-      }
-        
       p
-      #ggplotly(p, tooltip = c("text"))
+
     }
     
     
@@ -130,13 +95,11 @@ categoria_ocup_eph_plot_server <- function(id) {
      })
     
      output$plot <- renderPlotly({
-       
-       plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad))
+       plot_interact(plot(input$var_serie))
      })
      
      output$tabla <- renderTable({
-       
-       armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2], input$id_periodicidad)
+       df()
      })
      
     # output$metadata1 <- renderText({
