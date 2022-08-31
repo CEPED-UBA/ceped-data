@@ -1,17 +1,39 @@
 
+
 categoria_ocup_pok_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-
-    armar_tabla <- function(variables, periodo_i, periodo_f){
-      categoria_ocup_pok_eph  %>%
-        filter(cod.variable  %in%   variables) %>% 
-        filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
-        rename("Serie" = "cod.variable",
-               "País" = "nombre.pais",
-               "Período" = "ANO4.trim") %>% 
-        select("País","iso3c","Período","Serie", "valor")
-    }
+    df <-  reactive({
+      
+      if(input$id_periodicidad == "Promedio anual"){
+        
+        base <- categoria_ocup_pok_eph  %>%
+          filter(cod.variable  %in%   input$var_serie) %>% 
+          filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
+          filter(!(ANO4==2003 & tipo.eph=="Puntual")) %>% 
+          group_by(ANO4, cod.variable) %>% 
+          mutate(valor=mean(valor, na.rm=TRUE)) %>% 
+          rename("Serie" = "cod.variable",
+                 "Pais" = "nombre.pais",
+                 "Periodo"= "ANO4") %>% 
+          select("Pais","iso3c", "Periodo","Serie", "valor") %>% 
+          unique()                                                   
+      }
+      
+      if(input$id_periodicidad == "Trimestral/Onda"){
+        
+        base <-  categoria_ocup_pok_eph  %>%
+          filter(cod.variable  %in%   input$var_serie) %>% 
+          filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
+          rename("Serie" = "cod.variable",
+                 "Pais" = "nombre.pais",
+                 "Periodo" = "ANO4.trim") %>% 
+          select("Pais","iso3c","Periodo","Serie", "valor")
+      }
+      
+      base
+      
+    })
     
     generar_titulo <- function(variables, periodo_i, periodo_f){
       
@@ -20,20 +42,18 @@ categoria_ocup_pok_eph_plot_server <- function(id) {
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
       titulo <- paste0("<font size='+2'></br>", "Porcentaje de personas ocupadas como ", lista_variables ," sobre total de ocupados.</font>",
                        "</br><font size='+1'>Años ", periodo_i, " - ", periodo_f,"</font>")
-
-       }
-    
-    plot <- function(variables, periodo_i, periodo_f){
       
-      p <- categoria_ocup_pok_eph %>% 
-        filter(cod.variable  %in%   variables) %>% 
-        filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+    }
+    
+    plot <- function(variables){
+      
+      p <- df() %>% 
         ggplot(
-          aes(x = ANO4.trim, y = valor/100, fill = cod.variable, 
-                text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',ANO4.trim)))+
+          aes(x = Periodo, y = valor/100, fill = Serie, 
+              text=paste0('</br>valor: ',round(valor,1), '</br>Período: ', Periodo)))+
         # geom_line(size = 1) +
         # geom_point(size = 2) + 
-        scale_fill_manual(values =paleta_colores_extendida) +
+        scale_fill_manual(values =paleta_colores_extendida ) +
         geom_bar(stat="identity") +
         labs(y = "",
              x = "Año",
@@ -49,7 +69,7 @@ categoria_ocup_pok_eph_plot_server <- function(id) {
         scale_y_continuous(labels=scales::percent)
       
       p
-      #ggplotly(p, tooltip = c("text"))
+      
     }
     
     
@@ -66,28 +86,23 @@ categoria_ocup_pok_eph_plot_server <- function(id) {
     #   
     # }
     
-    observeEvent(input$var_tipo_serie, {
-      
-      updateSelectInput(session, 'var_serie',
-                        choices =  unique(categoria_ocup_pok_eph$cod.variable[categoria_ocup_pok_eph$tipo==input$var_tipo_serie]),
-                        selected = unique(categoria_ocup_pok_eph$cod.variable[categoria_ocup_pok_eph$tipo==input$var_tipo_serie])[1])
-      
-    })
     
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
     })
-     output$titulo2 <- renderText({
-       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
-     })
     
-     output$plot <- renderPlotly({
-      plot_interact(plot(input$var_serie,input$id_periodo[1],input$id_periodo[2]))
+    output$titulo2 <- renderText({
+      generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
+    })
+    
+    output$plot <- renderPlotly({
+      plot_interact(plot(input$var_serie))
     })
     
     output$tabla <- renderTable({
-      armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+      df()
     })
+    
     # output$metadata1 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
@@ -95,25 +110,25 @@ categoria_ocup_pok_eph_plot_server <- function(id) {
     #   generar_metadata(input$var_serie)
     # })
     output$downloadTable <- downloadHandler(
-
+      
       filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
       content = function(file){
-
+        
         write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2]),
                    file)    }
     )
     output$downloadPlot <- downloadHandler(
       filename = function(){paste(input$var_serie[1],'.png',sep='')},
       content = function(file){
-
-
+        
+        
         ggsave(file,plot=plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]),
                width=8, height=4)
       }
     )
     
     
-     })
+  })
 }
 
 categoria_ocup_pok_eph_plot_ui <- function(id, title,v_categoria_ocup_pok_eph) {
@@ -125,6 +140,12 @@ categoria_ocup_pok_eph_plot_ui <- function(id, title,v_categoria_ocup_pok_eph) {
            
            sidebarLayout(
              sidebarPanel(
+               selectInput(ns('id_periodicidad'),label = 'Tipo de infromación:',
+                           choices =  c("Promedio anual", "Trimestral/Onda"),
+                           selected = "Promedio Anual",
+                           width = "300px",
+                           multiple = F
+               ),
                selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
                            choices =  unique(categoria_ocup_pok_eph$cod.variable),
                            selected = unique(categoria_ocup_pok_eph$cod.variable)[1],
@@ -132,8 +153,8 @@ categoria_ocup_pok_eph_plot_ui <- function(id, title,v_categoria_ocup_pok_eph) {
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
-                           value = c(2003,2021),
-                           min = 2003, 
+                           value = c(1995,2021),
+                           min = 1995, 
                            max = 2021
                ), 
                hr(), 
@@ -157,7 +178,7 @@ categoria_ocup_pok_eph_plot_ui <- function(id, title,v_categoria_ocup_pok_eph) {
                           br(),
                           plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                           br(),
-                         # box(title = "Metadata", width = NULL, textOutput(ns('metadata1')), 
+                          # box(title = "Metadata", width = NULL, textOutput(ns('metadata1')), 
                           box(title = "Metadata", width = NULL, 
                               "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
                           br(),
@@ -199,4 +220,3 @@ categoria_ocup_pok_eph_plot_ui <- function(id, title,v_categoria_ocup_pok_eph) {
   
   
 }
-

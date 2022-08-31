@@ -140,6 +140,38 @@ ipc_plot_server <- function(id) {
     }
     
     
+    observe({
+      x <- input$var_serie
+      
+      if (x == v_ipc[4]) {
+        up_min <- min_ondas
+        up_max <- max_ondas
+        up_value <- c(min_ondas,max_ondas)
+        
+      } else if (x == v_ipc[3]) {
+        up_min <- min_trim
+        up_max <- max_trim
+        up_value <- c(min_trim,max_trim)
+        
+      } else if (x %in% c(v_ipc[1],v_ipc[2])) {
+       up_min <- min_ipc
+       up_max <- max_ipc
+       up_value <- c(2000,2010)
+      
+        
+         
+      }
+     
+      
+      
+      updateSliderInput(session, 'id_periodo',
+                        value = up_value, 
+                        min = up_min, 
+                        max = up_max
+                        
+      )
+    })
+    
     
     observe({
       if (input$var_serie %in% c(v_ipc[1],v_ipc[2])) {
@@ -147,13 +179,10 @@ ipc_plot_server <- function(id) {
         output$titulob1 <- renderText({
           generar_titulob(input$var_serie, input$id_periodo[1],input$id_periodo[2])
         })
-        output$titulo1 <- renderText({
-          generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
-        })
+     
        
-        output$plot <- renderPlotly({
-          plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
-        })
+       
+       
         output$plot_var <- renderPlotly({
           plot_interact(plot_var(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
         })
@@ -166,27 +195,14 @@ ipc_plot_server <- function(id) {
                    width=8, height=4)
           }
         )
-        # output$downloadPlot_var <- downloadHandler(
-        #   filename = function(){paste(input$var_serie,'.png',sep='')},
-        #   content = function(file){
-        #     
-        #     
-        #     ggsave(file,plot=plot_var(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
-        #            width=8, height=4)
-        #   }
-        # )
-        
+      
       } else if (input$var_serie %in% c(v_ipc[3],v_ipc[4])) {
         
         output$titulob1 <- NULL
-        output$titulo1 <- renderText({
-          generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
-        })
+       
         
-        output$plot <- renderPlotly({
-          plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
-        })
         output$plot_var <- NULL
+        
         output$downloadPlot <- downloadHandler(
           filename = function(){paste(input$var_serie,'.png',sep='')},
           content = function(file){
@@ -196,8 +212,7 @@ ipc_plot_server <- function(id) {
                    width=8, height=4)
           }
         )
-        #output$downloadPlot_var <- NULL
-        #shinyjs::disable("downloadPlot_var")
+        
         
       }
       
@@ -219,10 +234,20 @@ ipc_plot_server <- function(id) {
       }
     )
     
-    
     output$titulo2 <- renderText({
       generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
+    
+    output$titulo1 <- renderText({
+      generar_titulo(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+    })
+    
+    output$plot <- renderPlotly({
+      plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
+    })
+    
+    
+    
     
     output$tabla <- renderTable({
       armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
@@ -293,7 +318,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                plotlyOutput(ns('plot_var'))%>% withSpinner(type = 7, color =paleta_colores[2]),
                br(),
                box(width = NULL,
-                   #downloadButton(ns('downloadPlot_var'),'Descargar gráfico')
+                  
                    uiOutput(ns('downloadPlot_var'))
                    ),
                br()

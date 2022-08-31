@@ -46,7 +46,8 @@ ui <- fluidPage(
   theme = shinytheme("journal"), 
   
   #define fakeClick for buttons
-        (tags$head(tags$script(HTML('var fakeClick = function(tabName) {
+        (tags$head(tags$script(HTML(
+                                                        'var fakeClick = function(tabName) {
                                                          var dropdownList = document.getElementsByTagName("a");
                                                          for (var i = 0; i < dropdownList.length; i++) {
                                                          var link = dropdownList[i];
@@ -55,7 +56,19 @@ ui <- fluidPage(
                                                          };
                                                          }
                                                          };
-                                                         '))) ),
+                                                         '))
+           #Logo del CEPED a la derecha
+                   ,
+                   tags$style(HTML("
+                           .navbar-nav {
+                           float: none !important;
+                           }
+                           .navbar-nav > li:nth-child(6) {
+                           float: right;
+                           }
+                           "))
+           #       
+                   ) ),
   
   shinyjs::useShinyjs(),
   shinyjs::extendShinyjs(text = jscode, functions = c("disableTab","enableTab")),
@@ -280,7 +293,7 @@ ui <- fluidPage(
              
             publicaciones_ui('publicaciones'),
             
-             ceped_plot_ui('ceped_presenta'),
+            ceped_plot_ui('ceped_presenta'),
             
             tabPanel(value = "logo_ceped",title=div(style = "display:flex; flex-direction: row; justify-content: flex-end; align-items: start; width: 100px", 
                                                     img(src="img/logo_ceped2.png",height="100%", width="100%", style = "add padding: 0px" )
