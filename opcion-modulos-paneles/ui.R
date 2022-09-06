@@ -97,9 +97,10 @@ ui <- fluidPage(
                       fluidRow(
                         
                         column(12,
-                               column(6,
+                               tags$div(style = "display:flex",
+                              # column(6,
                                       tags$div( class="panel panel-primary",
-                                                style = "border-color: #20639b",
+                                                style = "border-color: #20639b;width:50%",
                                                 
                                                 tags$div(class= "panel-heading",
                                                          style="background:#20639b;border-color: #20639b",
@@ -164,11 +165,18 @@ ui <- fluidPage(
                                                          )
                                                          
                                                 )
-                                      )
+                                #      )
                                ),  
-                               column(6,
+                               #column(6,
+                              
+                              #espacio entre cajas
+                              HTML('&nbsp;'),
+                              HTML('&nbsp;'),
+                              HTML('&nbsp;'),
+                              HTML('&nbsp;'),
+                              
                                       tags$div( class="panel panel-warning",
-                                                style = "border-color: #3e83b5",
+                                                style = "border-color: #3e83b5;width:50%",
                                                 
                                                 tags$div( class= "panel-heading",
                                                           style="background:#3e83b5;border-color: #3e83b5",
@@ -210,14 +218,15 @@ ui <- fluidPage(
                                                          
                                                 )
                                       )
-                               )
+                              )
                         )
                       ),
                       fluidRow(
                         column(12,
-                        column(6,
+                               tags$div(style = "display:flex",
+                        #column(6,
                                tags$div( class="panel panel-danger",
-                                         style = "border-color: #f6d55c",
+                                         style = "border-color: #f6d55c;width:50%",
                                          
                                          tags$div(class= "panel-heading",
                                                   style="background:#f6d55c;border-color: #f6d55c",
@@ -234,11 +243,16 @@ ui <- fluidPage(
                                                          class="btn btn-danger btn-s"
                                                   )
                                          )
-                               )
+                             #  )
                       ),
-                      column(6,
+                      #espacio entre cajas
+                      HTML('&nbsp;'),
+                      HTML('&nbsp;'),
+                      HTML('&nbsp;'),
+                      HTML('&nbsp;'),
+                      #column(6,
                              tags$div( class="panel panel-default",
-                                       style = "border-color: #3caea3",
+                                       style = "border-color: #3caea3;width:50%",
                                        
                                        tags$div(class= "panel-heading",
                                                 style="background:#3caea3;border-color: #3caea3",
