@@ -70,10 +70,7 @@ max_ondas <- max(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
 ## Tasas básicas
 v_tasas_basicas_eph <- diccionario_variables %>% filter(base=="eph_tasas_basicas") %>%  select(nombre.variable)
 v_tasas_basicas_eph <- as.vector(v_tasas_basicas_eph[1])
-
-# Cambio cod.variable por nombre de la variable
 etiquetas_tasas_basicas <- diccionario_variables %>% filter(base=="eph_tasas_basicas") %>% select(nombre.variable, cod.variable)
-
 tasas_basicas_eph <- left_join(tasas_basicas_eph, etiquetas_tasas_basicas, by=c("cod.variable")) %>%
   mutate(cod.variable=nombre.variable) %>%
   select(-nombre.variable)
@@ -81,7 +78,6 @@ tasas_basicas_eph <- left_join(tasas_basicas_eph, etiquetas_tasas_basicas, by=c(
 ## Categoria ocupacional
 v_categoria_ocup_eph <- diccionario_variables %>% filter(base=="eph_categoria_ocupacional") %>%  select(nombre.variable)
 v_categoria_ocup_eph <- as.vector(v_categoria_ocup_eph[1])
-# Cambio cod.variable por nombre de la variable
 etiquetas_catocup <- diccionario_variables %>% filter(base=="eph_categoria_ocupacional") %>% select(nombre.variable, cod.variable)
 categoria_ocup_eph <- left_join(categoria_ocup_eph, etiquetas_catocup, by=c("cod.variable")) %>%
   mutate(cod.variable=nombre.variable) %>%
@@ -90,8 +86,6 @@ categoria_ocup_eph <- left_join(categoria_ocup_eph, etiquetas_catocup, by=c("cod
 ## Categoria ocupacional POK
 v_categoria_ocup_pok_eph <- diccionario_variables %>% filter(base=="eph_categoria_ocupacional_pok") %>%  select(nombre.variable)
 v_categoria_ocup_pok_eph <- as.vector(v_categoria_ocup_pok_eph[1])
-
-# Cambio cod.variable por nombre de la variable
 etiquetas_catocup_pok <- diccionario_variables %>% filter(base=="eph_categoria_ocupacional_pok") %>% select(nombre.variable, cod.variable)
 categoria_ocup_pok_eph <- left_join(categoria_ocup_pok_eph, etiquetas_catocup_pok, by=c("cod.variable")) %>%
   mutate(cod.variable=nombre.variable) %>%
@@ -100,10 +94,7 @@ categoria_ocup_pok_eph <- left_join(categoria_ocup_pok_eph, etiquetas_catocup_po
 ## Precariedad
 v_precariedad_eph <- diccionario_variables %>% filter(base=="eph_precariedad") %>%  select(nombre.variable)
 v_precariedad_eph <- as.vector(v_precariedad_eph[1])
-
-# Cambio cod.variable por nombre de la variable
 etiquetas_precariedad <- diccionario_variables %>% filter(base=="eph_precariedad") %>% select(nombre.variable, cod.variable)
-
 precariedad_eph <- left_join(precariedad_eph, etiquetas_precariedad, by=c("cod.variable")) %>%
   mutate(cod.variable=nombre.variable) %>%
   select(-nombre.variable)

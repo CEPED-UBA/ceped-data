@@ -97,9 +97,15 @@ precariedad_eph_plot_server <- function(id) {
     
      })
     
-    output$tabla <- renderTable({
-      df()
-    })
+     output$tabla <- renderDT({
+       df() %>%   datatable(rownames = FALSE,
+                            options = list(
+                              searching=FALSE, 
+                              pageLength = 10, 
+                              dom='tip')) %>% 
+         formatRound("valor")
+     })
+     
     
     # output$metadata1 <- renderText({
     #   generar_metadata(input$var_serie)
@@ -193,9 +199,9 @@ precariedad_eph_plot_ui <- function(id, title,v_precariedad_eph) {
                           br(),
                           fluidRow(
                             column(12,
-                                   column(6, 
-                                          box(tableOutput(ns('tabla')))),
-                                   column(6,          
+                                   column(8, 
+                                          box(DTOutput(ns('tabla')), width = NULL)),
+                                   column(4,          
                                           box(title = "Metadata", width = NULL, 
                                               "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
                                           br(),

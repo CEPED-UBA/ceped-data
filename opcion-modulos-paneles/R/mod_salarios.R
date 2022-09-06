@@ -11,7 +11,13 @@ salarios_plot_server <- function(id) {
         rename("Serie" = "cod.variable",
                "País" = "nombre.pais",
                "Período" = "ANO4") %>% 
-        select("País","iso3c","Período","Serie", "valor")
+        select("País","iso3c","Período","Serie", "valor") %>%   
+        datatable(rownames = FALSE,
+          options = list(
+            searching=FALSE, 
+            pageLength = 10, 
+            dom='tip'))          %>% 
+        formatRound("valor")
     }
     
     generar_titulo <- function(variables, periodo_i, periodo_f){
@@ -69,7 +75,7 @@ salarios_plot_server <- function(id) {
       plot_interact(plot(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie],input$pais_id ,input$id_periodo[1],input$id_periodo[2]))
     })
     
-    output$tabla <- renderTable({
+    output$tabla <- renderDT({
       armar_tabla(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie], input$id_periodo[1],input$id_periodo[2])
     })
     
@@ -167,7 +173,7 @@ salarios_plot_ui <- function(id, title,v_variables) {
                                             br(),
                                             box(width = NULL, htmlOutput(ns('titulo2'))),
                                             br(),
-                                            box(tableOutput(ns('tabla')))),
+                                            box(DTOutput(ns('tabla')), width = NULL)),
                                      column(3,          
                                             box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
                                             br(),

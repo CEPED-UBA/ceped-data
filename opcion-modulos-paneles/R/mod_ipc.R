@@ -44,7 +44,12 @@ ipc_plot_server <- function(id) {
         
       }
       
-      
+      tabla <- tabla %>% datatable(rownames = FALSE,
+                                   options = list(
+                                     searching=FALSE, 
+                                     pageLength = 10, 
+                                     dom='tip')) %>% 
+        formatRound("Valor")
       
       return(tabla)
       
@@ -249,7 +254,7 @@ ipc_plot_server <- function(id) {
     
     
     
-    output$tabla <- renderTable({
+    output$tabla <- renderDT({
       armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
     output$metadata1 <- renderText({
@@ -334,7 +339,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                fluidRow(
                  column(12,
                         column(8, 
-                               box(tableOutput(ns('tabla')))),
+                               box(DTOutput(ns('tabla')), width = NULL)),
                         column(4,          
                                box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
                                br(),

@@ -23,7 +23,13 @@ bp_plot_server <- function(id) {
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         rename("Período" = "ANO4",
                "Valuación" = "valuacion") %>% 
-        select("codigo_y_variable","Valuación", "valor","Período")
+        select("codigo_y_variable","Valuación", "valor","Período") %>%   
+        datatable(rownames = FALSE,
+                  options = list(
+                    searching=FALSE, 
+                    pageLength = 10, 
+                    dom='tip')) %>% 
+        formatRound("valor")
     }
     
     generar_titulo <- function(variables, valu, periodo_i, periodo_f){
@@ -93,8 +99,8 @@ bp_plot_server <- function(id) {
       plot_interact(plot(input$tipo_graf,input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2]))
     })
     
-    output$tabla <- renderTable({
-      armar_tabla(input$valuacion, input$id_periodo[1],input$id_periodo[2])
+    output$tabla <- renderDT({
+      armar_tabla(input$valuacion, input$id_periodo[1],input$id_periodo[2]) 
         
     })
     output$diccionario_bp <- renderTable({
@@ -212,7 +218,7 @@ bp_plot_ui <- function(id, title,v_variables) {
                                      column(9, 
                                             box(width = NULL,br(), htmlOutput(ns('titulo2'))),
                                             br(),
-                                            box(tableOutput(ns('tabla')))),
+                                            box(DTOutput(ns('tabla')), width = NULL)),
                                      column(3,          
                                             box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
                                             br(),

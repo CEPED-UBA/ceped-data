@@ -51,7 +51,13 @@ tc_plot_server <- function(id) {
         rename("Serie" = "cod.variable",
                "Período" = "ANO4",
                "País" = "nombre.pais") %>% 
-        select(-iso3c)
+        select(-iso3c) %>%   
+        datatable(rownames = FALSE,
+         options = list(
+           searching=FALSE, 
+           pageLength = 10, 
+           dom='tip')) %>% 
+        formatRound("valor")
     }
     
     generar_titulo <- function(variables, periodo_i, periodo_f){
@@ -109,7 +115,7 @@ tc_plot_server <- function(id) {
     output$plot <- renderPlotly({
       plot_interact(plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]))
       })
-    output$tabla <- renderTable({
+    output$tabla <- renderDT({
       armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
     })
     output$metadata1 <- renderText({
@@ -190,7 +196,7 @@ tc_plot_ui <- function(id, title) {
                         column(8, 
                                box(width = NULL, br(),htmlOutput(ns('titulo2'))),
                                br(),
-                               box(tableOutput(ns('tabla')))),
+                               box(DTOutput(ns('tabla')), width = NULL)),
                         column(4,          
                                box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
                                br(),
