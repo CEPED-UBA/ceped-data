@@ -158,8 +158,8 @@ categoria_ocup_pok_eph_plot_ui <- function(id, title,v_categoria_ocup_pok_eph) {
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
-                           value = c(1995,2021),
-                           min = 1995, 
+                           value = c(2003,2021),
+                           min = 2003, 
                            max = 2021
                ), 
                hr(), 

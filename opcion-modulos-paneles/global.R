@@ -2,6 +2,7 @@
 library(shiny)
 library(shinythemes)
 library(shinycssloaders)
+library(shinyWidgets)
 library(glue)
 library(DT)
 library(plotly)

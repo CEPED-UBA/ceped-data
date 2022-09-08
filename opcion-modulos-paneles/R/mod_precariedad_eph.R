@@ -145,17 +145,18 @@ precariedad_eph_plot_ui <- function(id, title,v_precariedad_eph) {
            
            sidebarLayout(
              sidebarPanel(
-                 selectInput(ns('id_periodicidad'),label = 'Tipo de infromación:',
+               selectInput(ns('id_periodicidad'),label = 'Tipo de infromación:',
                              choices =  c("Promedio anual", "Trimestral/Onda"),
                              selected = "Promedio Anual",
-                             width = "300px",
+                             width = "350px",
                              multiple = F
                  ),
                
-               selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
+               pickerInput(ns('var_serie'),label = 'Seleccionar una serie:',
                            choices =  unique(precariedad_eph$cod.variable),
                            selected = unique(precariedad_eph$cod.variable)[1],
-                           width = "300px",
+                           options = list(`actions-box` = TRUE),
+                           width = "350px",
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",

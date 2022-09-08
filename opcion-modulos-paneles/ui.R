@@ -47,19 +47,17 @@ ui <- fluidPage(
   
   #define fakeClick for buttons
         (tags$head(tags$script(HTML(
-                                                        'var fakeClick = function(tabName) {
-                                                         var dropdownList = document.getElementsByTagName("a");
-                                                         for (var i = 0; i < dropdownList.length; i++) {
-                                                         var link = dropdownList[i];
-                                                         if(link.getAttribute("data-value") == tabName) {
-                                                         link.click();
-                                                         };
-                                                         }
-                                                         };
-                                                         '))
-           #Logo del CEPED a la derecha
-                   ,
-                   tags$style(HTML("
+                          'var fakeClick = function(tabName) {
+                           var dropdownList = document.getElementsByTagName("a");
+                           for (var i = 0; i < dropdownList.length; i++) {
+                           var link = dropdownList[i];
+                           if(link.getAttribute("data-value") == tabName) {
+                           link.click();
+                           };
+                           }
+                           };
+                           ')),
+                   tags$style(HTML("                                 
                            .navbar-nav {
                            float: none !important;
                            }
@@ -67,7 +65,6 @@ ui <- fluidPage(
                            float: right;
                            }
                            "))
-           #       
                    ) ),
   
   shinyjs::useShinyjs(),
@@ -146,7 +143,7 @@ ui <- fluidPage(
                                                          style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                                          
 
-                                                         tags$a("Precariedad laboral",
+                                                         tags$a("Empleo según registro",
                                                                 style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
                                                                 onclick="fakeClick('precariedad_eph')",
                                                                 class="btn btn-primary btn-s"
@@ -286,7 +283,7 @@ ui <- fluidPage(
                         categoria_ocup_eph_plot_ui(id ='categoria_ocup_eph', title ='Categorías ocupacionales', v_categoria_ocup_eph),
                         categoria_ocup_pok_eph_plot_ui(id ='categoria_ocup_pok_eph', title ='Categorías ocupacionales (Pok)', v_categoria_ocup_pok_eph),
                         tasas_basicas_eph_plot_ui(id ='tasas_basicas_eph', title ='Tasas básicas', v_tasas_basicas_eph), 
-                        precariedad_eph_plot_ui(id ='precariedad_eph', title ='Percariedad laboral', v_precariedad_eph), 
+                        precariedad_eph_plot_ui(id ='precariedad_eph', title ='Empleo según registro', v_precariedad_eph), 
                         rama_eph_plot_ui(id ='rama_eph', title ='Empleo por ramas', v_rama_eph)
                          
 
