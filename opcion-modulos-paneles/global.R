@@ -14,6 +14,7 @@ library(tidyverse)
 library(ggthemes)
 library(colorspace)
 library(readxl)
+library(ggplot2)
 
 options(scipen=999)
 

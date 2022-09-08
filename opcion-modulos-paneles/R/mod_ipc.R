@@ -74,6 +74,7 @@ ipc_plot_server <- function(id) {
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>%
+        mutate(sub = ifelse(sub%in%c(1:12),as.numeric(sub),sub)) %>% 
         arrange(ANO4, sub) %>% 
         rowwise() %>% 
         mutate(Per = ifelse(is.na(sub), paste0(ANO4),paste0(ANO4,"-",sub))) %>% 
@@ -90,11 +91,12 @@ ipc_plot_server <- function(id) {
              x = "Año")+
         theme_minimal()+
         theme(text = element_text(size = 9),
-              axis.text.x = element_text(size=10,angle = 90),
+              axis.text.x = element_text(size=8,angle = 90),
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
-        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)|grepl("-Mayo", x)|grepl("-T1", x)),paste0(x),paste0("") ))
+        scale_x_discrete(guide = guide_axis(check.overlap = TRUE))
+        #scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)|grepl("-Mayo", x)|grepl("-T1", x)),paste0(x),paste0("") ))
       
       p
       
@@ -108,6 +110,7 @@ ipc_plot_server <- function(id) {
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+        mutate(sub = ifelse(sub%in%c(1:12),as.numeric(sub),sub)) %>% 
         arrange(ANO4, sub) %>% 
         rowwise() %>% 
         mutate(Per = ifelse(is.na(sub), paste0(ANO4),paste0(ANO4,"-",sub))) %>% 
@@ -123,12 +126,13 @@ ipc_plot_server <- function(id) {
              x = "Año")+
         theme_minimal()+
         theme(text = element_text(size = 9),
-              axis.text.x = element_text(size=10,angle = 90),
+              axis.text.x = element_text(size=8,angle = 90),
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
         scale_y_continuous(labels = function(x) paste0(x,"%"))+
-        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
+        scale_x_discrete(guide = guide_axis(check.overlap = TRUE))
+       # scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
       
       p
 
@@ -311,15 +315,19 @@ ipc_plot_ui <- function(id, title,v_variables) {
                
                box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
                br(),
+               
                plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                br(),
                box(width = NULL,
                    downloadButton(ns('downloadPlot'),'Descargar gráfico')),
                br(),
+               
                box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
                br(),
                box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
                br(),
+               
+              
                plotlyOutput(ns('plot_var'))%>% withSpinner(type = 7, color =paleta_colores[2]),
                br(),
                box(width = NULL,
