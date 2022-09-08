@@ -17,19 +17,21 @@ bp_plot_server <- function(id) {
     })
     
     
-    armar_tabla <- function(valu, periodo_i, periodo_f){
+    armar_tabla <- function(valu, variable,periodo_i, periodo_f){
       df() %>%
+        filter(codigo_y_variable == variable) %>% 
         filter(valuacion == valu) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         rename("Período" = "ANO4",
                "Valuación" = "valuacion") %>% 
-        select("codigo_y_variable","Valuación", "valor","Período") %>%   
-        datatable(rownames = FALSE,
+        mutate(valor = round(valor)) %>% 
+        select("codigo_y_variable","Valuación", "valor","Período") %>% 
+        pivot_wider(names_from = "Período",values_from = "valor") %>% 
+        datatable(rownames = FALSE,filter = "top",
                   options = list(
                     searching=FALSE, 
-                    pageLength = 10, 
-                    dom='tip')) %>% 
-        formatRound("valor")
+                    dom='tip')) #%>% 
+#        formatRound("valor")
     }
     
     generar_titulo <- function(variables, valu, periodo_i, periodo_f){
@@ -100,12 +102,26 @@ bp_plot_server <- function(id) {
     })
     
     output$tabla <- renderDT({
-      armar_tabla(input$valuacion, input$id_periodo[1],input$id_periodo[2]) 
+      armar_tabla(input$valuacion,input$variables_serie, input$id_periodo[1],input$id_periodo[2]) 
         
     })
-    output$diccionario_bp <- renderTable({
-      bop_dolares_diccionario
+    output$diccionario_bp <- renderDataTable({
+      bop_dolares_diccionario %>% 
+        datatable(rownames = FALSE)
       })
+    
+    output$diccionario_bp_sectores <- renderDataTable({
+      bop_sectores_diccionario  %>% 
+        datatable(rownames = FALSE)
+    })
+    
+    output$diccionario_bp_aclara <- renderDataTable({
+      bop_dolares_diccionario_aclaracion %>% 
+        datatable(rownames = FALSE,
+                  options = list(
+                    searching=FALSE, 
+                    dom='tip'))
+    })
     
 # output$metadata1 <- renderText({
     #   generar_metadata(input$var_serie)
@@ -148,8 +164,8 @@ bp_plot_ui <- function(id, title,v_variables) {
              sidebarLayout(
                sidebarPanel(
                  selectInput(ns('desagregacion'),label =  "Elegir clasificacion: ",
-                             choices = c("Partidas desagregadas" = 'bop_arg_dolares',
-                                         "Sectores Institucionales" = 'bop_sectores'),
+                             choices = c("Cuentas y partidas (presentación con enfoque de saldo)" = 'bop_arg_dolares',
+                                         "Resultado por Sector Institucional (Público y Privado)" = 'bop_sectores'),
                              selected = "Partidas desagregadas",
                              width = "300px",
                              multiple = F
@@ -188,15 +204,6 @@ bp_plot_ui <- function(id, title,v_variables) {
                mainPanel(
                  
                  tabsetPanel(
-                   tabPanel("Diccionario",
-                            value = "d_bp",
-                            
-                            fluidRow(
-                                     column(width = 12, 
-                                            box(tableOutput(ns('diccionario_bp')),
-                                                width = 12)
-                                            ))
-                            ),
                    tabPanel("Gráfico",
                             value = "g_bp",
                             
@@ -210,24 +217,34 @@ bp_plot_ui <- function(id, title,v_variables) {
                                 downloadButton(ns('downloadPlot'),'Descargar gráfico'))
                             
                    ),
-                    tabPanel("Tabla Completa",
+                   tabPanel("Tabla",
                             value = "t_bp",
+                            box(DTOutput(ns('tabla')), width = NULL),
+                            br(),
+                            box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
+                            br(),
+                            box(width = NULL,downloadButton(ns('downloadTable'),'Descargar tabla'))
+                            ),
+                   tabPanel("Diccionario Cuentas y Partidas",
+                            value = "d_bp",
                             
                             fluidRow(
-                              column(12,
-                                     column(9, 
-                                            box(width = NULL,br(), htmlOutput(ns('titulo2'))),
-                                            br(),
-                                            box(DTOutput(ns('tabla')), width = NULL)),
-                                     column(3,          
-                                            box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
-                                            br(),
-                                            box(width = NULL,
-                                                downloadButton(ns('downloadTable'),'Descargar tabla'))
-                                            
-                                     ))
-                            ))
-                   
+                              column(width = 12, 
+                                     box(DTOutput(ns('diccionario_bp')),
+                                         width = 12),
+                                     br(),
+                                     box(DTOutput(ns('diccionario_bp_aclara')),
+                                         width = 12)
+                              ))),
+
+                   tabPanel("Diccionario Sectores Institucionales",
+                            value = "d_bp2",
+                            
+                            fluidRow(
+                              column(width = 12, 
+                                     box(DTOutput(ns('diccionario_bp_sectores')),
+                                         width = 12)
+                              )))
                  )
                  
                )
