@@ -44,7 +44,13 @@ rama_eph <- readRDS("www/data/eph_rama.RDS")
 categoria_ocup_eph <- readRDS("www/data/eph_categoria_ocupacional.RDS")
 categoria_ocup_pok_eph <- readRDS("www/data/eph_categoria_ocupacional_pok.RDS")
 
-
+# Funcional
+diccionario_dt24 <- read.xlsx(xlsxFile = "www/data/diccionario_dt24.xlsx") 
+base_dt24 <- readRDS(file = "www/data/base_dt24.RDS") %>% 
+  mutate(valor = round(valor,digits = 2))
+base_export_dt24 <- base_dt24 %>% 
+  pivot_wider(names_from = sector,values_from = valor) %>% 
+  arrange(variable)
 
 # SALARIOS #####
 salarios <- serie_salarios %>% 
