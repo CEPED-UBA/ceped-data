@@ -4,20 +4,28 @@ salarios_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     
-    armar_tabla <- function(variables, periodo_i, periodo_f){
-      salarios %>%
+    armar_tabla <- function(variables, periodo_i, periodo_f,descarga){
+      tabla <- salarios %>%
         #filter(cod.variable  %in%   variables) %>% 
         #filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         rename("Serie" = "cod.variable",
                "País" = "nombre.pais",
                "Período" = "ANO4") %>% 
-        select("País","iso3c","Período","Serie", "valor") %>%   
-        datatable(rownames = FALSE,
-          options = list(
-            searching=FALSE, 
-            pageLength = 10, 
-            dom='tip'))          %>% 
-        formatRound("valor")
+        select("País","iso3c","Período","Serie", "valor") 
+      
+      if (descarga == FALSE) {
+        tabla <- tabla %>%   
+          datatable(rownames = FALSE,
+                    options = list(
+                      searching=FALSE, 
+                      pageLength = 10, 
+                      dom='tip'))          %>% 
+          formatRound("valor")
+      } else {
+        tabla <- tabla
+      }
+      
+      return(tabla)
     }
     
     generar_titulo <- function(variables, periodo_i, periodo_f){
@@ -76,7 +84,7 @@ salarios_plot_server <- function(id) {
     })
     
     output$tabla <- renderDT({
-      armar_tabla(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie], input$id_periodo[1],input$id_periodo[2])
+      armar_tabla(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie], input$id_periodo[1],input$id_periodo[2],descarga = F)
     })
     
     output$metadata1 <- renderText({
@@ -91,7 +99,7 @@ salarios_plot_server <- function(id) {
       filename = function(){paste(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie][1],'.xlsx',sep='')},
       content = function(file){
         
-        write.xlsx(armar_tabla(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie],input$id_periodo[1],input$id_periodo[2]), 
+        write.xlsx(armar_tabla(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie],input$id_periodo[1],input$id_periodo[2],descarga = T), 
                    file)    }
     )
     output$downloadPlot <- downloadHandler(

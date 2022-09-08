@@ -4,16 +4,16 @@ ipc_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     
-    armar_tabla <- function(variables, periodo_i, periodo_f){
+    armar_tabla <- function(variables, periodo_i, periodo_f, descarga){
       
       tabla <- base_ipc %>% ungroup() %>%
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables]) ) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         mutate(ANO4 = paste0(round(ANO4,0))) %>% 
-        rename("Serie" = "cod.variable",
-               "Período" = "ANO4",
-               
+        select("Período" = "ANO4",
+               sub,
+               "Serie" = "cod.variable",
                "Valor" = "valor",
                "Variación (%)" = "var")
       
@@ -44,12 +44,18 @@ ipc_plot_server <- function(id) {
         
       }
       
-      tabla <- tabla %>% datatable(rownames = FALSE,
-                                   options = list(
-                                     searching=FALSE, 
-                                     pageLength = 10, 
-                                     dom='tip')) %>% 
-        formatRound("Valor")
+      if (descarga == FALSE) {
+        tabla <- tabla %>% datatable(rownames = FALSE,
+                                     options = list(
+                                       searching=FALSE, 
+                                       pageLength = 10, 
+                                       dom='tip')) %>% 
+          formatRound("Valor")
+      } else {
+        tabla <- tabla
+      }
+      
+     
       
       return(tabla)
       
@@ -259,7 +265,7 @@ ipc_plot_server <- function(id) {
     
     
     output$tabla <- renderDT({
-      armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+      armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2], descarga = F)
     })
     output$metadata1 <- renderText({
       generar_metadata(input$var_serie)
@@ -267,12 +273,13 @@ ipc_plot_server <- function(id) {
     output$metadata2 <- renderText({
       generar_metadata(input$var_serie)
     })
+    
     output$downloadTable <- downloadHandler(
       
       filename = function(){paste(input$var_serie,'.xlsx',sep='')},
       content = function(file){
         
-        write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
+        write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2], descarga = T), 
                    file)    }
     )
     

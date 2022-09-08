@@ -17,8 +17,8 @@ bp_plot_server <- function(id) {
     })
     
     
-    armar_tabla <- function(valu, variable,periodo_i, periodo_f){
-      df() %>%
+    armar_tabla <- function(valu, variable,periodo_i, periodo_f,descarga){
+      tabla <- df() %>%
         filter(codigo_y_variable == variable) %>% 
         filter(valuacion == valu) %>% 
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
@@ -26,12 +26,22 @@ bp_plot_server <- function(id) {
                "Valuación" = "valuacion") %>% 
         mutate(valor = round(valor)) %>% 
         select("codigo_y_variable","Valuación", "valor","Período") %>% 
-        pivot_wider(names_from = "Período",values_from = "valor") %>% 
-        datatable(rownames = FALSE,filter = "top",
-                  options = list(
-                    searching=FALSE, 
-                    dom='tip')) #%>% 
-#        formatRound("valor")
+        pivot_wider(names_from = "Período",values_from = "valor") 
+      
+      if (descarga == FALSE) {
+        tabla <- tabla %>% 
+          datatable(rownames = FALSE,filter = "top",
+                    options = list(
+                      searching=FALSE, 
+                      dom='tip')) #%>% 
+        #        formatRound("valor")
+      } else {
+        tabla <- tabla
+      }
+      
+      
+      
+      return(tabla)
     }
     
     generar_titulo <- function(variables, valu, periodo_i, periodo_f){
@@ -102,7 +112,7 @@ bp_plot_server <- function(id) {
     })
     
     output$tabla <- renderDT({
-      armar_tabla(input$valuacion,input$variables_serie, input$id_periodo[1],input$id_periodo[2]) 
+      armar_tabla(input$valuacion,input$variables_serie, input$id_periodo[1],input$id_periodo[2],descarga = F) 
         
     })
     output$diccionario_bp <- renderDataTable({
@@ -134,7 +144,7 @@ bp_plot_server <- function(id) {
       filename = function(){paste(input$variables_serie[1],'.xlsx',sep='')},
       content = function(file){
         
-        write.xlsx(armar_tabla(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2]), 
+        write.xlsx(armar_tabla(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2],descarga = T), 
                    file)    }
     )
     output$downloadPlot <- downloadHandler(
