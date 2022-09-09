@@ -83,7 +83,7 @@ ui <- fluidPage(
                       fluidRow(#column(12, 
                                #column(10, 
                       tags$div(
-                        h1("Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo", 
+                        h1("Portal de difusión de datos del CEPED", 
                            style ="text-align: center" ))#), 
                           #      column(2,
                           # img(src = "img/logo_ceped2.png", width = 270))
@@ -120,7 +120,7 @@ ui <- fluidPage(
                                                          ),
                                                          
                                                          br(),
-                                                         p(''),
+                                                         HTML('&nbsp;'),
                                                          br(),
                                                          
                                                          tags$a("Categorías ocupacionales",
@@ -140,7 +140,7 @@ ui <- fluidPage(
                                                          ), 
                                                          
                                                          br(),
-                                                         p(''),
+                                                         HTML('&nbsp;'),
                                                          br()
                                                          
                                                          ,
@@ -179,7 +179,7 @@ ui <- fluidPage(
                                                                 class="btn btn-warning btn-s"), 
                                                          
                                                          br(),
-                                                         p(''),
+                                                         HTML('&nbsp;'),
                                                          br(),
                                                          
                                                          # tags$a("Argentina | Tipo de cambio", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
@@ -196,19 +196,20 @@ ui <- fluidPage(
                                                                 class="btn btn-warning btn-s"), 
                                                          
                                                          br(),
-                                                         p(''),
-                                                         br(),
+                                                         HTML('&nbsp;'),
+                                                         br()
+                                                         ),
+                                                tags$div(class="panel-body",
+                                                         style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
+                                                         
                                                          
                                                          tags$a("Argentina | Distrib. Funcional", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
                                                                 onclick="fakeClick('df')",
                                                                 class="btn btn-warning btn-s"), 
                                                          
                                                          br(),
-                                                         p(''),
-                                                         br()
-                                                         ),
-                                                tags$div(class="panel-body",
-                                                         style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
+                                                         HTML('&nbsp;'),
+                                                         br(),
                                                          
                                                          tags$a("Argentina | IPC", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
                                                                 onclick="fakeClick('ipc')",
@@ -221,18 +222,18 @@ ui <- fluidPage(
                       ),
                       fluidRow(
                         column(12,
-                               tags$div(style = "display:flex",
+                               tags$div(style = "display:flex;align-items: center;justify-content: center;",
                         #column(6,
                                tags$div( class="panel panel-danger",
-                                         style = "border-color: #f6d55c;width:50%",
+                                         style = "border-color: #f6d55c",
                                          
                                          tags$div(class= "panel-heading",
                                                   style="background:#f6d55c;border-color: #f6d55c",
                                                   h3('Datos de artículos')),
                                          tags$div(class="panel-body",
-                                                  
+                                                  style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                                   #img(height = 250, width = 250,src = "img/data_preview.png"),
-                                                  p('Presentación interactiva de datos que fueron publicados en artículos de integrantes del CEPED', style = "color: black")),
+                                                  p('Presentación interactiva de datos que fueron publicados en artículos de integrantes del CEPED', style = "color: black;align-text:center")),
                                          tags$div(class="panel-body",
                                                   style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                                   tags$a("Explorar líneas de investigación",
@@ -244,33 +245,36 @@ ui <- fluidPage(
                              #  )
                       ),
                       #espacio entre cajas
-                      HTML('&nbsp;'),
-                      HTML('&nbsp;'),
-                      HTML('&nbsp;'),
-                      HTML('&nbsp;'),
+                    #  HTML('&nbsp;'),
+                    #  HTML('&nbsp;'),
+                    #  HTML('&nbsp;'),
+                    #  HTML('&nbsp;'),
                       #column(6,
-                             tags$div( class="panel panel-default",
-                                       style = "border-color: #3caea3;width:50%",
+                            
+                      ),
+                    
+                    tags$div( class="panel panel-default",
+                              style = "border-color: #3caea3",
+                              
+                              tags$div(class= "panel-heading",
+                                       style="background:#3caea3;border-color: #3caea3",
+                                       h3('Sobre el CEPED', style="text-align:center")),
+                              tags$div(class="panel-body",
+                                       style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                        
-                                       tags$div(class= "panel-heading",
-                                                style="background:#3caea3;border-color: #3caea3",
-                                                h3('Sobre el CEPED')),
-                                       tags$div(class="panel-body",
-                                                
-                                                #img(height = 250, width = 250,src = "img/data_preview.png"),
-                                                p('¿Quiénes somos?', style = "color: black")),
+                                       #img(height = 250, width = 250,src = "img/data_preview.png"),
+                                       p('¿Quiénes somos?', style = "color: black")),
+                              
+                              tags$div(class="panel-body",
+                                       style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                        
-                                       tags$div(class="panel-body",
-                                                style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
-                                                
-                                                tags$a("Conocer",
-                                                       style=paste0(btn_style,"background:#3caea3;border-color: #3caea3;color: black;font-size:14px"),
-                                                       onclick="fakeClick('CEPED')",
-                                                       class="btn btn-default btn-s"
-                                                )
+                                       tags$a("Conocer",
+                                              style=paste0(btn_style,"background:#3caea3;border-color: #3caea3;color: black;font-size:14px"),
+                                              href="http://www.economicas.uba.ar/institutos_y_centros/ceped/", target="_blank",
+                                              class="btn btn-default btn-s"
                                        )
-                             )
-                      )
+                              )
+                    )
                       
                         )
                       
@@ -305,7 +309,7 @@ ui <- fluidPage(
              
             publicaciones_ui('publicaciones'),
             
-            ceped_plot_ui('ceped_presenta'),
+            #ceped_plot_ui('ceped_presenta'),
             
             tabPanel(value = "logo_ceped",title=div(style = "display:flex; flex-direction: row; justify-content: flex-end; align-items: start; width: 100px", 
                                                     img(src="img/logo_ceped2.png",height="100%", width="100%", style = "add padding: 0px" )

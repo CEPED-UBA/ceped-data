@@ -162,15 +162,16 @@ precariedad_eph_plot_ui <- function(id, title) {
                sliderInput(ns('id_periodo'), "Período:",
                            value = c(1995,2021),
                            min = 1995, 
-                           max = 2021
+                           max = 2021,
+                           sep=""
                ), 
                hr(), 
                h4("Nota aclaratoria"), 
-               h5(nota_aclaratoria_eph1),
-               h5(nota_aclaratoria_eph2),
+               h5(nota_aclaratoria_eph1, style="text-align: justify;"),
+               h5(nota_aclaratoria_eph2, style="text-align: justify;"),
                hr(),  
                h4(strong(titulo_cita)), 
-               h5(cita)
+               h5(cita, style="text-align: justify;")
              ),
              
              mainPanel( 

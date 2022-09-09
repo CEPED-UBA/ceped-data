@@ -159,15 +159,16 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                sliderInput(ns('id_periodo'), "Período:",
                            value = c(1995,2021),
                            min = 1995, 
-                           max = 2021
+                           max = 2021,
+                           sep=""
                ), 
                hr(), 
                h4("Nota aclaratoria"), 
-              p(nota_aclaratoria_eph1),
-               p(nota_aclaratoria_eph2),
+              p(nota_aclaratoria_eph1, style="text-align: justify;"),
+               p(nota_aclaratoria_eph2, style="text-align: justify;"),
                hr(),  
                h4(strong(titulo_cita)), 
-               p(cita)
+               p(cita, style="text-align: justify;")
              ),
              
              mainPanel( 

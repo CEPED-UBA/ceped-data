@@ -14,7 +14,7 @@ server <- function (input, output,session) {
   df_plot_server('df')
   
 
-  ceped_plot_server('ceped_presenta')
+  #ceped_plot_server('ceped_presenta')
   
   publicaciones_server('publicaciones')
 }
