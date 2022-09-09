@@ -43,7 +43,7 @@ precariedad_eph <- readRDS("www/data/eph_precariedad.RDS")
 tasas_basicas_eph <- readRDS("www/data/eph_tasas_basicas.RDS")
 rama_eph <- readRDS("www/data/eph_rama.RDS") 
 categoria_ocup_eph <- readRDS("www/data/eph_categoria_ocupacional.RDS")
-categoria_ocup_pok_eph <- readRDS("www/data/eph_categoria_ocupacional_pok.RDS")
+
 
 # Funcional
 diccionario_dt24 <- read.xlsx(xlsxFile = "www/data/diccionario_dt24.xlsx") 
