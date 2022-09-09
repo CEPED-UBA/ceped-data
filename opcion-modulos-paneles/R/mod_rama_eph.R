@@ -153,7 +153,7 @@ rama_eph_plot_ui <- function(id, title) {
                ),
                selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
                            choices =  unique(rama_eph$cod.variable),
-                           selected = unique(rama_eph$cod.variable)[1],
+                           selected = unique(rama_eph$cod.variable),
                            width = "300px",
                            multiple = T
                ),
@@ -185,7 +185,7 @@ rama_eph_plot_ui <- function(id, title) {
                           br(),
                          # box(title = "Metadata", width = NULL, textOutput(ns('metadata1')), 
                           box(title = "Metadata", width = NULL, 
-                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Los datos de 1995-2003 corresponden a la versión puntal de la EPH, mientras que el período 2003-actual corresponde a su versión continua. Estimaciones absolutas para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
+                              metadata_eph),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -203,7 +203,7 @@ rama_eph_plot_ui <- function(id, title) {
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
                                           box(title = "Metadata", width = NULL, 
-                                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas trimestrales para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados."),
+                                              metadata_eph),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))

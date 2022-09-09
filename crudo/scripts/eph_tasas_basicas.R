@@ -97,46 +97,46 @@ base_puntual3 <- base_puntual3 %>%
 
 base_final <- bind_rows(base3, base_puntual3)
 
-# Completo data frame con NAs
+# # Completo data frame con NAs
+# 
+# anios_incompletos_continua <- base_puntual3[, c(1, 2, 5, 6)]
+# 
+# t_actividad_continua <- c(rep("t_actividad_continua", 16))
+# t_empleo_continua <- c(rep("t_empleo_continua", 16))
+# t_desocupacion_continua <- c(rep("t_desocupacion_continua", 16))
+# t_subocupacion_continua <- c(rep("t_subocupacion_continua", 16))
+# 
+# codigos_continua <- c(t_actividad_continua, t_empleo_continua, t_desocupacion_continua, t_subocupacion_continua)
+# 
+# anios_incompletos_continua$cod.variable <- codigos_continua
+# anios_incompletos_continua$valor <- NA
+# 
+# anios_incompletos_puntual <- base3[, c(1, 2, 5, 6)]
+# 
+# t_actividad_puntual <- c(rep("t_actividad_puntual", 76))
+# t_empleo_puntual <- c(rep("t_empleo_puntual", 76))
+# t_desocupacion_puntual <- c(rep("t_desocupacion_puntual", 76))
+# t_subocupacion_puntual <- c(rep("t_subocupacion_puntual", 76))
+# 
+# codigos_puntual <- c(t_actividad_puntual, t_empleo_puntual, t_desocupacion_puntual, t_subocupacion_puntual)
+# 
+# anios_incompletos_puntual$cod.variable <- codigos_puntual
+# anios_incompletos_puntual$valor <- NA
 
-anios_incompletos_continua <- base_puntual3[, c(1, 2, 5, 6)]
+# base_final_final <- bind_rows(base_final, anios_incompletos_continua, anios_incompletos_puntual)
 
-t_actividad_continua <- c(rep("t_actividad_continua", 16))
-t_empleo_continua <- c(rep("t_empleo_continua", 16))
-t_desocupacion_continua <- c(rep("t_desocupacion_continua", 16))
-t_subocupacion_continua <- c(rep("t_subocupacion_continua", 16))
-
-codigos_continua <- c(t_actividad_continua, t_empleo_continua, t_desocupacion_continua, t_subocupacion_continua)
-
-anios_incompletos_continua$cod.variable <- codigos_continua
-anios_incompletos_continua$valor <- NA
-
-anios_incompletos_puntual <- base3[, c(1, 2, 5, 6)]
-
-t_actividad_puntual <- c(rep("t_actividad_puntual", 76))
-t_empleo_puntual <- c(rep("t_empleo_puntual", 76))
-t_desocupacion_puntual <- c(rep("t_desocupacion_puntual", 76))
-t_subocupacion_puntual <- c(rep("t_subocupacion_puntual", 76))
-
-codigos_puntual <- c(t_actividad_puntual, t_empleo_puntual, t_desocupacion_puntual, t_subocupacion_puntual)
-
-anios_incompletos_puntual$cod.variable <- codigos_puntual
-anios_incompletos_puntual$valor <- NA
-
-base_final_final <- bind_rows(base_final, anios_incompletos_continua, anios_incompletos_puntual)
-
-base_final_final <- base_final_final %>% 
+base_final_final <- base_final %>% 
   mutate(ANO4.trim= case_when(ANO4.trim=="2003.may" ~ "2003.1",
                               TRUE ~ ANO4.trim), 
          cod.variable= case_when(
-           cod.variable == "t_actividad_continua" ~ "Tasa de actividad (EPH continua)", 
-           cod.variable == "t_empleo_continua"~ "Tasa de empleo (EPH continua)", 
-           cod.variable == "t_desocupacion_continua" ~"Tasa de desocupación (EPH continua)", 
-           cod.variable == "t_subocupacion_continua"~"Tasa de subocupación  (EPH continua)", 
-           cod.variable == "t_actividad_puntual"~ "Tasa de actividad (EPH puntual)" , 
-           cod.variable == "t_empleo_puntual"~ "Tasa de empleo (EPH puntual)", 
-           cod.variable == "t_desocupacion_puntual"~ "Tasa de desocupación (EPH puntual)", 
-           cod.variable == "t_subocupacion_puntual" ~ "Tasa de subocupación (EPH puntual)"
+           cod.variable == "t_actividad_continua" ~ "Tasa de actividad", 
+           cod.variable == "t_empleo_continua"~ "Tasa de empleo", 
+           cod.variable == "t_desocupacion_continua" ~"Tasa de desocupación", 
+           cod.variable == "t_subocupacion_continua"~"Tasa de subocupación", 
+           cod.variable == "t_actividad_puntual"~ "Tasa de actividad" , 
+           cod.variable == "t_empleo_puntual"~ "Tasa de empleo", 
+           cod.variable == "t_desocupacion_puntual"~ "Tasa de desocupación", 
+           cod.variable == "t_subocupacion_puntual" ~ "Tasa de subocupación"
          ))
 
 saveRDS(base_final_final, file = "opcion-modulos-paneles/www/data/eph_tasas_basicas.RDS")
