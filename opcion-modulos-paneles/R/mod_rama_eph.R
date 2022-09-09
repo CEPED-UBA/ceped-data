@@ -136,7 +136,7 @@ rama_eph_plot_server <- function(id) {
      })
 }
 
-rama_eph_plot_ui <- function(id, title,v_rama_eph) {
+rama_eph_plot_ui <- function(id, title) {
   ns <- NS(id)
   
   tabPanel(title,

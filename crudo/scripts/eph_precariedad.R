@@ -121,6 +121,14 @@ base_final_final <- bind_rows(base_final, anios_incompletos_continua, anios_inco
 
 base_final_final <- base_final_final %>% 
   mutate(ANO4.trim= case_when(ANO4.trim=="2003.may" ~ "2003.1",
-                              TRUE ~ ANO4.trim))
+                              TRUE ~ ANO4.trim), 
+cod.variable= case_when(
+  cod.variable == "t_protegido_continua" ~ "Tasa de empleo protegido (EPH continua)", 
+  cod.variable == "t_precario_continua"~ "Tasa de no registro (EPH continua)", 
+  cod.variable == "t_desconocido_continua" ~"Desconocido (EPH continua)", 
+  cod.variable == "t_protegido_puntual"~ "Tasa de empleo protegido (EPH puntual)" , 
+  cod.variable == "t_precario_puntual"~ "Tasa de no registro (EPH puntual)", 
+  cod.variable == "t_desconocido_puntual"~ "Desconocido (EPH puntual)"
+))
 
 saveRDS(base_final_final, file = "opcion-modulos-paneles/www/data/eph_precariedad.RDS")

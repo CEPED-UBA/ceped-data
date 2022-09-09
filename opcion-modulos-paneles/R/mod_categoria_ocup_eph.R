@@ -15,7 +15,7 @@ categoria_ocup_eph_plot_server <- function(id) {
           rename("Serie" = "cod.variable",
                  "Pais" = "nombre.pais",
                  "Periodo"= "ANO4") %>% 
-          select("Pais","iso3c", "Periodo","Serie", "valor") %>% 
+          select("Pais","iso3c", "Periodo","Serie", "valor", "definicion") %>% 
           unique()                                                   
       }
       
@@ -27,13 +27,60 @@ categoria_ocup_eph_plot_server <- function(id) {
           rename("Serie" = "cod.variable",
                  "Pais" = "nombre.pais",
                  "Periodo" = "ANO4.trim") %>% 
-          select("Pais","iso3c","Periodo","Serie", "valor")
+          select("Pais","iso3c","Periodo","Serie", "valor", "definicion")
       }
+      
+      if(input$pok == "Definición clásica"){
+        
+        base <- base %>% 
+          filter(definicion=="clasica") %>% 
+          select(-definicion)
+      }
+         
+      if(input$pok == "Filtrar por sector y registro"){
+        
+        base <- base %>% 
+          filter(definicion=="pok") %>% 
+          select(-definicion)
+      }
+      
       
       base
       
     })
     
+
+    observe({
+      
+      if(input$pok == "Definición clásica"){
+        
+        opciones <- categoria_ocup_eph %>% 
+          filter(definicion=="clasica") %>%
+          select(cod.variable) %>% 
+          unique() 
+        
+        opciones <- opciones$cod.variable
+        
+      }
+      
+      if(input$pok == "Filtrar por sector y registro"){
+        
+        opciones <- categoria_ocup_eph %>% 
+          filter(definicion=="pok") %>%
+          select(cod.variable) %>% 
+          unique() 
+        
+        opciones <- opciones$cod.variable
+        
+      }
+      
+      
+      updateSelectizeInput(session,
+                           inputId = "var_serie",
+                           choices = opciones, 
+                           selected= opciones)
+    })
+
     generar_titulo <- function(variables, periodo_i, periodo_f){
       
       
@@ -77,15 +124,6 @@ categoria_ocup_eph_plot_server <- function(id) {
         layout(font = list(family ="Times New Roman"))
     }
     
-    # generar_metadata <- function(variables){
-    # 
-    # i <- length(variables)  
-    # 
-    # paste0( variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
-    #   
-    # }
-  
-    
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
     })
@@ -107,14 +145,6 @@ categoria_ocup_eph_plot_server <- function(id) {
          formatRound("valor")
      })
      
-    
-     
-    # output$metadata1 <- renderText({
-    #   generar_metadata(input$var_serie)
-    # })
-    # output$metadata2 <- renderText({
-    #   generar_metadata(input$var_serie)
-    # })
     output$downloadTable <- downloadHandler(
 
       filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
@@ -146,36 +176,37 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
            
            sidebarLayout(
              sidebarPanel(
-               selectInput(ns('id_periodicidad'),label = 'Tipo de infromación:',
+               selectInput(ns('id_periodicidad'),label = 'Tipo de infromación',
                            choices =  c("Promedio anual", "Trimestral/Onda"),
                            selected = "Promedio Anual",
                            width = "300px",
                            multiple = F
                ),
-               selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
-                           choices =  unique(categoria_ocup_eph$cod.variable),
-                           selected = unique(categoria_ocup_eph$cod.variable)[1],
+               selectInput(ns('var_serie'),label = 'Seleccionar series',
+                           choices =  unique(categoria_ocup_eph$cod.variable)[1:5],
+                           selected = unique(categoria_ocup_eph$cod.variable)[1:5],
                            width = "300px",
                            multiple = T
                ),
-               sliderInput(ns('id_periodo'), "Período:",
+               sliderInput(ns('id_periodo'), "Período",
                            value = c(1995,2021),
                            min = 1995, 
                            max = 2021
                ), 
                hr(), 
                radioButtons(ns("pok"), 
-                            "", 
-                            choices=c("Filtrar por sector y registro")), 
-               h6("Activando este filtro, las categorías ocupacionales se subdividen según sector (público o privado) y registro, siguiendo el criterio de Pok (xxxx)"),
+                            "Definición de las categorías ocupacionales", 
+                            choices=c("Definición clásica", "Filtrar por sector y registro")
+               ),
+               p("Activando este filtro, las categorías ocupacionales se subdividen según sector (público o privado) y condición de registro para la población asalariada"),
                hr(), 
                h4("Nota aclaratoria"), 
-               h5(nota_aclaratoria_eph1),
+               p(nota_aclaratoria_eph1),
                
-               h5(nota_aclaratoria_eph2),
+               p(nota_aclaratoria_eph2),
                hr(), 
                h4(strong(titulo_cita)), 
-               h5(cita)
+               p(cita)
              ),
              
              mainPanel( 

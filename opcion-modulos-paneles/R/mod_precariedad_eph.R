@@ -136,7 +136,7 @@ precariedad_eph_plot_server <- function(id) {
      })
 }
 
-precariedad_eph_plot_ui <- function(id, title,v_precariedad_eph) {
+precariedad_eph_plot_ui <- function(id, title) {
   ns <- NS(id)
   
   tabPanel(title,

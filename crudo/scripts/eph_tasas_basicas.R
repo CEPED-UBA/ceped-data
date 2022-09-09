@@ -127,6 +127,16 @@ base_final_final <- bind_rows(base_final, anios_incompletos_continua, anios_inco
 
 base_final_final <- base_final_final %>% 
   mutate(ANO4.trim= case_when(ANO4.trim=="2003.may" ~ "2003.1",
-                              TRUE ~ ANO4.trim))
+                              TRUE ~ ANO4.trim), 
+         cod.variable= case_when(
+           cod.variable == "t_actividad_continua" ~ "Tasa de actividad (EPH continua)", 
+           cod.variable == "t_empleo_continua"~ "Tasa de empleo (EPH continua)", 
+           cod.variable == "t_desocupacion_continua" ~"Tasa de desocupación (EPH continua)", 
+           cod.variable == "t_subocupacion_continua"~"Tasa de subocupación  (EPH continua)", 
+           cod.variable == "t_actividad_puntual"~ "Tasa de actividad (EPH puntual)" , 
+           cod.variable == "t_empleo_puntual"~ "Tasa de empleo (EPH puntual)", 
+           cod.variable == "t_desocupacion_puntual"~ "Tasa de desocupación (EPH puntual)", 
+           cod.variable == "t_subocupacion_puntual" ~ "Tasa de subocupación (EPH puntual)"
+         ))
 
 saveRDS(base_final_final, file = "opcion-modulos-paneles/www/data/eph_tasas_basicas.RDS")

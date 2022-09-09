@@ -135,7 +135,7 @@ tasas_basicas_eph_plot_server <- function(id) {
      })
 }
 
-tasas_basicas_eph_plot_ui <- function(id, title,v_tasas_basicas_eph) {
+tasas_basicas_eph_plot_ui <- function(id, title) {
   ns <- NS(id)
   
   tabPanel(title,
@@ -152,7 +152,7 @@ tasas_basicas_eph_plot_ui <- function(id, title,v_tasas_basicas_eph) {
                ),
                selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
                            choices =  unique(tasas_basicas_eph$cod.variable),
-                           selected = unique(tasas_basicas_eph$cod.variable)[1],
+                           selected = T,
                            width = "300px",
                            multiple = T
                ),
@@ -163,11 +163,11 @@ tasas_basicas_eph_plot_ui <- function(id, title,v_tasas_basicas_eph) {
                ), 
                hr(), 
                h4("Nota aclaratoria"), 
-               h5(nota_aclaratoria_eph1),
-               h5(nota_aclaratoria_eph2),
+              p(nota_aclaratoria_eph1),
+               p(nota_aclaratoria_eph2),
                hr(),  
                h4(strong(titulo_cita)), 
-               h5(cita)
+               p(cita)
              ),
              
              mainPanel( 

@@ -106,7 +106,7 @@ base_final <- bind_rows(base3, base_puntual3)
 
 # Completo data frame con NAs
 
-variables <- c("ANO4", "onda", 
+variables <- c(
                "porc_patron", 
                "porc_cuenta_propia",
                "porc_asalariado",
@@ -220,6 +220,16 @@ eph_categoria_ocupacional <- readRDS("~/GitHub/ceped-data/opcion-modulos-paneles
 
 eph_categoria_ocupacional_pok <- readRDS("~/GitHub/ceped-data/opcion-modulos-paneles/www/data/eph_categoria_ocupacional_pok.RDS") %>% 
   mutate(definicion="pok")
+
+eph_categoria_ocupacional <- eph_categoria_ocupacional %>% 
+  mutate(cod.variable=case_when(
+    cod.variable == "porc_patron"~ "Patrón", 
+    cod.variable == "porc_cuenta_propia"~ "Cuenta Propia",
+    cod.variable ==  "porc_asalariado"~ "Asalariado",
+    cod.variable == "porc_TFSS"~ "TFSS",
+    cod.variable == "porc_esconocido"~ "Desconocido", 
+    TRUE ~ cod.variable)
+  )
 
 eph_categoria_ocupacional <- bind_rows(eph_categoria_ocupacional, eph_categoria_ocupacional_pok)
 
