@@ -164,6 +164,11 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                            max = 2021
                ), 
                hr(), 
+               radioButtons(ns("pok"), 
+                            "", 
+                            choices=c("Filtrar por sector y registro")), 
+               h6("Activando este filtro, las categorías ocupacionales se subdividen según sector (público o privado) y registro, siguiendo el criterio de Pok (xxxx)"),
+               hr(), 
                h4("Nota aclaratoria"), 
                h5(nota_aclaratoria_eph1),
                
