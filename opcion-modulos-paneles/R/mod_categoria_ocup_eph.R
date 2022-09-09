@@ -199,7 +199,7 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                             "Definición de las categorías ocupacionales", 
                             choices=c("Definición clásica", "Filtrar por sector y registro")
                ),
-               p("Activando este filtro, las categorías ocupacionales se subdividen según sector (público o privado) y condición de registro para la población asalariada", style="text-align: justify;"),
+               p("Activando este filtro, las categorías ocupacionales se subdividen según sector (público o privado) y condición de registro para la población asalariada"),
                hr(), 
                h4("Nota aclaratoria"), 
                p(nota_aclaratoria_eph1, style="text-align: justify;"),

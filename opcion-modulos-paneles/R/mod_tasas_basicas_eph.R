@@ -152,7 +152,7 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                ),
                selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
                            choices =  unique(tasas_basicas_eph$cod.variable),
-                           selected = T,
+                           selected = unique(tasas_basicas_eph$cod.variable),
                            width = "300px",
                            multiple = T
                ),
@@ -184,7 +184,7 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                           br(),
                           #box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
                           box(title = "Metadata", width = NULL, 
-                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
+                              metadata_eph),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -202,7 +202,7 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
                                           box(title = "Metadata", width = NULL, 
-                                              "Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC) para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados."),
+                                              metadata_eph),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))
