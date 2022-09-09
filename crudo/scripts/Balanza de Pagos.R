@@ -16,13 +16,20 @@ bop_dolares_constantes <-
             skipEmptyRows = T)
 
 
-bop_dolares_diccionario <-  read.xlsx("crudo/datos/Balance de Pagos.xlsx",
+bop_dolares_diccionario_aclaracion <-  read.xlsx("crudo/datos/Balance de Pagos.xlsx",
                                         sheet = "Metadata BP",
-                                        startRow = 9,rows = 9:78,cols = 2:4,
+                                        startRow = 3,rows = 3:6,cols = 2:3,
                                         skipEmptyRows = T)
 
-saveRDS(bop_dolares_diccionario,
-        file = "opcion-modulos-paneles/www/data/bop_dolares_diccionario.RDS")
+bop_dolares_diccionario <-  read.xlsx("crudo/datos/Balance de Pagos.xlsx",
+                                      sheet = "Metadata BP",
+                                      startRow = 9,rows = 9:78,cols = 2:4,
+                                      skipEmptyRows = T)
+
+
+saveRDS(bop_dolares_diccionario_aclaracion,
+        file = "opcion-modulos-paneles/www/data/bop_dolares_diccionario_aclaracion.RDS")
+
 
 
 bop_sectores_diccionario <-  read.xlsx("crudo/datos/Balance de Pagos.xlsx",

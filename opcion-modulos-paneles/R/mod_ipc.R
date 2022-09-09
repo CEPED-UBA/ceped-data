@@ -4,16 +4,16 @@ ipc_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
     
-    armar_tabla <- function(variables, periodo_i, periodo_f){
+    armar_tabla <- function(variables, periodo_i, periodo_f, descarga){
       
       tabla <- base_ipc %>% ungroup() %>%
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables]) ) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
         mutate(ANO4 = paste0(round(ANO4,0))) %>% 
-        rename("Serie" = "cod.variable",
-               "Período" = "ANO4",
-               
+        select("Período" = "ANO4",
+               sub,
+               "Serie" = "cod.variable",
                "Valor" = "valor",
                "Variación (%)" = "var")
       
@@ -44,12 +44,18 @@ ipc_plot_server <- function(id) {
         
       }
       
-      tabla <- tabla %>% datatable(rownames = FALSE,
-                                   options = list(
-                                     searching=FALSE, 
-                                     pageLength = 10, 
-                                     dom='tip')) %>% 
-        formatRound("Valor")
+      if (descarga == FALSE) {
+        tabla <- tabla %>% datatable(rownames = FALSE,
+                                     options = list(
+                                       searching=FALSE, 
+                                       pageLength = 10, 
+                                       dom='tip')) %>% 
+          formatRound("Valor")
+      } else {
+        tabla <- tabla
+      }
+      
+     
       
       return(tabla)
       
@@ -74,6 +80,7 @@ ipc_plot_server <- function(id) {
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>%
+        mutate(sub = ifelse(sub%in%c(1:12),as.numeric(sub),sub)) %>% 
         arrange(ANO4, sub) %>% 
         rowwise() %>% 
         mutate(Per = ifelse(is.na(sub), paste0(ANO4),paste0(ANO4,"-",sub))) %>% 
@@ -90,11 +97,12 @@ ipc_plot_server <- function(id) {
              x = "Año")+
         theme_minimal()+
         theme(text = element_text(size = 9),
-              axis.text.x = element_text(size=10,angle = 90),
+              axis.text.x = element_text(size=8,angle = 90),
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
-        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)|grepl("-Mayo", x)|grepl("-T1", x)),paste0(x),paste0("") ))
+        scale_x_discrete(guide = guide_axis(check.overlap = TRUE))
+        #scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)|grepl("-Mayo", x)|grepl("-T1", x)),paste0(x),paste0("") ))
       
       p
       
@@ -108,6 +116,7 @@ ipc_plot_server <- function(id) {
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
+        mutate(sub = ifelse(sub%in%c(1:12),as.numeric(sub),sub)) %>% 
         arrange(ANO4, sub) %>% 
         rowwise() %>% 
         mutate(Per = ifelse(is.na(sub), paste0(ANO4),paste0(ANO4,"-",sub))) %>% 
@@ -123,12 +132,13 @@ ipc_plot_server <- function(id) {
              x = "Año")+
         theme_minimal()+
         theme(text = element_text(size = 9),
-              axis.text.x = element_text(size=10,angle = 90),
+              axis.text.x = element_text(size=8,angle = 90),
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
         scale_y_continuous(labels = function(x) paste0(x,"%"))+
-        scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
+        scale_x_discrete(guide = guide_axis(check.overlap = TRUE))
+       # scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
       
       p
 
@@ -255,7 +265,7 @@ ipc_plot_server <- function(id) {
     
     
     output$tabla <- renderDT({
-      armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2])
+      armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2], descarga = F)
     })
     output$metadata1 <- renderText({
       generar_metadata(input$var_serie)
@@ -263,12 +273,13 @@ ipc_plot_server <- function(id) {
     output$metadata2 <- renderText({
       generar_metadata(input$var_serie)
     })
+    
     output$downloadTable <- downloadHandler(
       
       filename = function(){paste(input$var_serie,'.xlsx',sep='')},
       content = function(file){
         
-        write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2]), 
+        write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2], descarga = T), 
                    file)    }
     )
     
@@ -311,15 +322,19 @@ ipc_plot_ui <- function(id, title,v_variables) {
                
                box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
                br(),
+               
                plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                br(),
                box(width = NULL,
                    downloadButton(ns('downloadPlot'),'Descargar gráfico')),
                br(),
+               
                box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
                br(),
                box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
                br(),
+               
+              
                plotlyOutput(ns('plot_var'))%>% withSpinner(type = 7, color =paleta_colores[2]),
                br(),
                box(width = NULL,
