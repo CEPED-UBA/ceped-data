@@ -180,7 +180,7 @@ ui <- fluidPage(
                                                           h3('Series')),
                                                 tags$div(class="panel-body",
                                                          #img(height = 250, width = 250,src = "img/methods_preview.png"),
-                                                         p('Datos que surgen de líneas de investigación desarrolladas por integrantes del CEPED', style = "color: black")),
+                                                         p('Series de largo plazo que surgen de líneas de investigación desarrolladas por integrantes del CEPED', style = "color: black")),
                                                          
                                                          tags$div(class="panel-body",
                                                                   style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
@@ -209,11 +209,22 @@ ui <- fluidPage(
                                                          p(''),
                                                          br(),
                                                          
+                                                         tags$a("Argentina | Distrib. Funcional", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
+                                                                onclick="fakeClick('df')",
+                                                                class="btn btn-warning btn-s"), 
+                                                         
+                                                         br(),
+                                                         p(''),
+                                                         br()
+                                                         ),
+                                                tags$div(class="panel-body",
+                                                         style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
+                                                         
                                                          tags$a("Argentina | IPC", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
                                                                 onclick="fakeClick('ipc')",
                                                                 class="btn btn-warning btn-s")
-                                                         
                                                 )
+                                                
                                       )
                               )
                         )
@@ -298,6 +309,7 @@ ui <- fluidPage(
              #tc_plot_ui(id ='tc', title ='Tipo de cambio'),
              
              bp_plot_ui(id ='bp', title ='Balance de Pagos Argentina'),
+             df_plot_ui(id ='df', title ='Distrib. Funcional Argentina', v_df),
              ipc_plot_ui(id ='ipc', title ='IPC Argentina', v_ipc)
              
              ),

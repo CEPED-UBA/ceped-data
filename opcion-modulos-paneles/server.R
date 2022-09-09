@@ -12,6 +12,8 @@ server <- function (input, output,session) {
   bp_plot_server('bp')
   salarios_plot_server('salarios')
   ipc_plot_server('ipc')
+  df_plot_server('df')
+  
 
   ceped_plot_server('ceped_presenta')
   

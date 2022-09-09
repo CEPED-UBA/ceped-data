@@ -22,10 +22,11 @@ publicaciones_ui <- function(id) {
                
                a(href="https://caropradier.shinyapps.io/app_ALAST/", "Ver datos interactivos") , 
                
-               h4("Precariedad mundial"), 
-               p("Esta línea de investigación busca realizar estimaciones y comparaciones internacionales de la calidad del empleo en todo el mundo."),
+               h4("Población Urbana Argentina"), 
+               p("Esta línea de investigación se basa en la homogeneización de las estimaciones de población urbana total por localidades, de los Censos Nacionales de Argentina."),
+               #p("Esta línea de investigación busca realizar estimaciones y comparaciones internacionales de la calidad del empleo en todo el mundo."),
                #dejo puesto el de reproducción familiar porque no tengo el link
-               a(href="https://caropradier.shinyapps.io/app_ALAST/", "Ver datos interactivos") , 
+               a(href="https://guidowe45.shinyapps.io/app_censo2010/", "Ver datos interactivos") , 
              )
            )
            
