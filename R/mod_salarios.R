@@ -102,6 +102,22 @@ salarios_plot_server <- function(id) {
         write.xlsx(armar_tabla(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie],input$id_periodo[1],input$id_periodo[2],descarga = T), 
                    file)    }
     )
+    
+    output$download_database <- downloadHandler(
+      
+      filename = function(){paste("database",'.xlsx',sep='')},
+      content = function(file){
+        
+        salarios_export<- salarios %>% 
+          left_join(diccionario_variables) %>% 
+          select(-cod.variable)
+        
+        write.xlsx(list("Base_completa" =salarios_export),
+                   file)    
+      }
+    )
+    
+    
     output$downloadPlot <- downloadHandler(
       filename = function(){paste(diccionario_variables$cod.variable[diccionario_variables$nombre.variable %in% input$variables_serie][1],'.png',sep='')},
       content = function(file){
@@ -171,7 +187,10 @@ salarios_plot_ui <- function(id, title,v_variables) {
                             box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                             br(),
                             box(width = NULL,
-                                downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+                                downloadButton(ns('downloadPlot'),'Descargar gráfico')),
+                            br(),
+                            downloadButton(ns('download_database'),'Descargar base completa')
+                   
                    ),
                    
                    tabPanel(title = "Tabla",

@@ -147,6 +147,17 @@ bp_plot_server <- function(id) {
         write.xlsx(armar_tabla(input$variables_serie,input$valuacion, input$id_periodo[1],input$id_periodo[2],descarga = T), 
                    file)    }
     )
+    output$download_database <- downloadHandler(
+      
+      filename = function(){paste("database",'.xlsx',sep='')},
+      content = function(file){
+        
+        write.xlsx(list("Cuentas y partidas" = bop_arg_dolares,
+                        "Resultado Sector " = bop_sectores), 
+                   file)    
+        }
+    )
+    
     output$downloadPlot <- downloadHandler(
       filename = function(){paste(input$variables_serie[1],'.png',sep='')},
       content = function(file){
@@ -225,7 +236,9 @@ bp_plot_ui <- function(id, title,v_variables) {
                             box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                             br(),
                             box(width = NULL,
-                                downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+                                downloadButton(ns('downloadPlot'),'Descargar gráfico')),
+                            br(),
+                            box(width = NULL,downloadButton(ns('download_database'),'Descargar base completa'))
                             
                    ),
                    tabPanel("Tabla",
