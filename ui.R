@@ -91,6 +91,16 @@ ui <- fluidPage(
                       ),
                       hr(),
                       
+                      tags$div(style = "display:flex;align-items: center;justify-content: center;",
+                      tags$p("El objetivo de este sitio es poner a disposición un conjunto de estadísticas que constituyen una de las bases de los distintos trabajos de investigación realizados en el Centro. Por un lado, encontrarán diversas series que fueron publicadas previamente en formato de artículos en revistas científicas o como Documentos de Trabajo de nuestro Centro (donde podrán encontrar con mayor detalle los criterios metodológicos adoptados). Por el otro, se presentan datos que surgen del procesamiento de bases oficiales (dentro de los que se destaca la Encuesta Permanente de Hogares del INDEC). La difusión de estos datos no busca reemplazar a los datos publicados por los organismos oficiales de estadística. En este sentido, se recomienda consultar las fuentes originales para una mejor información sobre la metodología de recolección de datos.",
+                             style = "color:black;text-align: justify;width:90%"))
+                      ,
+                      
+                      
+                      hr(),
+                      
+                      HTML('&nbsp;'),
+                      
                       fluidRow(
                         
                         column(12,

@@ -329,7 +329,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                    downloadButton(ns('downloadPlot'),'Descargar gráfico')),
                br(),
                
-               box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+               box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                br(),
                box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
                br(),
@@ -356,7 +356,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                         column(8, 
                                box(DTOutput(ns('tabla')), width = NULL)),
                         column(4,          
-                               box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
+                               box(title = "Metadata", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify")),
                                br(),
                                box(width = NULL,
                                    downloadButton(ns('downloadTable'),'Descargar tabla')

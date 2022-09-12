@@ -168,7 +168,7 @@ salarios_plot_ui <- function(id, title,v_variables) {
                             br(),
                             plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                             br(),
-                            box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+                            box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                             br(),
                             box(width = NULL,
                                 downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -184,7 +184,7 @@ salarios_plot_ui <- function(id, title,v_variables) {
                                             br(),
                                             box(DTOutput(ns('tabla')), width = NULL)),
                                      column(3,          
-                                            box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
+                                            box(title = "Metadata", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify")),
                                             br(),
                                             box(width = NULL,
                                                 downloadButton(ns('downloadTable'),'Descargar tabla'))

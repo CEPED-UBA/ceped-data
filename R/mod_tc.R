@@ -181,7 +181,7 @@ tc_plot_ui <- function(id, title) {
                br(),
                plotlyOutput(ns('plot')),
                br(),
-               box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
+               box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                br(),
                box(width = NULL,
                    downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -198,7 +198,7 @@ tc_plot_ui <- function(id, title) {
                                br(),
                                box(DTOutput(ns('tabla')), width = NULL)),
                         column(4,          
-                               box(title = "Metadata", width = NULL, textOutput(ns('metadata2'))),
+                               box(title = "Metadata", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify")),
                                br(),
                                box(width = NULL,
                                    downloadButton(ns('downloadTable'),'Descargar tabla'))

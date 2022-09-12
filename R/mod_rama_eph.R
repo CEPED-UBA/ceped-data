@@ -186,7 +186,7 @@ rama_eph_plot_ui <- function(id, title) {
                           br(),
                          # box(title = "Metadata", width = NULL, textOutput(ns('metadata1')), 
                           box(title = "Metadata", width = NULL, 
-                              metadata_eph),
+                              p(metadata_eph,style = "text-align: justify")),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -204,7 +204,7 @@ rama_eph_plot_ui <- function(id, title) {
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
                                           box(title = "Metadata", width = NULL, 
-                                              metadata_eph),
+                                              p(metadata_eph,style = "text-align: justify")),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))
