@@ -92,7 +92,7 @@ ui <- fluidPage(
                       hr(),
                       
                       tags$div(style = "display:flex;align-items: center;justify-content: center;",
-                      tags$p("El objetivo de este sitio es poner a disposición un conjunto de estadísticas que constituyen una de las bases de los distintos trabajos de investigación realizados en el Centro. Por un lado, encontrarán diversas series que fueron publicadas previamente en formato de artículos en revistas científicas o como Documentos de Trabajo de nuestro Centro (donde podrán encontrar con mayor detalle los criterios metodológicos adoptados). Por el otro, se presentan datos que surgen del procesamiento de bases oficiales (dentro de los que se destaca la Encuesta Permanente de Hogares del INDEC). La difusión de estos datos no busca reemplazar a los datos publicados por los organismos oficiales de estadística. En este sentido, se recomienda consultar las fuentes originales para una mejor información sobre la metodología de recolección de datos.",
+                      tags$p("Este es el Portal de difusión de datos del Centro de Estudios sobre Población Empleo y Desarrollo (CEPED) de la Facultad de Cs. Económicas – UBA. El objetivo de este sitio es poner a disposición un conjunto de estadísticas que constituyen una de las bases de los distintos trabajos de investigación realizados en el Centro. Por un lado, encontrarán diversas series que fueron publicadas previamente en formato de artículos en revistas científicas o como Documentos de Trabajo de nuestro Centro (donde podrán encontrar con mayor detalle los criterios metodológicos adoptados). Por el otro, se presentan datos que surgen del procesamiento de bases oficiales (dentro de los que se destaca la Encuesta Permanente de Hogares del INDEC). La difusión de estos datos no busca reemplazar a los datos publicados por los organismos oficiales de estadística. En este sentido, se recomienda consultar las fuentes originales para una mejor información sobre la metodología de recolección de datos.",
                              style = "color:black;text-align: justify;width:90%"))
                       ,
                       
@@ -111,7 +111,7 @@ ui <- fluidPage(
                                                 
                                                 tags$div(class= "panel-heading",
                                                          style="background:#20639b;border-color: #20639b",
-                                                         h3('Encuesta Permanente de Hogares')),
+                                                         h3('Encuesta Permanente de Hogares', style = "color: white")),
                                                 tags$div(class="panel-body",
                                                          
                                                          
@@ -124,7 +124,7 @@ ui <- fluidPage(
                                                          
                                                          
                                                          tags$a("Tasas básicas",
-                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: white;font-size:14px"),
                                                                 onclick="fakeClick('tasas_basicas_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          ),
@@ -134,7 +134,7 @@ ui <- fluidPage(
                                                          br(),
                                                          
                                                          tags$a("Categorías ocupacionales",
-                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: white;font-size:14px"),
                                                                 onclick="fakeClick('categoria_ocup_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          )), 
@@ -144,7 +144,7 @@ ui <- fluidPage(
                                                          
 
                                                          tags$a("Empleo según registro",
-                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: white;font-size:14px"),
                                                                 onclick="fakeClick('precariedad_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          ), 
@@ -156,7 +156,7 @@ ui <- fluidPage(
                                                          ,
                                                          
                                                          tags$a("Empleo por ramas de actividad",
-                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: black;font-size:14px"),
+                                                                style=paste0(btn_style,"background:#20639b;border-color: #20639b;color: white;font-size:14px"),
                                                                 onclick="fakeClick('rama_eph')",
                                                                 class="btn btn-primary btn-s"
                                                          )
