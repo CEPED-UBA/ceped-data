@@ -283,6 +283,21 @@ ipc_plot_server <- function(id) {
                    file)    }
     )
     
+    output$download_database <- downloadHandler(
+      
+      filename = function(){paste("database",'.xlsx',sep='')},
+      content = function(file){
+        
+        ipc_export<- base_ipc %>% 
+          left_join(diccionario_variables, by ="cod.variable") %>% 
+          select(-cod.variable,-base) %>% 
+          relocate(nombre.variable,ANO4,sub)
+        
+        write.xlsx(list("Base_completa" =ipc_export),
+                   file)    
+      }
+    )
+    
     
     
   })
@@ -327,6 +342,8 @@ ipc_plot_ui <- function(id, title,v_variables) {
                br(),
                box(width = NULL,
                    downloadButton(ns('downloadPlot'),'Descargar gráfico')),
+               br(),
+               downloadButton(ns('download_database'),'Descargar base completa'),
                br(),
                
                box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
