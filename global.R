@@ -44,6 +44,8 @@ tasas_basicas_eph <- readRDS("www/data/eph_tasas_basicas.RDS")
 rama_eph <- readRDS("www/data/eph_rama.RDS") 
 categoria_ocup_eph <- readRDS("www/data/eph_categoria_ocupacional.RDS")
 
+eph_total_aglos <- readRDS("www/data/eph_total_aglos.RDS")
+eph <- readRDS("www/data/eph.RDS")
 
 # Funcional
 diccionario_dt24 <- read.xlsx(xlsxFile = "www/data/diccionario_dt24.xlsx") 

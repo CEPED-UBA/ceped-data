@@ -4,81 +4,108 @@ categoria_ocup_eph_plot_server <- function(id) {
     
     df <-  reactive({
       
+      base <- eph 
+      
+      if(input$pok == "Definición clásica"){
+        
+          base <- base %>% 
+            filter(modulo=="categoria_ocupacional") 
+            
+          if(input$aglos ==  "Total aglomerados urbanos"){
+          
+            base <- base %>% 
+              filter(aglomerados=="total_aglos")
+          }
+          
+          if(input$aglos == "Filtro Gran Buenos Aires"){
+            
+            base <- base %>% 
+              filter(aglomerados=="gba")
+          }
+          
+      }
+      
+      if(input$pok == "Filtrar por sector y registro"){
+        
+          base <- base %>% 
+            filter(modulo=="categoria_ocupacional_pok") %>% 
+            filter(aglomerados=="28_aglos")
+      }
+      
       if(input$id_periodicidad == "Promedio anual"){
         
-        base <- categoria_ocup_eph  %>%
+        base <- base  %>%
           filter(cod.variable  %in%   input$var_serie) %>% 
           filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
-          filter(!(ANO4==2003 & tipo.eph=="Puntual")) %>% 
+          filter(!(ANO4==2003 & cod.variable %in% c("Patrón (EPH puntual)", "Cuenta Propia (EPH puntual)", 
+                                       "Asalariado (EPH puntual)", "TFSS (EPH puntual)"))) %>% 
           group_by(ANO4, cod.variable) %>% 
           mutate(valor=mean(valor, na.rm=TRUE)) %>% 
           rename("Serie" = "cod.variable",
                  "Pais" = "nombre.pais",
                  "Periodo"= "ANO4") %>% 
-          select("Pais","iso3c", "Periodo","Serie", "valor", "definicion") %>% 
-          unique()                                                   
+          select("Pais","iso3c", "Periodo","Serie", "valor") %>% 
+          unique()  
+        
+        base$valor[is.nan(base$valor)] <- NA
+        
       }
       
       if(input$id_periodicidad == "Trimestral/Onda"){
         
-        base <-  categoria_ocup_eph  %>%
+        base <-  base  %>%
           filter(cod.variable  %in%   input$var_serie) %>% 
           filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
           rename("Serie" = "cod.variable",
                  "Pais" = "nombre.pais",
                  "Periodo" = "ANO4.trim") %>% 
-          select("Pais","iso3c","Periodo","Serie", "valor", "definicion")
+          select("Pais","iso3c","Periodo","Serie", "valor") %>% 
+          mutate(Periodo = case_when(
+             Periodo == "2003.mayo" ~ "2003.1", 
+             TRUE                   ~ Periodo)) 
       }
-      
-      if(input$pok == "Definición clásica"){
-        
-        base <- base %>% 
-          filter(definicion=="clasica") %>% 
-          select(-definicion)
-      }
-         
-      if(input$pok == "Filtrar por sector y registro"){
-        
-        base <- base %>% 
-          filter(definicion=="pok") %>% 
-          select(-definicion)
-      }
-      
       
       base
       
     })
     
 
-    observe({
+    observe( {
       
       if(input$pok == "Definición clásica"){
         
-        opciones <- categoria_ocup_eph %>% 
-          filter(definicion=="clasica") %>%
+        opciones <- eph %>% 
+          filter(modulo=="categoria_ocupacional") %>%
           select(cod.variable) %>% 
           unique() 
         
         opciones <- opciones$cod.variable
+        
+        updatePickerInput(session,
+                             inputId = "var_serie",
+                             choices = opciones, 
+                             selected= opciones)
         
       }
       
       if(input$pok == "Filtrar por sector y registro"){
         
-        opciones <- categoria_ocup_eph %>% 
-          filter(definicion=="pok") %>%
+        opciones <- eph %>% 
+          filter(modulo=="categoria_ocupacional_pok") %>%
           select(cod.variable) %>% 
           unique() 
         
         opciones <- opciones$cod.variable
         
+        updatePickerInput(session,
+                             inputId = "var_serie",
+                             choices = opciones, 
+                             selected= opciones)
+        
       }
       
       
-      updateSelectizeInput(session,
-                           inputId = "var_serie",
-                           choices = opciones, 
-                           selected= opciones)
+
     })
 
     generar_titulo <- function(variables, periodo_i, periodo_f){
@@ -182,15 +209,17 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                            width = "300px",
                            multiple = F
                ),
-               selectInput(ns('var_serie'),label = 'Seleccionar series',
-                           choices =  unique(categoria_ocup_eph$cod.variable)[1:5],
-                           selected = unique(categoria_ocup_eph$cod.variable)[1:5],
-                           width = "300px",
-                           multiple = T
+              
+              pickerInput(ns('var_serie'),label = 'Seleccionar series',
+                          choices =  unique(eph$cod.variable[eph$modulo=="categoria_ocupacional"]),
+                          selected = unique(eph$cod.variable[eph$modulo=="categoria_ocupacional"]),
+                          options = list(`actions-box` = TRUE),
+                          width = "350px",
+                          multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período",
-                           value = c(1995,2021),
-                           min = 1995, 
+                           value = c(1974,2021),
+                           min = 1974, 
                            max = 2021,
                            sep=""
                ), 
@@ -199,15 +228,21 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                             "Definición de las categorías ocupacionales", 
                             choices=c("Definición clásica", "Filtrar por sector y registro")
                ),
-               p("Activando este filtro, las categorías ocupacionales se subdividen según sector (público o privado) y condición de registro para la población asalariada"),
+               h6("Activando este filtro, las categorías ocupacionales se subdividen según sector (público o privado) y condición de registro para la población asalariada"),
+               hr(), 
+               radioButtons(ns("aglos"), 
+                           "Cantidad de aglomerados", 
+                           choices=c("Total aglomerados urbanos", "Filtro Gran Buenos Aires")
+               ),
+               h6("Por defecto, los datos se estiman sobre total de aglomerados disponibles para cada período de tiempo (ver tabla auxiliar). Activando este filtro, las estimaciones se calculan sólo sobre los aglomerados de GBA, obteniendo series de más largo plazo. Sólo disponible para la definición clásica de las categorías ocupacionales."),
                hr(), 
                h4("Nota aclaratoria"), 
-               p(nota_aclaratoria_eph1, style="text-align: justify;"),
+               h6(nota_aclaratoria_eph1, style="text-align: justify;"),
                
-               p(nota_aclaratoria_eph2, style="text-align: justify;"),
+               h6(nota_aclaratoria_eph2, style="text-align: justify;"),
                hr(), 
                h4(strong(titulo_cita)), 
-               p(cita, style="text-align: justify;")
+               h6(cita, style="text-align: justify;")
              ),
              
              mainPanel( 

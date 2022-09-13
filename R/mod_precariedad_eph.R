@@ -5,9 +5,25 @@ precariedad_eph_plot_server <- function(id) {
 
     df <-  reactive({
       
+      base <- eph %>% 
+        filter(modulo=="precariedad")
+      
+      if(input$aglos ==  "Total aglomerados urbanos"){
+        
+        base <- base %>% 
+          filter(aglomerados=="total_aglos")
+      }
+      
+      if(input$aglos == "Filtro Gran Buenos Aires"){
+        
+        base <- base %>% 
+          filter(aglomerados=="gba")
+      }
+      
+      
       if(input$id_periodicidad == "Promedio anual"){
                
-              base <- precariedad_eph  %>%
+              base <- base  %>%
                  filter(cod.variable  %in%   input$var_serie) %>% 
                  filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
                  group_by(ANO4, cod.variable) %>% 
@@ -21,7 +37,7 @@ precariedad_eph_plot_server <- function(id) {
       
       if(input$id_periodicidad == "Trimestral/Onda"){
         
-                base <-  precariedad_eph  %>%
+                base <-  base  %>%
                   filter(cod.variable  %in%   input$var_serie) %>% 
                   filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
                   rename("Serie" = "cod.variable",
@@ -73,15 +89,7 @@ precariedad_eph_plot_server <- function(id) {
       ggplotly(p, tooltip = c("text"))%>% 
         layout(font = list(family ="Times New Roman"))
     }
-    
-    # generar_metadata <- function(variables){
-    # 
-    # i <- length(variables)  
-    #     
-    # paste0( variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
-    #   
-    # }
-    
+
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
     })
@@ -106,13 +114,6 @@ precariedad_eph_plot_server <- function(id) {
          formatRound("valor")
      })
      
-    
-    # output$metadata1 <- renderText({
-    #   generar_metadata(input$var_serie)
-    # })
-    # output$metadata2 <- renderText({
-    #   generar_metadata(input$var_serie)
-    # })
     
     output$downloadTable <- downloadHandler(
 
@@ -145,33 +146,39 @@ precariedad_eph_plot_ui <- function(id, title) {
            
            sidebarLayout(
              sidebarPanel(
-               selectInput(ns('id_periodicidad'),label = 'Tipo de infromación:',
+               selectInput(ns('id_periodicidad'),label = 'Tipo de infromación',
                              choices =  c("Promedio anual", "Trimestral/Onda"),
                              selected = "Promedio Anual",
                              width = "350px",
                              multiple = F
                  ),
                
-               pickerInput(ns('var_serie'),label = 'Seleccionar una serie:',
-                           choices =  unique(precariedad_eph$cod.variable),
-                           selected = unique(precariedad_eph$cod.variable),
+               pickerInput(ns('var_serie'),label = 'Seleccionar series',
+                           choices =  unique(eph$cod.variable[eph$modulo=="precariedad"]),
+                           selected = unique(eph$cod.variable[eph$modulo=="precariedad"]),
                            options = list(`actions-box` = TRUE),
                            width = "350px",
                            multiple = T
                ),
-               sliderInput(ns('id_periodo'), "Período:",
-                           value = c(1995,2021),
-                           min = 1995, 
+               sliderInput(ns('id_periodo'), "Período",
+                           value = c(1974,2021),
+                           min = 1974, 
                            max = 2021,
                            sep=""
                ), 
                hr(), 
+               radioButtons(ns("aglos"), 
+                            "Cantidad de aglomerados", 
+                            choices=c("Total aglomerados urbanos", "Filtro Gran Buenos Aires")
+               ),
+               h6("Por defecto, los datos se estiman sobre total de aglomerados disponibles para cada período de tiempo (ver tabla auxiliar). Activando este filtro, las estimaciones se calculan sólo sobre los aglomerados de GBA, obteniendo series de más largo plazo para algunas estadísticas"),
+               hr(), 
                h4("Nota aclaratoria"), 
-               h5(nota_aclaratoria_eph1, style="text-align: justify;"),
-               h5(nota_aclaratoria_eph2, style="text-align: justify;"),
+               h6(nota_aclaratoria_eph1, style="text-align: justify;"),
+               h6(nota_aclaratoria_eph2, style="text-align: justify;"),
                hr(),  
                h4(strong(titulo_cita)), 
-               h5(cita, style="text-align: justify;")
+               h6(cita, style="text-align: justify;")
              ),
              
              mainPanel( 

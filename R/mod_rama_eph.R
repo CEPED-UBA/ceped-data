@@ -151,10 +151,11 @@ rama_eph_plot_ui <- function(id, title) {
                            width = "300px",
                            multiple = F
                ),
-               selectInput(ns('var_serie'),label = 'Seleccionar una serie:',
+               pickerInput(ns('var_serie'),label = 'Seleccionar series',
                            choices =  unique(rama_eph$cod.variable),
                            selected = unique(rama_eph$cod.variable),
-                           width = "300px",
+                           options = list(`actions-box` = TRUE),
+                           width = "350px",
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
@@ -165,12 +166,12 @@ rama_eph_plot_ui <- function(id, title) {
                ), 
                hr(), 
                h4("Nota aclaratoria"), 
-               h5(nota_aclaratoria_eph1, style="text-align: justify;"),
+               h6(nota_aclaratoria_eph1, style="text-align: justify;"),
                
-               h5(nota_aclaratoria_eph2, style="text-align: justify;"),
+               h6(nota_aclaratoria_eph2, style="text-align: justify;"),
                hr(), 
                h4(strong(titulo_cita)), 
-               h5(cita, style="text-align: justify;")
+               h6(cita, style="text-align: justify;")
              ),
              
              mainPanel( 
