@@ -5,8 +5,19 @@ tasas_basicas_eph_plot_server <- function(id) {
     df <-  reactive({
       
       base <- eph %>% 
-        filter(modulo=="tasas_basicas") %>% 
-        filter(aglomerados=="total_aglos")
+        filter(modulo=="tasas_basicas") 
+      
+      if(input$aglos ==  "Total aglomerados urbanos"){
+        
+        base <- base %>% 
+          filter(aglomerados=="total_aglos")
+      }
+      
+      if(input$aglos == "Filtro Gran Buenos Aires"){
+        
+        base <- base %>% 
+          filter(aglomerados=="gba")
+      }
       
       if(input$id_periodicidad == "Promedio anual"){
         
@@ -103,12 +114,23 @@ tasas_basicas_eph_plot_server <- function(id) {
 
     output$downloadTable <- downloadHandler(
 
-      filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
+      filename = function(){paste("ceped_data_tasas_basicas_",  Sys.Date(), ".xlsx" ,sep='')},
       content = function(file){
-
-        write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2]),
-                   file)    }
+        write.xlsx(df(), 
+                   file)       }
     )
+    
+    output$download_database <- downloadHandler(
+      
+      filename = function(){paste("database",'.xlsx',sep='')},
+      content = function(file){
+        
+        write.xlsx(list("Base_completa" =eph),
+                   file)    
+      }
+    )
+      
+      
     output$downloadPlot <- downloadHandler(
       filename = function(){paste(input$var_serie[1],'.png',sep='')},
       content = function(file){
@@ -152,6 +174,12 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                            sep=""
                ), 
                hr(), 
+               radioButtons(ns("aglos"), 
+                            "Cantidad de aglomerados", 
+                            choices=c("Total aglomerados urbanos", "Filtro Gran Buenos Aires")
+               ),
+               h6("Por defecto, los datos se estiman sobre total de aglomerados disponibles para cada período de tiempo (ver tabla auxiliar). Activando este filtro, las estimaciones se calculan sólo sobre los aglomerados de GBA, obteniendo series de más largo plazo para algunas estadísticas"),
+               hr(), 
                h4("Nota aclaratoria"), 
                h6(nota_aclaratoria_eph1, style="text-align: justify;"),
                h6(nota_aclaratoria_eph2, style="text-align: justify;"),
@@ -176,7 +204,9 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                               p(metadata_eph,style = "text-align: justify")),
                           br(),
                           box(width = NULL,
-                              downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+                              downloadButton(ns('downloadPlot'),'Descargar gráfico')), 
+                          br(),
+                          downloadButton(ns('download_database'),'Descargar base completa')
                           
                  ),
                  

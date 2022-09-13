@@ -180,6 +180,18 @@ categoria_ocup_eph_plot_server <- function(id) {
         write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2]),
                    file)    }
     )
+    
+    
+    output$download_database <- downloadHandler(
+      
+      filename = function(){paste("database",'.xlsx',sep='')},
+      content = function(file){
+        
+        write.xlsx(list("Base_completa" =eph),
+                   file)    
+      }
+    )
+    
     output$downloadPlot <- downloadHandler(
       filename = function(){paste(input$var_serie[1],'.png',sep='')},
       content = function(file){
@@ -261,7 +273,9 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                               p("Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados.",style = "text-align: justify")),
                           br(),
                           box(width = NULL,
-                              downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+                              downloadButton(ns('downloadPlot'),'Descargar gráfico')), 
+                         br(),
+                         downloadButton(ns('download_database'),'Descargar base completa')
                           
                  ),
                  

@@ -123,6 +123,18 @@ precariedad_eph_plot_server <- function(id) {
         write.xlsx(df(),
                    file)    }
     )
+    
+    
+    output$download_database <- downloadHandler(
+      
+      filename = function(){paste("database",'.xlsx',sep='')},
+      content = function(file){
+        
+        write.xlsx(list("Base_completa" =eph),
+                   file)    
+      }
+    )
+    
     output$downloadPlot <- downloadHandler(
       filename = function(){paste(input$var_serie[1],'.png',sep='')},
       content = function(file){
@@ -197,7 +209,9 @@ precariedad_eph_plot_ui <- function(id, title) {
                               p(metadata_eph,style = "text-align: justify")),
                           br(),
                           box(width = NULL,
-                              downloadButton(ns('downloadPlot'),'Descargar gráfico'))
+                              downloadButton(ns('downloadPlot'),'Descargar gráfico')), 
+                          br(),
+                          downloadButton(ns('download_database'),'Descargar base completa')
                           
                  ),
                  

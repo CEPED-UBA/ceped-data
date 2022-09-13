@@ -39,13 +39,10 @@ serie_salarios <- readRDS("www/data/salarios.RDS")
 tipo_cambio_argentina <- readRDS("www/data/Tipo_Cambio_Arg.RDS")
 base_ipc <- readRDS("www/data/base_ipc.RDS")
 
-precariedad_eph <- readRDS("www/data/eph_precariedad.RDS") 
-tasas_basicas_eph <- readRDS("www/data/eph_tasas_basicas.RDS")
-rama_eph <- readRDS("www/data/eph_rama.RDS") 
-categoria_ocup_eph <- readRDS("www/data/eph_categoria_ocupacional.RDS")
-
-eph_total_aglos <- readRDS("www/data/eph_total_aglos.RDS")
 eph <- readRDS("www/data/eph.RDS")
+rama_eph <- readRDS("www/data/eph_rama.RDS") 
+
+
 
 # Funcional
 diccionario_dt24 <- read.xlsx(xlsxFile = "www/data/diccionario_dt24.xlsx") 

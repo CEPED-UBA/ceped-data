@@ -78,14 +78,6 @@ rama_eph_plot_server <- function(id) {
         layout(font = list(family ="Times New Roman"))
     }
     
-    # generar_metadata <- function(variables){
-    # 
-    # i <- length(variables)  
-    # 
-    # paste0( variables[1:i], ": ", diccionario_variables$metadata[diccionario_variables$nombre.variable %in% variables[1:i]])
-    #   
-    # }
-    
     output$titulo1 <- renderText({
       generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
     })
