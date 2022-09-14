@@ -117,25 +117,34 @@ bp_plot_server <- function(id) {
     })
     output$diccionario_bp <- renderDataTable({
       bop_dolares_diccionario %>% 
-        datatable(rownames = FALSE)
+        datatable(rownames = FALSE,
+                  options = list(
+                    
+                  ))
       })
     
     output$diccionario_bp_sectores <- renderDataTable({
       bop_sectores_diccionario  %>% 
-        datatable(rownames = FALSE)
+        datatable(rownames = FALSE,
+                  options = list(
+                    
+                  ))
     })
     
     output$diccionario_bp_aclara <- renderDataTable({
       bop_dolares_diccionario_aclaracion %>% 
         datatable(rownames = FALSE,
                   options = list(
-                    searching=FALSE, 
+                    searching=FALSE,
+                    lengthChange = FALSE,
                     dom='tip'))
     })
     
-# output$metadata1 <- renderText({
-    #   generar_metadata(input$var_serie)
-    # })
+ output$metadata1 <- renderText({
+  
+"La compatibilización de las series de las metodologías 2017 y 2007 del INDEC y su clasificación por sector institucional (público y privado) a partir de una reclasificación propia de las partidas se encuentra detallada en el Documento de Trabajo 25 del CEPED. Para la presentación de los datos en dólares constantes se utilizó el Índice de Precios al Consumidor (CPI-U) publicado por el Bureau of Labor Statistics (BLS). Estos datos están expresados manteniendo el poder adquisitivo constante del último año de la serie"
+   
+ })
     # output$metadata2 <- renderText({
     #   generar_metadata(input$var_serie)
     # })
@@ -184,7 +193,7 @@ bp_plot_ui <- function(id, title,v_variables) {
              titlePanel(title),
              sidebarLayout(
                sidebarPanel(
-                 selectInput(ns('desagregacion'),label =  "Elegir clasificacion: ",
+                 selectInput(ns('desagregacion'),label =  "Elegir base de datos: ",
                              choices = c("Cuentas y partidas (presentación con enfoque de saldo)" = 'bop_arg_dolares',
                                          "Resultado por Sector Institucional (Público y Privado)" = 'bop_sectores'),
                              selected = "Partidas desagregadas",
@@ -217,11 +226,11 @@ bp_plot_ui <- function(id, title,v_variables) {
                              sep=""
                              ),
                  hr(), 
-                 #h5(nota_aclaratoria_bp),
-                 p(style="text-align: justify;","La compatibilización de las series de las metodologías 2017 y 2007 del INDEC y su clasificación por sector institucional (público y privado) a partir de una reclasificación propia de las partidas se encuentra detallada en el ",
-                   a(href = 'https://drive.google.com/file/d/1m2yybwPTtkJTmtdnWH5DisY9-x1mQ02f/view', 'Documento de Trabajo N°25 del CEPED', .noWS = "outside"), '. Para la presentación de los datos en dólares constantes se utilizó el Índice de Precios al Consumidor (CPI-U) publicado por el Bureau of Labor Statistics (BLS).', .noWS = c("after-begin", "before-end")), 
                  h4(strong(titulo_cita)), 
-                 h5(cita, style="text-align: justify;")
+                 h5(cita, style="text-align: justify;"),
+                 hr(),
+                 h4(strong("Documento metodológico: ")), 
+                 h5(a(href = 'https://drive.google.com/file/d/1m2yybwPTtkJTmtdnWH5DisY9-x1mQ02f/view', 'Documento de Trabajo N°25 del CEPED', .noWS = "outside"))
                  ),
                mainPanel(
                  
@@ -233,7 +242,7 @@ bp_plot_ui <- function(id, title,v_variables) {
                             br(),
                             plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                             br(),
-                            box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
+                            box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                             br(),
                             box(width = NULL,
                                 downloadButton(ns('downloadPlot'),'Descargar gráfico')),
@@ -254,10 +263,10 @@ bp_plot_ui <- function(id, title,v_variables) {
                             
                             fluidRow(
                               column(width = 12, 
-                                     box(DTOutput(ns('diccionario_bp')),
+                                     box(DTOutput(ns('diccionario_bp_aclara')),
                                          width = 12),
                                      br(),
-                                     box(DTOutput(ns('diccionario_bp_aclara')),
+                                     box(DTOutput(ns('diccionario_bp')),
                                          width = 12)
                               ))),
 
