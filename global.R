@@ -60,7 +60,6 @@ salarios <- serie_salarios %>%
                               "salario_ppa_c_actual_real"))
 #IPC_TIPO_CAMBIO####
 
-
 v_ipc <- diccionario_variables %>% filter(base=="IPC_Argentina") %>%  pull(nombre.variable)      
 
 min_ipc <- min(base_ipc$ANO4)
