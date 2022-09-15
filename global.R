@@ -59,7 +59,7 @@ salarios <- serie_salarios %>%
                               "salario_ppa_c_priv_real",
                               "salario_ppa_c_actual_real"))
 #IPC_TIPO_CAMBIO####
-#base_binded <- bind_rows(serie_salarios,tipo_cambio_argentina)
+
 
 v_ipc <- diccionario_variables %>% filter(base=="IPC_Argentina") %>%  pull(nombre.variable)      
 
