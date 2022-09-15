@@ -188,10 +188,7 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                ),
                h6("Por defecto, los datos se estiman sobre total de aglomerados disponibles para cada período de tiempo (ver tabla auxiliar). Activando este filtro, las estimaciones se calculan sólo sobre los aglomerados de GBA"),
                hr(), 
-               h4("Nota aclaratoria"), 
-               h6(nota_aclaratoria_eph1, style="text-align: justify;"),
-               h6(nota_aclaratoria_eph2, style="text-align: justify;"),
-               hr(),  
+  
                h4(strong(titulo_cita)), 
                h6(cita, style="text-align: justify;"),
                h6(doi, style="text-align: justify;")
@@ -210,7 +207,10 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                           br(),
                           #box(title = "Aclaración sobre la construcción de los datos", width = NULL, textOutput(ns('metadata1'))),
                           box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
-                              p(metadata_eph,style = "text-align: justify")),
+                          h6(metadata_eph,style = "text-align: justify")),
+                          h6(nota_aclaratoria_eph1, style="text-align: justify;"),
+                          h6(nota_aclaratoria_eph2, style="text-align: justify;"),
+                          hr(),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico')), 
