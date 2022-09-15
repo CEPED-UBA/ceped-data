@@ -3,10 +3,11 @@
 bp_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    df <-  reactive({
+   df <-  reactive({
       Agrupam <- get(input$desagregacion)
     })
     observe({
+      
       df <- df()
       # dataframe <- input$df
       updateSelectizeInput(session, 
@@ -193,12 +194,12 @@ bp_plot_ui <- function(id, title,v_variables) {
              titlePanel(title),
              sidebarLayout(
                sidebarPanel(
-                 selectInput(ns('desagregacion'),label =  "Elegir base de datos: ",
+                 radioButtons(ns('desagregacion'),label =  "Elegir base de datos: ",
                              choices = c("Cuentas y partidas (presentación con enfoque de saldo)" = 'bop_arg_dolares',
                                          "Resultado por Sector Institucional (Público y Privado)" = 'bop_sectores'),
-                             selected = "Partidas desagregadas",
-                             width = "300px",
-                             multiple = F
+                             selected = "bop_arg_dolares",
+                             #width = "300px",
+                             #multiple = F
                  ),
                  selectInput(ns('tipo_graf'),label =  "Tipo de Grafico: ",
                               choices = c("Linea","Barra apilada"),
