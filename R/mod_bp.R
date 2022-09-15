@@ -228,6 +228,7 @@ bp_plot_ui <- function(id, title,v_variables) {
                  hr(), 
                  h4(strong(titulo_cita)), 
                  h5(cita, style="text-align: justify;"),
+                 h5(doi, style="text-align: justify;"),
                  hr(),
                  h4(strong("Documento metodológico: ")), 
                  h5(a(href = 'https://drive.google.com/file/d/1m2yybwPTtkJTmtdnWH5DisY9-x1mQ02f/view', 'Documento de Trabajo N°25 del CEPED', .noWS = "outside"))
@@ -254,7 +255,7 @@ bp_plot_ui <- function(id, title,v_variables) {
                             value = "t_bp",
                             box(DTOutput(ns('tabla')), width = NULL),
                             br(),
-                            box(title = "Metadata", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify")),
+                            box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify")),
                             br(),
                             box(width = NULL,downloadButton(ns('downloadTable'),'Descargar tabla'))
                             ),

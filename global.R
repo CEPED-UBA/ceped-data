@@ -77,6 +77,8 @@ max_ondas <- max(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
 titulo_cita <- "Cómo cito estos datos?"
 cita <- "CEPED (2022). Ceped.data. Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED-UBA), Universidad de Buenos Aires, Buenos Aires. Recuperado de www.ceped-data.shinyapps.io/"
 
+doi <- "DOI: 10.5281/zenodo.7083026"
+
 # Notas aclaratorias eph
 
 nota_aclaratoria_eph1 <- "El relevamiento de la EPH durante el año 2020 fue realizado con dificultades debido a la pandemia. Se recomienda consultar el capítulo 'Aspectos Metodológicos' del informe técnico del segundo trimestre de 2020."

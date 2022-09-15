@@ -239,14 +239,14 @@ ui <- fluidPage(
                                          
                                          tags$div(class= "panel-heading",
                                                   style="background:#f6d55c;border-color: #f6d55c",
-                                                  h3('Datos de artículos')),
+                                                  h3('Datos de publicaciones')),
                                          tags$div(class="panel-body",
                                                   style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
                                                   #img(height = 250, width = 250,src = "img/data_preview.png"),
-                                                  p('Presentación interactiva de datos que fueron publicados en artículos de integrantes del CEPED', style = "color: black;align-text:center")),
+                                                  p('Presentación interactiva de datos que fueron publicados en trabajos de integrantes del CEPED', style = "color: black;align-text:center")),
                                          tags$div(class="panel-body",
                                                   style = "display:flex; flex-direction: row; justify-content: center; align-items: center",
-                                                  tags$a("Explorar líneas de investigación",
+                                                  tags$a("Explorar",
                                                          style=paste0(btn_style,"background:#f6d55c;border-color: #f6d55c;color: black;font-size:14px"),
                                                          onclick="fakeClick('publicaciones')",
                                                          class="btn btn-danger btn-s"

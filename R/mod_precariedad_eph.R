@@ -190,7 +190,8 @@ precariedad_eph_plot_ui <- function(id, title) {
                h6(nota_aclaratoria_eph2, style="text-align: justify;"),
                hr(),  
                h4(strong(titulo_cita)), 
-               h6(cita, style="text-align: justify;")
+               h6(cita, style="text-align: justify;"),
+               h6(doi, style="text-align: justify;")
              ),
              
              mainPanel( 
@@ -204,8 +205,8 @@ precariedad_eph_plot_ui <- function(id, title) {
                           br(),
                           plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                           br(),
-                          #box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
-                          box(title = "Metadata", width = NULL, 
+                          #box(title = "Aclaración sobre la construcción de los datos", width = NULL, textOutput(ns('metadata1'))),
+                          box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
                               p(metadata_eph,style = "text-align: justify")),
                           br(),
                           box(width = NULL,
@@ -225,7 +226,7 @@ precariedad_eph_plot_ui <- function(id, title) {
                                    column(8, 
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
-                                          box(title = "Metadata", width = NULL, 
+                                          box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
                                               p(metadata_eph,style = "text-align: justify")),
                                           br(),
                                           box(width = NULL,

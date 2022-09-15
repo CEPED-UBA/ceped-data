@@ -186,6 +186,7 @@ df_plot_ui <- function(id, title,v_variables) {
 #                 .noWS = c("after-begin", "before-end")), 
                h4(strong(titulo_cita)), 
                h5(cita, style="text-align: justify;"),
+               h5(doi, style="text-align: justify;"),
                h4(strong("Documento metodológico: ")), 
                h5(a(href = 'http://bibliotecadigital.econ.uba.ar/econ/collection/docin/document/docin_ceped_d_024', 'Documento de Trabajo N°24 del CEPED', .noWS = "outside"))
              ),
@@ -216,7 +217,7 @@ df_plot_ui <- function(id, title,v_variables) {
                           value = "d_df",
                           box(DTOutput(ns('tabla')), width = NULL),
                           br(),
-                          box(title = "Metadata", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify"))
+                          box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify"))
                           )
 
                )
