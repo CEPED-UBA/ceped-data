@@ -3,7 +3,13 @@
 df_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    output$dicc <- renderDT({diccionario_dt24 %>% datatable(rownames = F)})
+    output$dicc <- renderDT({diccionario_dt24 %>% 
+        
+        datatable(rownames = FALSE,filter = "none",
+                  options = list(
+                    searching=FALSE, 
+                    dom='tip'))
+      })
     
      
     armar_tabla <- function(sector_c,serie_c, periodo_i, periodo_f,descarga){
@@ -175,11 +181,13 @@ df_plot_ui <- function(id, title,v_variables) {
                            ),
                hr(),
                
-               p(style="text-align: justify;","La metodología detallada de estimación de las distintas variables se encuentra en el ",
-                 a(href = 'http://bibliotecadigital.econ.uba.ar/econ/collection/docin/document/docin_ceped_d_024', 'Documento de Trabajo N°24 del CEPED', .noWS = "outside"), 
-                 .noWS = c("after-begin", "before-end")), 
+#               p(style="text-align: justify;","La metodología detallada de estimación de las distintas variables se encuentra en el ",
+#                 a(href = 'http://bibliotecadigital.econ.uba.ar/econ/collection/docin/document/docin_ceped_d_024', 'Documento de Trabajo N°24 del CEPED', .noWS = "outside"), 
+#                 .noWS = c("after-begin", "before-end")), 
                h4(strong(titulo_cita)), 
-               h5(cita, style="text-align: justify;")
+               h5(cita, style="text-align: justify;"),
+               h4(strong("Documento metodológico: ")), 
+               h5(a(href = 'http://bibliotecadigital.econ.uba.ar/econ/collection/docin/document/docin_ceped_d_024', 'Documento de Trabajo N°24 del CEPED', .noWS = "outside"))
              ),
              mainPanel(
                
@@ -191,7 +199,7 @@ df_plot_ui <- function(id, title,v_variables) {
                           br(),
                           plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                           br(),
-                          box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
+                          box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico')),
@@ -202,7 +210,7 @@ df_plot_ui <- function(id, title,v_variables) {
                  ),
                  tabPanel(title = "Diccionario",
                           value = "d_df",
-                          DTOutput(ns("dicc"))
+                          dataTableOutput(ns("dicc"))
                           ),
                  tabPanel("Tabla",
                           value = "d_df",

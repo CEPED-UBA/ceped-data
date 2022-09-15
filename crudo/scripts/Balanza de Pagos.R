@@ -20,6 +20,8 @@ bop_dolares_diccionario_aclaracion <-  read.xlsx("crudo/datos/Balance de Pagos.x
                                         sheet = "Metadata BP",
                                         startRow = 3,rows = 3:6,cols = 2:3,colNames = F,
                                         skipEmptyRows = T)
+names(bop_dolares_diccionario_aclaracion)[1] <- "Variable"
+names(bop_dolares_diccionario_aclaracion)[2] <- "Aclaración"
 
 bop_dolares_diccionario <-  read.xlsx("crudo/datos/Balance de Pagos.xlsx",
                                       sheet = "Metadata BP",
