@@ -7,7 +7,7 @@ publicaciones_server <- function(id) {
 publicaciones_ui <- function(id) {
   ns <- NS(id)
   
-  tabPanel('Líneas de investigación',
+  tabPanel('Otras publicaciones',
            value = 'publicaciones',
            
            fluidPage(
@@ -27,6 +27,10 @@ publicaciones_ui <- function(id) {
                #p("Esta línea de investigación busca realizar estimaciones y comparaciones internacionales de la calidad del empleo en todo el mundo."),
                #dejo puesto el de reproducción familiar porque no tengo el link
                a(href="https://guidowe45.shinyapps.io/app_censo2010/", "Ver datos interactivos") , 
+               
+               #hr(), 
+               
+               #p("En construcción")
              )
            )
            

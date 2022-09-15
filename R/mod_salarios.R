@@ -171,7 +171,8 @@ salarios_plot_ui <- function(id, title,v_variables) {
                              ), 
                  hr(), 
                  h4(strong(titulo_cita)), 
-                 h5(cita, style="text-align: justify;")
+                 h5(cita, style="text-align: justify;"),
+                 h5(doi, style="text-align: justify;")
                  ),
                mainPanel(
                  
@@ -184,7 +185,7 @@ salarios_plot_ui <- function(id, title,v_variables) {
                             br(),
                             plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                             br(),
-                            box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
+                            box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                             br(),
                             box(width = NULL,
                                 downloadButton(ns('downloadPlot'),'Descargar gráfico')),
@@ -203,7 +204,7 @@ salarios_plot_ui <- function(id, title,v_variables) {
                                             br(),
                                             box(DTOutput(ns('tabla')), width = NULL)),
                                      column(3,          
-                                            box(title = "Metadata", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify")),
+                                            box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify")),
                                             br(),
                                             box(width = NULL,
                                                 downloadButton(ns('downloadTable'),'Descargar tabla'))

@@ -324,7 +324,8 @@ ipc_plot_ui <- function(id, title,v_variables) {
                sliderInput(ns('id_periodo'), "Período:", value = c(2000,2010), min = min_ipc, max = max_ipc,sep=""), 
                hr(), 
                h4(strong(titulo_cita)), 
-               h5(cita, style="text-align: justify;")
+               h5(cita, style="text-align: justify;"),
+               h5(doi, style="text-align: justify;")
              ),
              
              mainPanel( 
@@ -346,7 +347,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                downloadButton(ns('download_database'),'Descargar base completa'),
                br(),
                
-               box(title = "Metadata", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
+               box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                br(),
                box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
                br(),
@@ -373,7 +374,7 @@ ipc_plot_ui <- function(id, title,v_variables) {
                         column(8, 
                                box(DTOutput(ns('tabla')), width = NULL)),
                         column(4,          
-                               box(title = "Metadata", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify")),
+                               box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata2'),style = "text-align: justify")),
                                br(),
                                box(width = NULL,
                                    downloadButton(ns('downloadTable'),'Descargar tabla')

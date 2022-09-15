@@ -180,12 +180,10 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                ),
                h6("Por defecto, los datos se estiman sobre total de aglomerados disponibles para cada período de tiempo (ver tabla auxiliar). Activando este filtro, las estimaciones se calculan sólo sobre los aglomerados de GBA, obteniendo series de más largo plazo para algunas estadísticas"),
                hr(), 
-               h4("Nota aclaratoria"), 
-               h6(nota_aclaratoria_eph1, style="text-align: justify;"),
-               h6(nota_aclaratoria_eph2, style="text-align: justify;"),
-               hr(),  
+  
                h4(strong(titulo_cita)), 
-               h6(cita, style="text-align: justify;")
+               h6(cita, style="text-align: justify;"),
+               h6(doi, style="text-align: justify;")
              ),
              
              mainPanel( 
@@ -199,9 +197,12 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                           br(),
                           plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                           br(),
-                          #box(title = "Metadata", width = NULL, textOutput(ns('metadata1'))),
-                          box(title = "Metadata", width = NULL, 
-                              p(metadata_eph,style = "text-align: justify")),
+                          #box(title = "Aclaración sobre la construcción de los datos", width = NULL, textOutput(ns('metadata1'))),
+                          box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
+                          h6(metadata_eph,style = "text-align: justify")),
+                          h6(nota_aclaratoria_eph1, style="text-align: justify;"),
+                          h6(nota_aclaratoria_eph2, style="text-align: justify;"),
+                          hr(),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico')), 
@@ -220,7 +221,7 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                                    column(8, 
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
-                                          box(title = "Metadata", width = NULL, 
+                                          box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
                                               p(metadata_eph,style = "text-align: justify")),
                                           br(),
                                           box(width = NULL,

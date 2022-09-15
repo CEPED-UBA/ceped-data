@@ -254,7 +254,8 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                h6(nota_aclaratoria_eph2, style="text-align: justify;"),
                hr(), 
                h4(strong(titulo_cita)), 
-               h6(cita, style="text-align: justify;")
+               h6(cita, style="text-align: justify;"),
+               h6(doi, style="text-align: justify;")
              ),
              
              mainPanel( 
@@ -268,8 +269,8 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                           br(),
                           plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                           br(),
-                         # box(title = "Metadata", width = NULL, textOutput(ns('metadata1')), 
-                          box(title = "Metadata", width = NULL, 
+                         # box(title = "Aclaración sobre la construcción de los datosta", width = NULL, textOutput(ns('metadata1')), 
+                          box(title = "Aclaración sobre la construcción de los datosta", width = NULL, 
                               p("Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados.",style = "text-align: justify")),
                           br(),
                           box(width = NULL,
@@ -289,7 +290,7 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                                    column(8, 
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
-                                          box(title = "Metadata", width = NULL, 
+                                          box(title = "Aclaración sobre la construcción de los datosta", width = NULL, 
                                               p("Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas trimestrales para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados.",style = "text-align: justify")),
                                           br(),
                                           box(width = NULL,
