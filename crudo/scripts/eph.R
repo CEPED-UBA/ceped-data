@@ -211,7 +211,6 @@ base3 <- base3 %>%
 
 #  Junto pok con la otra base (MODIFICAR LUEGO PARA QUE CORRA BIEN TODO DE UNA) ####
 
-eph <- readRDS("www/data/eph.RDS") 
 
 eph <- bind_rows(eph, base3)
 
