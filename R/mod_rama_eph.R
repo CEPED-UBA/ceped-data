@@ -51,8 +51,6 @@ rama_eph_plot_server <- function(id) {
         ggplot(
           aes(x = Periodo, y = valor/100, fill = Serie, 
                 text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',Periodo)))+
-        # geom_line(size = 1) +
-        # geom_point(size = 2) + 
         scale_fill_manual(values =paleta_colores_extendida) +
         geom_bar(stat="identity") +
         labs(y = "",
@@ -100,12 +98,15 @@ rama_eph_plot_server <- function(id) {
          formatRound("valor")
      })
     
-    # output$metadata1 <- renderText({
-    #   generar_metadata(input$var_serie)
-    # })
-    # output$metadata2 <- renderText({
-    #   generar_metadata(input$var_serie)
-    # })
+     
+     output$tabla_aglos <- renderDT({
+       tabla_aglos %>%   datatable(rownames = FALSE,
+                                   options = list(
+                                     searching=FALSE, 
+                                     pageLength = 10, 
+                                     dom='tip')) 
+     })
+
     output$downloadTable <- downloadHandler(
 
       filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
@@ -157,11 +158,6 @@ rama_eph_plot_ui <- function(id, title) {
                            sep=""
                ), 
                hr(), 
-               h4("Nota aclaratoria"), 
-               h6(nota_aclaratoria_eph1, style="text-align: justify;"),
-               
-               h6(nota_aclaratoria_eph2, style="text-align: justify;"),
-               hr(), 
                h4(strong(titulo_cita)), 
                h6(cita, style="text-align: justify;"),
                h6(doi, style="text-align: justify;")
@@ -178,9 +174,11 @@ rama_eph_plot_ui <- function(id, title) {
                           br(),
                           plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                           br(),
-                         # box(title = "Aclaración sobre la construcción de los datos", width = NULL, textOutput(ns('metadata1')), 
                           box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
-                              p(metadata_eph,style = "text-align: justify")),
+                              h6(metadata_eph,style = "text-align: justify")),
+                          h6("El cómputo de empleo por ramas fue realizado sobre 28 aglomerados urbanos", style="text-align: justify;"),
+                          h6(nota_aclaratoria_eph1, style="text-align: justify;"),
+                          h6(nota_aclaratoria_eph2, style="text-align: justify;"),
                           br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico'))
@@ -198,7 +196,10 @@ rama_eph_plot_ui <- function(id, title) {
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
                                           box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
-                                              p(metadata_eph,style = "text-align: justify")),
+                                          h6(metadata_eph , style = "text-align: justify")),
+                                          h6("El cómputo de empleo por ramas fue realizado sobre 28 aglomerados urbanos", style="text-align: justify;"),
+                                          h6(nota_aclaratoria_eph1, style="text-align: justify;"),
+                                          h6(nota_aclaratoria_eph2, style="text-align: justify;"),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))
@@ -206,7 +207,8 @@ rama_eph_plot_ui <- function(id, title) {
                                           
                                    ))
                           )
-                 )
+                 ) 
+                          
                  
                )
                

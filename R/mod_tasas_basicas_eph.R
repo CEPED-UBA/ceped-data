@@ -41,7 +41,10 @@ tasas_basicas_eph_plot_server <- function(id) {
           rename("Serie" = "cod.variable",
                  "Pais" = "nombre.pais",
                  "Periodo" = "ANO4.trim") %>% 
-          select("Pais","iso3c","Periodo","Serie", "valor")
+          select("Pais","iso3c","Periodo","Serie", "valor")  %>% 
+          mutate(Periodo = case_when(
+            Periodo == "2003.mayo" ~ "2003.1", 
+            TRUE                   ~ Periodo)) 
       }
       
       base
@@ -111,6 +114,13 @@ tasas_basicas_eph_plot_server <- function(id) {
         formatRound("valor")
     })
     
+    output$tabla_aglos <- renderDT({
+      tabla_aglos %>%   datatable(rownames = FALSE,
+                           options = list(
+                             searching=FALSE, 
+                             pageLength = 10, 
+                             dom='tip')) 
+    })
 
     output$downloadTable <- downloadHandler(
 
@@ -178,7 +188,7 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                             "Cantidad de aglomerados", 
                             choices=c("Total aglomerados urbanos", "Filtro Gran Buenos Aires")
                ),
-               h6("Por defecto, los datos se estiman sobre total de aglomerados disponibles para cada período de tiempo (ver tabla auxiliar). Activando este filtro, las estimaciones se calculan sólo sobre los aglomerados de GBA, obteniendo series de más largo plazo para algunas estadísticas"),
+               h6("Por defecto, los datos se estiman sobre total de aglomerados disponibles para cada período de tiempo (ver tabla auxiliar). Activando este filtro, las estimaciones se calculan sólo sobre los aglomerados de GBA"),
                hr(), 
   
                h4(strong(titulo_cita)), 
@@ -222,7 +232,9 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
                                           box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
-                                              p(metadata_eph,style = "text-align: justify")),
+                                              h6(metadata_eph,style = "text-align: justify")),
+                                          h6(nota_aclaratoria_eph1, style="text-align: justify;"),
+                                          h6(nota_aclaratoria_eph2, style="text-align: justify;"),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))
@@ -231,6 +243,21 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                                    ))
                           )
                  )
+                 ,
+
+                 tabPanel("Tabla auxiliar aglomerados",
+                          br(),
+                          box(DTOutput(ns('tabla_aglos')), width = NULL)
+
+                 )
+                 
+                 
+                 
+                 
+                 
+                 
+                 
+                 
                  
                )
                
