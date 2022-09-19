@@ -15,12 +15,25 @@ categoria_ocup_eph_plot_server <- function(id) {
           
             base <- base %>% 
               filter(aglomerados=="total_aglos")
+            
+            updateSliderInput(session, 'id_periodo',
+                              value = c(1974, 2021),
+                              min = 1974, 
+                              max = 2021)
+            
           }
           
           if(input$aglos == "Filtro Gran Buenos Aires"){
             
             base <- base %>% 
               filter(aglomerados=="gba")
+            
+            updateSliderInput(session, 'id_periodo',
+                              value = c(1974, 2013),
+                              min = 1974, 
+                              max = 2013)
+            
+            
           }
           
       }
@@ -172,6 +185,14 @@ categoria_ocup_eph_plot_server <- function(id) {
          formatRound("valor")
      })
      
+     output$tabla_aglos <- renderDT({
+       tabla_aglos %>%   datatable(rownames = FALSE,
+                                   options = list(
+                                     searching=FALSE, 
+                                     pageLength = 10, 
+                                     dom='tip')) 
+     })
+     
     output$downloadTable <- downloadHandler(
 
       filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
@@ -248,11 +269,6 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                ),
                h6("Por defecto, los datos se estiman sobre total de aglomerados disponibles para cada período de tiempo (ver tabla auxiliar). Activando este filtro, las estimaciones se calculan sólo sobre los aglomerados de GBA, obteniendo series de más largo plazo. Sólo disponible para la definición clásica de las categorías ocupacionales."),
                hr(), 
-               h4("Nota aclaratoria"), 
-               h6(nota_aclaratoria_eph1, style="text-align: justify;"),
-               
-               h6(nota_aclaratoria_eph2, style="text-align: justify;"),
-               hr(), 
                h4(strong(titulo_cita)), 
                h6(cita, style="text-align: justify;"),
                h6(doi, style="text-align: justify;")
@@ -270,9 +286,11 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                           plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                           br(),
                          # box(title = "Aclaración sobre la construcción de los datosta", width = NULL, textOutput(ns('metadata1')), 
-                          box(title = "Aclaración sobre la construcción de los datosta", width = NULL, 
-                              p("Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas para 28 aglomerados urbanos. Beneficiarios del plan Jefes y Jegas de Hogar considerados como ocupados.",style = "text-align: justify")),
-                          br(),
+                         box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
+                         h6(metadata_eph,style = "text-align: justify")),
+                         h6(nota_aclaratoria_eph1, style="text-align: justify;"),
+                         h6(nota_aclaratoria_eph2, style="text-align: justify;"),
+                         br(),
                           box(width = NULL,
                               downloadButton(ns('downloadPlot'),'Descargar gráfico')), 
                          br(),
@@ -290,8 +308,10 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                                    column(8, 
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
-                                          box(title = "Aclaración sobre la construcción de los datosta", width = NULL, 
-                                              p("Estimación del CEPED sobre datos de mercado de trabajo en base a la Encuesta Permanente de Hogares (EPH-INDEC). Estimaciones absolutas trimestrales para 28 aglomerados urbanos. Beneficiarios de planes sociales considerados como ocupados.",style = "text-align: justify")),
+                                          box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
+                                              h6(metadata_eph,style = "text-align: justify")),
+                                          h6(nota_aclaratoria_eph1, style="text-align: justify;"),
+                                          h6(nota_aclaratoria_eph2, style="text-align: justify;"),
                                           br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))
@@ -299,7 +319,13 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                                           
                                    ))
                           )
-                 )
+                 ),
+                 
+                 tabPanel("Tabla auxiliar aglomerados",
+                          br(),
+                          box(DTOutput(ns('tabla_aglos')), width = NULL))
+                          
+                          
                  
                )
                
