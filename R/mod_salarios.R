@@ -88,8 +88,8 @@ salarios_plot_server <- function(id) {
     })
     
     output$metadata1 <- renderText({
-      generar_metadata(input$variables_serie)
-    })
+"Las series presentadas corresponden al salario doblemente bruto promedio que surge de las estimaciones de Cuentas Nacionales de los respectivos países. El salario promedio surge del cociente entre la masa salarial anual y la cantidad de asalariados promedio del año. Los valores están expresados en términos mensuales y convertidos a dólares de paridad de poder adquisitivo constante del año 2017, tomando los coeficientes de Paridad de Poder Adquisitivo (PPA) estimados en la ronda 2017 del Programa de Comparación Internacional del Banco Mundial y utilizando los Índices de Precios al Consumidor de cada país para obtener coeficientes PPA para los restantes años. Se presentan dos estimaciones alternativas, una tomando el coeficiente PPA correspondiente al agregado 'consumo privado' y otra tomando el coeficiente PPA del agregado 'consumo actual'"
+        })
     output$metadata2 <- renderText({
       generar_metadata(input$variables_serie)
     })
@@ -185,7 +185,8 @@ salarios_plot_ui <- function(id, title,v_variables) {
                             br(),
                             plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                             br(),
-                            box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
+                            box(title = "Aclaración sobre la construcción de los datos", width = NULL,
+                                htmlOutput(ns('metadata1'),style = "text-align: justify")),
                             br(),
                             box(width = NULL,
                                 downloadButton(ns('downloadPlot'),'Descargar gráfico')),
