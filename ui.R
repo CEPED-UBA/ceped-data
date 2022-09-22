@@ -284,7 +284,12 @@ ui <- fluidPage(
                                               class="btn btn-default btn-s"
                                        )
                               )
-                    )
+                    ),
+                    
+                    HTML('&nbsp;'),
+                    HTML('&nbsp;'),
+                    
+                    div(p("Esta aplicación fue desarrollada por: Facundo Lastra, Carolina Pradier y Guido Weksler.", style = "color:black;"), style = "display:flex; flex-direction: row;justify-content: center; align-items: center")
                       
                         )
                       
