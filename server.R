@@ -6,7 +6,7 @@ server <- function (input, output,session) {
   categoria_ocup_eph_plot_server('categoria_ocup_eph')
   tasas_basicas_eph_plot_server('tasas_basicas_eph')
   precariedad_eph_plot_server('precariedad_eph')
-  
+  pobreza_plot_server('pobreza')
   #tc_plot_server('tc')
   bp_plot_server('bp')
   salarios_plot_server('salarios')

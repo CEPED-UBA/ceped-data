@@ -42,8 +42,7 @@ base_ipc <- readRDS("www/data/base_ipc.RDS")
 eph <- readRDS("www/data/eph.RDS")
 rama_eph <- readRDS("www/data/eph_rama.RDS") 
 tabla_aglos <- readRDS("www/data/tabla_aglos.RDS")
-
-
+pobreza <- readRDS("www/data/pobreza.RDS")
 
 # Funcional
 diccionario_dt24 <- read.xlsx(xlsxFile = "www/data/diccionario_dt24.xlsx") 
