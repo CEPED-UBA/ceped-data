@@ -86,3 +86,13 @@ metadata_eph <- "Estimación del CEPED en base a la Encuesta Permanente de Hogar
 # Nota aclaratoria BP
 
 #nota_aclaratoria_bp <- "La compatibilización de las series de las metodologías 2017 y 2007 del INDEC está conte Y su clasificación por sector institucional (público y privado) a partir de una reclasificación propia de las partidas se encuentra detallada en el Documento de Trabajo N°25 del CEPED. Para la presentación de los datos en dólares constantes se utilizó el Índice de Precios al Consumidor (CPI-U) publicado por el Bureau of Labor Statistics (BLS)." 
+
+#### Notas aclaratorias Pobreza
+
+nota_aclaratoria_pobreza1 <- "Estas series fueron construidas y actualizadas siguiendo la metodología expuesta en Arakaki (2018), en particular en lo que respecta a la obtención de las canastas para los períodos en los que no se dispone de un valor oficial y confiable. Si bien es posible encontrar mayores detalles en el paper citado anteriormente, a continuación se incluye una serie de notas aclaratorias" 
+nota_aclaratoria_pobreza2<- "1. hay ondas y semestres en los que no hay un dato, lo cual se explica por la ausencia de bases de microdatos de la EPH, excepto en la serie de indigencia para el período previo a 1988. En este último caso, la falta de datos está asociada a la ausencia de un índice de precios al consumidor desagregado por capítulos que permita llevar hacia atrás el valor de la canasta basica de alimentos"
+nota_aclaratoria_pobreza3<- "2. para las ondas de la EPH Puntual entre 1997 y 2003 se excluyen las áreas nuevas del Gran Buenos Aires"
+nota_aclaratoria_pobreza4<- "3. para el período de la EPH Continua, las tasas fueron calculadas a partir de las bases trimestrales, empalmadas y, luego, se calculó el valor semestral como el promedio de los dos trimestres correspondientes"
+nota_aclaratoria_pobreza5<- "4. en relación a los ingresos no declarados, se utiliza el criterio utilizado por el INDEC en cada base de la EPH"
+nota_aclaratoria_pobreza6<- "5. para obtener la serie comparable se realiza un empalme hacia adelante"
+nota_aclaratoria_pobreza7<- "6. las series fueron nombradas a partir de los datos de la Encuesta de Ingresos y Gastos de los Hogares (ENGHo) utilizada para obtener los patrones de consumo de la población de referencia. La serie 1985/6 fue construida utilizando la metodología de CEPA (1993) y la serie 2004/5 fue construida utilizando la metodología de INDEC (2016)."

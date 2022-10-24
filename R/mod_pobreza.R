@@ -5,8 +5,6 @@ pobreza_plot_server <- function(id) {
     df <-  reactive({
       
       base <- pobreza %>% 
-        rename(Periodo=ANO4.trim, 
-               Serie=variable) %>% 
          filter(Serie %in% input$var_serie)  %>% 
          filter(ANO4 >=input$id_periodo[1], ANO4 <= input$id_periodo[2] ) %>% 
          filter(metodologia==input$metodologia)
@@ -21,7 +19,7 @@ pobreza_plot_server <- function(id) {
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
       titulo <- paste0("<font size='+2'></br>Porcentaje de ",lista_variables ,". Sobre total poblacional.</font>",
-                       "</br><font size='+1'>Años ", periodo_i, " - ", periodo_f,"</font>")
+                       "</br><font size='+1'>Gran Buenos Aires. Años ", periodo_i, " - ", periodo_f,"</font>")
 
        }
     
@@ -45,7 +43,8 @@ pobreza_plot_server <- function(id) {
                 plot.title= element_text(size=12, face="bold"))+
           theme(axis.text.x = element_text(angle = 90))+
           scale_color_manual(values =paleta_colores_extendida) +
-          scale_y_continuous(labels=scales::percent)
+          scale_y_continuous(labels=scales::percent) +
+        scale_y_continuous(breaks=c(5,7.5, 20, 25))
       p
       
     }
@@ -123,8 +122,8 @@ pobreza_plot_ui <- function(id, title) {
              sidebarPanel(
                
                selectInput(ns('var_serie'),label = 'Seleccionar series',
-                           choices =  unique(pobreza$variable),
-                           selected = c("Indigentes", "Pobres"),
+                           choices =  unique(pobreza$Serie),
+                           selected = c("Indigentes Serie empalmada", "Pobres Serie empalmada"),
                            width = "350px",
                            multiple = T
                ),
@@ -141,12 +140,10 @@ pobreza_plot_ui <- function(id, title) {
                ),
                h6("Las estimaciones se realizan siguiendo las siguientes metodologías: "),
                h6("CEPA (1993), Evolución reciente de la pobreza en el Gran Buenos Aires, 1988-1992, Documento de trabajo Nº 2, Buenos Aires: Ministerio de Economía y Obras y Servicios Públicos. Agosto", style="text-align: justify;"),
-               h6("INDEC (2016), La medición de la pobreza y la indigencia en Argentina, Metodología INDEC Nº 22, CABA: INDEC. Noviembre", style="text-align: justify;"),               hr(), 
-  
+               h6("INDEC (2016), La medición de la pobreza y la indigencia en Argentina, Metodología INDEC Nº 22, CABA: INDEC. Noviembre", style="text-align: justify;"),               
+               hr(), 
                h4(strong(titulo_cita)), 
-               h6("Arakaki, A. (2018). “Hacia una serie de pobreza por ingresos de largo plazo. El problema de la canasta”, Realidad Económica, 316."),
-               h6(cita, style="text-align: justify;"),
-               h6(doi, style="text-align: justify;")
+               h6("Arakaki, A. (2018). “Hacia una serie de pobreza por ingresos de largo plazo. El problema de la canasta”, Realidad Económica, 316. Datos actualizados al 2022.")
              ),
              
              mainPanel( 
@@ -161,15 +158,14 @@ pobreza_plot_ui <- function(id, title) {
                           plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                           br(),
                           box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
-                              h6("Pueden existir discrepancias entre los valores aquí incluidos y los valores reportados por el INDEC en sus informes de prensa"),
-                                 h6("1. para el período previo a 1988, se utiliza la canasta calculada en Arakaki, A. (2022), 
-                                         “Hacia una serie de pobreza por ingresos de largo plazo. El problema de la canasta”, en Graña, 
-                                         J.M. Graña y D. Kennedy (coord.), Diferenciación de la fuerza de trabajo y pobreza en la Argentina del siglo XXI: aportes para el estudio de las dinámicas recientes como expresión de sus determinantes estructurales, Buenos Aires: Facultad de Ciencias Económicas – Universidad de Buenos Aires (FCE-UBA). ISBN: 978-950-29-1932-4. 198 páginas [pp. 166-190]."),  
-                                h6("2. para las ondas de la EPH Puntual entre 1997 y 2003 se excluyen las áreas nuevas"),
-                                h6("3. para el período de la EPH Continua, las tasas fueron calculadas a partir de las bases trimestrales, empalmadas 
-                                         y, luego, se calculó el valor semestral como el promedio de los dos trimestres correspondientes"),
-                                h6("4. en relación a los ingresos no declarados, se utiliza el criterio utilizado por el INDEC en cada base de la EPH"),
-                                  h6("5. para obtener la serie comparable se realiza un empalme hacia adelante")),
+                              h6(nota_aclaratoria_pobreza1),
+                              h6(nota_aclaratoria_pobreza2),
+                              h6(nota_aclaratoria_pobreza3),
+                              h6(nota_aclaratoria_pobreza4),
+                              h6(nota_aclaratoria_pobreza5),
+                              h6(nota_aclaratoria_pobreza6),
+                              h6(nota_aclaratoria_pobreza7)),
+                                 
                           hr(),
                           br(),
                           box(width = NULL,
@@ -190,16 +186,15 @@ pobreza_plot_ui <- function(id, title) {
                                           box(DTOutput(ns('tabla')), width = NULL)),
                                    column(4,          
                                           box(title = "Aclaración sobre la construcción de los datos", width = NULL, 
-                                              h6("Pueden existir discrepancias entre los valores aquí incluidos y los valores reportados por el INDEC en sus informes de prensa"),
-                                              h6("1. para el período previo a 1988, se utiliza la canasta calculada en Arakaki, A. (2022), 
-                                         “Hacia una serie de pobreza por ingresos de largo plazo. El problema de la canasta”, en Graña, 
-                                         J.M. Graña y D. Kennedy (coord.), Diferenciación de la fuerza de trabajo y pobreza en la Argentina del siglo XXI: aportes para el estudio de las dinámicas recientes como expresión de sus determinantes estructurales, Buenos Aires: Facultad de Ciencias Económicas – Universidad de Buenos Aires (FCE-UBA). ISBN: 978-950-29-1932-4. 198 páginas [pp. 166-190]."),  
-                                              h6("2. para las ondas de la EPH Puntual entre 1997 y 2003 se excluyen las áreas nuevas"),
-                                              h6("3. para el período de la EPH Continua, las tasas fueron calculadas a partir de las bases trimestrales, empalmadas 
-                                         y, luego, se calculó el valor semestral como el promedio de los dos trimestres correspondientes"),
-                                              h6("4. en relación a los ingresos no declarados, se utiliza el criterio utilizado por el INDEC en cada base de la EPH"),
-                                              h6("5. para obtener la serie comparable se realiza un empalme hacia adelante")),
-                                          br(),
+                                              h6(nota_aclaratoria_pobreza1),
+                                              h6(nota_aclaratoria_pobreza2),
+                                              h6(nota_aclaratoria_pobreza3),
+                                              h6(nota_aclaratoria_pobreza4),
+                                              h6(nota_aclaratoria_pobreza5),
+                                              h6(nota_aclaratoria_pobreza6),
+                                              h6(nota_aclaratoria_pobreza7)),
+                                              hr(),
+                                              br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))
                                           
