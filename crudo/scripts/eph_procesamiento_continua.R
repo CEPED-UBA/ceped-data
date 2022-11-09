@@ -3,23 +3,32 @@ library(eph)
 library(tidyverse)
 library(openxlsx)
 
-#### Descarga de datos desde paquete eph####
+# #### Descarga de datos desde paquete eph####
+# 
+variables <- c("ANO4", "TRIMESTRE", "AGLOMERADO", "ESTADO", "INTENSI", "CH06", "PP07H",
+               "CAT_OCUP", "PP04A", "PONDERA", "PP04B_COD", "PP04B1", "PJ1_1")
 
-variables <- c("AGLOMERADO", "ESTADO", "INTENSI", "CH06", "PP07H",
-               "CAT_OCUP", "PP04A", "PONDERA", "PP04B_COD", "ANO4", "TRIMESTRE", "PJ1_1")
 base.eph2003_2010 <- eph::get_microdata(year = 2003:2010,trimester = 1:4, vars = variables )
 
-variables <- c("AGLOMERADO", "ESTADO", "INTENSI", "CH06", "PP07H",
-               "CAT_OCUP", "PP04A", "PONDERA", "PP04B_COD", "ANO4", "TRIMESTRE")
-base.eph2011_2021 <- eph::get_microdata(year = 2011:2021,trimester = 1:4, vars = variables )
+variables <- c("ANO4", "TRIMESTRE","AGLOMERADO", "ESTADO", "INTENSI", "CH06", "PP07H",
+               "CAT_OCUP", "PP04A", "PONDERA", "PP04B_COD", "PP04B_CAES")
 
-base.eph <- bind_rows(base.eph2003_2010, base.eph2011_2021)
+base.eph2011_2015 <- eph::get_microdata(year = 2011:2015,trimester = 1:4, vars = variables )
+
+variables <- c("ANO4", "TRIMESTRE","AGLOMERADO", "ESTADO", "INTENSI", "CH06", "PP07H",
+               "CAT_OCUP", "PP04A", "PONDERA", "PP04B_COD")
+
+base.eph2016_2021 <- eph::get_microdata(year = 2016:2021,trimester = 1:4, vars = variables )
+
+base.eph <- bind_rows(base.eph2003_2010, base.eph2011_2015, base.eph2016_2021)
  
 saveRDS(base.eph, "crudo/datos/eph.RDS")
 
 #### Procesamiento
 
 base.eph <- readRDS("crudo/datos/eph.RDS") 
+
+base.eph$CAT_OCUP[is.na(base.eph$CAT_OCUP)] <- 0   #Corrección porque CAT_OCUP tiene NAs para 2017
 
 base.eph <- base.eph %>%
   filter(AGLOMERADO %in% 32:33) %>% 
@@ -28,7 +37,9 @@ base.eph <- base.eph %>%
        PJ1_1==1 & ESTADO==1 ~ 2,              # planes jjhd van como desocupados
        TRUE                ~ ESTADO)) %>% 
   eph::organize_caes() %>%
-  eph::organize_labels()
+  eph::organize_labels() %>% 
+  mutate(caes_seccion_cod=case_when(PP04B1==1 ~ "T",          #Corrección por problema en el codigo de actividad para servicio domestico
+                                    TRUE ~ caes_seccion_cod))
 
 base.eph <- base.eph   %>% 
   mutate(
@@ -92,8 +103,8 @@ tabla <- base.eph %>%
             'Patrón (s/planes)'                                 = sum(PONDERA[cat.indec=="patrones (s/planes)"]) / total_cat.indec,
             'Cuenta Propia (s/planes)'                          = sum(PONDERA[cat.indec=="cuentapropistas (s/planes)"]) / total_cat.indec,     
             'Asalariados públicos (s/planes)'                   = sum(PONDERA[cat.indec=="asalariados publicos (s/planes)"]) / total_cat.indec,
-            'Asalariados privados protegidos (s/ serv dom ni planes)'= sum(PONDERA[cat.indec==   "asalariados privados protegidos (s/serv dom ni planes)"])  / total_cat.indec,
-            'Asalariados privados precarios (s/ serv dom ni planes)' = sum(PONDERA[cat.indec=="asalariados privados precarios (s/serv dom ni planes)"])  / total_cat.indec,
+            'Asalariados privados protegidos (s/serv dom ni planes)'= sum(PONDERA[cat.indec=="asalariados privados protegidos (s/serv dom ni planes)"])  / total_cat.indec,
+            'Asalariados privados precarios (s/serv dom ni planes)' = sum(PONDERA[cat.indec=="asalariados privados precarios (s/serv dom ni planes)"])  / total_cat.indec,
             'Serv dom (s/planes)'                               = sum(PONDERA[cat.indec=="servicio domestico (s/planes)"]) / total_cat.indec,    
             'Trabajador familiar'                               = sum(PONDERA[cat.indec=="trabajador sin salario"]) / total_cat.indec,     
             'Planes JJHD'                                       = sum(PONDERA[cat.indec=="planes jjhd"])/ total_cat.indec)
