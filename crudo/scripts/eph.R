@@ -16,7 +16,7 @@ base_puntual2 <- base_octubre[3:31, 1:13]
 base_puntual <- bind_rows(base_puntual1, base_puntual2)
 
 colnames(base_puntual) <- c("ANO4", "onda", "Tasa de actividad (EPH puntual)", "Tasa de empleo (EPH puntual)", "Tasa de empleo pleno (EPH puntual)",
-                            "Tasa de desocupación (EPH puntual)", "Tasa de subocupación (EPH puntual)","Patrón (EPH puntual)",
+                            "Tasa de subocupación (EPH puntual)", "Tasa de desocupación (EPH puntual)","Patrón (EPH puntual)",
                             "Cuenta Propia (EPH puntual)", "Asalariado (EPH puntual)", "TFSS (EPH puntual)", "Protegido (EPH puntual)", "Precario (EPH puntual)" )
 
 base_puntual[, 3:ncol(base_puntual)] <- sapply(base_puntual[, 3:ncol(base_puntual)], as.numeric)
@@ -47,7 +47,7 @@ base_4to <- base_4to[3:21, 1:13]
 base_continua <- bind_rows(base_1er, base_2do, base_3er, base_4to)
 
 colnames(base_continua) <- c("ANO4", "trimestre", "Tasa de actividad (EPH continua)", "Tasa de empleo (EPH continua)", "Tasa de empleo pleno (EPH continua)",
-                            "Tasa de desocupación (EPH continua)", "Tasa de subocupación (EPH continua)","Patrón (EPH continua)",
+                            "Tasa de subocupación (EPH continua)", "Tasa de desocupación (EPH continua)","Patrón (EPH continua)",
                             "Cuenta Propia (EPH continua)", "Asalariado (EPH continua)", "TFSS (EPH continua)", "Protegido (EPH continua)", "Precario (EPH continua)" )
 
 base_continua[, 3:ncol(base_continua)] <- sapply(base_continua[, 3:ncol(base_continua)], as.numeric)
@@ -90,7 +90,7 @@ base_gba_puntual2 <- base_gba_octubre[3:31, 1:13]
 base_gba_puntual <- bind_rows(base_gba_puntual1, base_gba_puntual2)
 
 colnames(base_gba_puntual) <- c("ANO4", "onda", "Tasa de actividad (EPH puntual)", "Tasa de empleo (EPH puntual)", "Tasa de empleo pleno (EPH puntual)",
-                    "Tasa de desocupación (EPH puntual)", "Tasa de subocupación (EPH puntual)","Patrón (EPH puntual)",
+                    "Tasa de subocupación (EPH puntual)", "Tasa de desocupación (EPH puntual)","Patrón (EPH puntual)",
                     "Cuenta Propia (EPH puntual)", "Asalariado (EPH puntual)", "TFSS (EPH puntual)", "Protegido (EPH puntual)", "Precario (EPH puntual)" )
 
 base_gba_puntual[,c(1, 3:ncol(base_gba_puntual))] <- sapply(base_gba_puntual[, c(1, 3:ncol(base_gba_puntual))], as.numeric)
@@ -120,7 +120,7 @@ base_gba_4to <- base_gba_4to[4:nrow(base_gba_4to), 1:13]
 base_gba_continua <- bind_rows(base_gba_1er, base_gba_2do, base_gba_3er, base_gba_4to)
 
 colnames(base_gba_continua) <- c("ANO4", "trimestre", "Tasa de actividad (EPH continua)", "Tasa de empleo (EPH continua)", "Tasa de empleo pleno (EPH continua)",
-                             "Tasa de desocupación (EPH continua)", "Tasa de subocupación (EPH continua)","Patrón (EPH continua)",
+                             "Tasa de subocupación (EPH continua)", "Tasa de desocupación (EPH continua)","Patrón (EPH continua)",
                              "Cuenta Propia (EPH continua)", "Asalariado (EPH continua)", "TFSS (EPH continua)", "Protegido (EPH continua)", "Precario (EPH continua)" )
 
 base_gba_continua[, c(1, 3:ncol(base_gba_continua))] <- sapply(base_gba_continua[, c(1, 3:ncol(base_gba_continua))], as.numeric)
