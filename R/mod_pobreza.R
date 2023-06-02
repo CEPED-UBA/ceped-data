@@ -7,8 +7,7 @@ pobreza_plot_server <- function(id) {
       base <- pobreza %>% 
          filter(Serie %in% input$var_serie)  %>% 
          filter(ANO4 >=input$id_periodo[1], ANO4 <= input$id_periodo[2] ) %>% 
-         filter(metodologia==input$metodologia) %>% 
-         filter(!is.na(valor))
+         filter(metodologia==input$metodologia)
 
       base
       
@@ -44,7 +43,7 @@ pobreza_plot_server <- function(id) {
           geom_line(size = 1) +
           geom_point(size = 2) +
           labs(y = "",
-               x = "Año",
+               x = "Período",
                color = "")+
           theme_minimal()+
           theme(text = element_text(size = 9),
