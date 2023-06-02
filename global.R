@@ -16,7 +16,6 @@ library(colorspace)
 library(readxl)
 library(ggplot2)
 library(lubridate)
-#library(terra)
 
 options(scipen=999)
 
