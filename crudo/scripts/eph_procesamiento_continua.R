@@ -38,7 +38,7 @@ base.eph <- base.eph %>%
        TRUE                ~ ESTADO)) %>% 
   eph::organize_caes() %>%
   eph::organize_labels() %>% 
-  mutate(caes_seccion_cod=case_when(PP04B1==1 ~ "T",          #Corrección por problema en el codigo de actividad para servicio domestico
+  mutate(caes_seccion_cod=case_when(PP04B1==1 ~ "T",          #Corrección por problema en el codigo de actividad para servicio domestico para varios años
                                     TRUE ~ caes_seccion_cod))
 
 base.eph <- base.eph   %>% 
@@ -94,7 +94,7 @@ tabla <- base.eph %>%
             'Tasa de empleo pleno (EPH continua)'               = ocupados.plenos/poblacion,
             'Tasa de desocupación (EPH continua)'               = desocupados/PEA,
             'Tasa de subocupación (EPH continua)'               = subocupados/PEA,
-            'Protegido (EPH puntual)'                           = Protegido/(Precario + Protegido), 
+            'Protegido (EPH continua)'                           = Protegido/(Precario + Protegido), 
             'Precario (EPH continua)'                           = Precario/(Precario + Protegido),
             'Patrón (EPH continua)'                             =  Patron /(Patron + Cuentapropia + Asalariado + TFSS) ,                         
             'Cuenta Propia (EPH continua)'                      =  Cuentapropia /(Patron + Cuentapropia + Asalariado + TFSS) ,     
@@ -109,8 +109,12 @@ tabla <- base.eph %>%
             'Trabajador familiar'                               = sum(PONDERA[cat.indec=="trabajador sin salario"]) / total_cat.indec,     
             'Planes JJHD'                                       = sum(PONDERA[cat.indec=="planes jjhd"])/ total_cat.indec)
 
-write.xlsx(tabla, "www/data/eph_gba.xlsx")  
 
+
+# 
+# write.xlsx(tabla, "www/data/eph_gba.xlsx")  
+
+saveRDS(tabla, "www/data/eph_gba.rds")  
 
 
 

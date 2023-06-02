@@ -223,15 +223,15 @@ ui <- fluidPage(
                                                          
                                                          tags$a("Argentina | IPC", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
                                                                 onclick="fakeClick('ipc')",
-                                                                class="btn btn-warning btn-s")#, 
-                                                         # 
-                                                         # br(),
-                                                         # HTML('&nbsp;'),
-                                                         # br(),
-                                                         # 
-                                                         # tags$a("Argentina | Pobreza", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
-                                                         #        onclick="fakeClick('pobreza')",
-                                                         #        class="btn btn-warning btn-s")
+                                                                class="btn btn-warning btn-s"), 
+
+                                                         br(),
+                                                         HTML('&nbsp;'),
+                                                         br(),
+
+                                                         tags$a("Argentina | Pobreza", style=paste0(btn_style,"background:#3e83b5;border-color: #3e83b5;color: black;font-size:14px"),
+                                                                onclick="fakeClick('pobreza')",
+                                                                class="btn btn-warning btn-s")
                                                 )
                                                 
                                       )
@@ -326,8 +326,8 @@ ui <- fluidPage(
              
              bp_plot_ui(id ='bp', title ='Balance de Pagos Argentina'),
              df_plot_ui(id ='df', title ='Distrib. Funcional Argentina', v_df),
-             ipc_plot_ui(id ='ipc', title ='IPC Argentina', v_ipc)#, 
-            # pobreza_plot_ui(id ='pobreza', title ='Pobreza Argentina')
+             ipc_plot_ui(id ='ipc', title ='IPC Argentina', v_ipc), 
+             pobreza_plot_ui(id ='pobreza', title ='Pobreza Argentina')
              
              ),
              

@@ -7,12 +7,23 @@ pobreza_plot_server <- function(id) {
       base <- pobreza %>% 
          filter(Serie %in% input$var_serie)  %>% 
          filter(ANO4 >=input$id_periodo[1], ANO4 <= input$id_periodo[2] ) %>% 
-         filter(metodologia==input$metodologia)
+         filter(metodologia==input$metodologia) %>% 
+         filter(!is.na(valor))
 
       base
       
     })
     
+    df_canastas <-  reactive({
+
+      base <- canastas %>%
+        filter(year(periodo) >=input$id_periodo[1], year(periodo) <= input$id_periodo[2] ) %>% 
+        mutate(periodo=format(periodo, "%b %Y"))
+
+      base
+
+    })
+
     generar_titulo <- function(variables, periodo_i, periodo_f){
       
       
@@ -62,6 +73,10 @@ pobreza_plot_server <- function(id) {
     output$titulo2 <- renderText({
        generar_titulo(input$var_serie,input$id_periodo[1],input$id_periodo[2])
      })
+    
+    output$titulo3 <- renderText({
+      "<font size='+2'></br>Valores de la Canasta Básica Total (CBT) y Canasta Básica Alimentaria (CBA) </font></br><font size='+1'>Gran Buenos Aires.</font>"
+    })
      
      
     output$plot <- renderPlotly({
@@ -76,6 +91,15 @@ pobreza_plot_server <- function(id) {
                              dom='tip')) %>% 
         formatRound("valor")
     })
+    
+    output$tabla_canastas <- renderDT({
+      df_canastas() %>%   datatable(rownames = FALSE,
+                           options = list(
+                             searching=FALSE, 
+                             pageLength = 10, 
+                             dom='tip')) %>% 
+        formatRound(c(2,3))
+    })
   
 
     output$downloadTable <- downloadHandler(
@@ -83,6 +107,14 @@ pobreza_plot_server <- function(id) {
       filename = function(){paste("ceped_data_pobreza_",  Sys.Date(), ".xlsx" ,sep='')},
       content = function(file){
         write.xlsx(df(), 
+                   file)       }
+    )
+    
+    output$downloadTable_canastas <- downloadHandler(
+      
+      filename = function(){paste("ceped_data_canastas_",  Sys.Date(), ".xlsx" ,sep='')},
+      content = function(file){
+        write.xlsx(df_canastas(), 
                    file)       }
     )
     
@@ -122,15 +154,19 @@ pobreza_plot_ui <- function(id, title) {
              sidebarPanel(
                
                selectInput(ns('var_serie'),label = 'Seleccionar series',
-                           choices =  unique(pobreza$Serie),
-                           selected = c("Indigentes Serie empalmada", "Pobres Serie empalmada"),
+                           choices =  c("Indigentes EPH-puntual", "No indigentes EPH-puntual",     
+                                        "Indigentes EPH-continua", "No indigentes EPH-continua",
+                                        "Pobres EPH-puntual","No Pobres EPH-puntual",         
+                                        "Pobres EPH-continua", "No Pobres EPH-continua"),
+                           selected = c("Indigentes EPH-puntual", "Indigentes EPH-continua", 
+                                        "Pobres EPH-puntual", "Pobres EPH-continua"),
                            width = "350px",
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
-                           value = c(1974, 2021),
+                           value = c(1974, 2022),
                            min = 1974, 
-                           max = 2021,
+                           max = 2022,
                            sep=""
                ), 
                hr(), 
@@ -197,37 +233,29 @@ pobreza_plot_ui <- function(id, title) {
                                               br(),
                                           box(width = NULL,
                                               downloadButton(ns('downloadTable'),'Descargar tabla'))
-                                          
-                                          
-                                   ))
+                                           )
+                                  )
+                            )
+                          ),
+                 tabPanel("Tabla Canastas",
+                           value = "t_canastas_eph", 
+                          box(width = NULL, br(),htmlOutput(ns('titulo3'))), 
+                           br(), 
+                          fluidRow(
+                            column(12,
+                                   column(8,
+                                          box(DTOutput(ns('tabla_canastas')), width = NULL)
+                                          ), 
+                                   column(4,
+                                          box(width = NULL,
+                                              downloadButton(ns('downloadTable_canastas'),'Descargar tabla de canastas'))
+                                          )
+                            )
+                          )
+                 
                           )
                  )
-                 ,
-
-                 tabPanel("Tabla canastas",
-                          br(),
-                          box(DTOutput(ns('tabla_aglos')), width = NULL)
-
-                 )
-                 
-                 
-                 
-                 
-                 
-                 
-                 
-                 
-                 
                )
-               
              )
-             
-           )
-           
-           
-           
-  )
-  
-  
-}
+           )}
 

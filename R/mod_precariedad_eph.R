@@ -13,10 +13,6 @@ precariedad_eph_plot_server <- function(id) {
         base <- base %>% 
           filter(aglomerados=="total_aglos")
         
-        updateSliderInput(session, 'id_periodo',
-                          value = c(1974, 2021),
-                          min = 1974, 
-                          max = 2021)
         
       }
       
@@ -25,10 +21,6 @@ precariedad_eph_plot_server <- function(id) {
         base <- base %>% 
           filter(aglomerados=="gba")
         
-        updateSliderInput(session, 'id_periodo',
-                          value = c(1974, 2013),
-                          min = 1974, 
-                          max = 2013)
         
       }
       
@@ -61,6 +53,7 @@ precariedad_eph_plot_server <- function(id) {
                     TRUE                   ~ Periodo)) 
               }
       
+      
       base
       
     })
@@ -70,6 +63,9 @@ precariedad_eph_plot_server <- function(id) {
       
       lista_variables <-  paste0(variables, collapse = ", ")
       lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
+      
+      
+      
       titulo <- paste0("<font size='+2'></br>",lista_variables ,".</font>",
                        "</br><font size='+1'>Años ", periodo_i, " - ", periodo_f,"</font>")
        }

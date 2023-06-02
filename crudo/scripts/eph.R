@@ -1,5 +1,6 @@
 library(readxl)
 library(tidyverse)
+library(labelled) # Para quitar etiquetas de base que viene de eph_procesamiento_continua
 
 # EPH Puntual - Total aglomerados ####
 
@@ -101,33 +102,49 @@ base_gba_puntual <- base_gba_puntual %>%
 
 # EPH Continua GBA ####
 
-base_gba_1er <- read_excel("crudo/datos/01. EPH_GBA_empleo_Total.xlsx", 
-                       sheet = "1°trim - GBA", skip = 1)
-base_gba_1er <- base_gba_1er[4:nrow(base_gba_1er), 1:13]
+# base_gba_1er <- read_excel("crudo/datos/01. EPH_GBA_empleo_Total.xlsx", 
+#                        sheet = "1°trim - GBA", skip = 1)
+# base_gba_1er <- base_gba_1er[4:nrow(base_gba_1er), 1:13]
+# 
+# base_gba_2do <- read_excel("crudo/datos/01. EPH_GBA_empleo_Total.xlsx", 
+#                        sheet = "2°trim - GBA", skip = 1)
+# base_gba_2do <- base_gba_2do[4:nrow(base_gba_2do), 1:13]
+# 
+# base_gba_3er <- read_excel("crudo/datos/01. EPH_GBA_empleo_Total.xlsx", 
+#                        sheet = "3°trim - GBA", skip = 1)
+# base_gba_3er <- base_gba_3er[4:nrow(base_gba_3er), 1:13]
+# 
+# base_gba_4to <- read_excel("crudo/datos/01. EPH_GBA_empleo_Total.xlsx", 
+#                        sheet = "4°trim - GBA", skip = 1)
+# base_gba_4to <- base_gba_4to[4:nrow(base_gba_4to), 1:13]
+# 
+# base_gba_continua <- bind_rows(base_gba_1er, base_gba_2do, base_gba_3er, base_gba_4to)
+# 
+# colnames(base_gba_continua) <- c("ANO4", "trimestre", "Tasa de actividad (EPH continua)", "Tasa de empleo (EPH continua)", "Tasa de empleo pleno (EPH continua)",
+#                              "Tasa de subocupación (EPH continua)", "Tasa de desocupación (EPH continua)","Patrón (EPH continua)",
+#                              "Cuenta Propia (EPH continua)", "Asalariado (EPH continua)", "TFSS (EPH continua)", "Protegido (EPH continua)", "Precario (EPH continua)" )
+# 
+# base_gba_continua[, c(1, 3:ncol(base_gba_continua))] <- sapply(base_gba_continua[, c(1, 3:ncol(base_gba_continua))], as.numeric)
+# 
+# base_gba_continua <- base_gba_continua %>% 
+#   mutate(ANO4.trim= paste0(ANO4, ".", trimestre)) %>% 
+#   select(-trimestre)
 
-base_gba_2do <- read_excel("crudo/datos/01. EPH_GBA_empleo_Total.xlsx", 
-                       sheet = "2°trim - GBA", skip = 1)
-base_gba_2do <- base_gba_2do[4:nrow(base_gba_2do), 1:13]
+base_gba_continua <- readRDS("www/data/eph_gba.rds") %>% 
+  select(c("ANO4", "TRIMESTRE", "Tasa de actividad (EPH continua)", "Tasa de empleo (EPH continua)", "Tasa de empleo pleno (EPH continua)",
+           "Tasa de subocupación (EPH continua)", "Tasa de desocupación (EPH continua)","Patrón (EPH continua)",
+           "Cuenta Propia (EPH continua)", "Asalariado (EPH continua)", "TFSS (EPH continua)", 
+           "Protegido (EPH continua)", "Precario (EPH continua)" )) %>% 
+  mutate(TRIMESTRE2= case_when(                                         #Hay que quitarle etiquetas (ver si mejor saca etiquetas cuando se procesa el crudo)
+    TRIMESTRE==1 ~ 1, 
+    TRIMESTRE==2 ~ 2, 
+    TRIMESTRE==3 ~ 3, 
+    TRIMESTRE==4 ~ 4), 
+    ANO4=remove_var_label(ANO4)) %>% 
+  mutate(ANO4.trim= paste0(ANO4, ".", TRIMESTRE2)) %>% 
+  select(-c("TRIMESTRE", "TRIMESTRE2")) %>%
+  mutate(across(where(is.numeric), ~ .x * 100))
 
-base_gba_3er <- read_excel("crudo/datos/01. EPH_GBA_empleo_Total.xlsx", 
-                       sheet = "3°trim - GBA", skip = 1)
-base_gba_3er <- base_gba_3er[4:nrow(base_gba_3er), 1:13]
-
-base_gba_4to <- read_excel("crudo/datos/01. EPH_GBA_empleo_Total.xlsx", 
-                       sheet = "4°trim - GBA", skip = 1)
-base_gba_4to <- base_gba_4to[4:nrow(base_gba_4to), 1:13]
-
-base_gba_continua <- bind_rows(base_gba_1er, base_gba_2do, base_gba_3er, base_gba_4to)
-
-colnames(base_gba_continua) <- c("ANO4", "trimestre", "Tasa de actividad (EPH continua)", "Tasa de empleo (EPH continua)", "Tasa de empleo pleno (EPH continua)",
-                             "Tasa de subocupación (EPH continua)", "Tasa de desocupación (EPH continua)","Patrón (EPH continua)",
-                             "Cuenta Propia (EPH continua)", "Asalariado (EPH continua)", "TFSS (EPH continua)", "Protegido (EPH continua)", "Precario (EPH continua)" )
-
-base_gba_continua[, c(1, 3:ncol(base_gba_continua))] <- sapply(base_gba_continua[, c(1, 3:ncol(base_gba_continua))], as.numeric)
-
-base_gba_continua <- base_gba_continua %>% 
-  mutate(ANO4.trim= paste0(ANO4, ".", trimestre)) %>% 
-  select(-trimestre)
 
 # EPH gba unificada ####
 
@@ -150,9 +167,8 @@ eph_gba <- bind_rows(base_gba_puntual, base_gba_continua) %>%
 
 eph <- bind_rows(eph_total_aglos, eph_gba)
 
-saveRDS(eph, file = "www/data/eph.RDS")
 
-#### Categorias ocupacionales POK | 28 aglomerados 2003-2021 ####
+#### Categorias ocupacionales POK | 28 aglomerados 2003-2021 ###
 
 base <- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED (bases).xls", 
                    sheet = "28 trim - cat pok est")
@@ -210,9 +226,10 @@ base3 <- base3 %>%
   mutate(aglomerados="28_aglos", 
          modulo="categoria_ocupacional_pok")
 
-#  Junto pok con la otra base (MODIFICAR LUEGO PARA QUE CORRA BIEN TODO DE UNA) ####
+#  Junto pok con la otra base ####
 
 
 eph <- bind_rows(eph, base3)
 
 saveRDS(eph, file = "www/data/eph.RDS")
+

@@ -16,23 +16,12 @@ categoria_ocup_eph_plot_server <- function(id) {
             base <- base %>% 
               filter(aglomerados=="total_aglos")
             
-            updateSliderInput(session, 'id_periodo',
-                              value = c(1974, 2021),
-                              min = 1974, 
-                              max = 2021)
-            
           }
           
           if(input$aglos == "Filtro Gran Buenos Aires"){
             
             base <- base %>% 
               filter(aglomerados=="gba")
-            
-            updateSliderInput(session, 'id_periodo',
-                              value = c(1974, 2013),
-                              min = 1974, 
-                              max = 2013)
-            
             
           }
           
