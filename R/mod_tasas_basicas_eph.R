@@ -180,9 +180,9 @@ tasas_basicas_eph_plot_ui <- function(id, title) {
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
-                           value = c(1974, 2021),
+                           value = c(1974, 2022),
                            min = 1974, 
-                           max = 2021,
+                           max = 2022,
                            sep=""
                ), 
                hr(), 
