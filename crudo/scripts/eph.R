@@ -43,6 +43,77 @@ base_puntual <- base_puntual %>%
 
 remove(base_mayo, base_octubre, base_puntual1, base_puntual2)
 
+#Ramas
+
+base_puntual_ramas<- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED_Puntual y Continua.xls", 
+                           sheet = "28 punt - rama est")
+
+base_puntual_ramas2 <- base_puntual_ramas[c(6:9, 15:29),]
+
+base_puntual_ramas2 <- base_puntual_ramas2 %>% 
+  rename(index = 1)
+
+#Traspongo y pongo nombre de variables
+base_puntual_ramas2 <- data.frame( t(base_puntual_ramas2[,-1]) )
+colnames(base_puntual_ramas2) <- base_puntual_ramas$index
+
+#Genero vector años
+ANO4 <- c()
+for (i in 1995:2003){
+  ANO4 <- c(ANO4, rep(i, 2) )
+}
+
+ANO4 <- ANO4[2:17]
+
+base_puntual_ramas2[1] <- ANO4
+
+colnames(base_puntual_ramas2) <- c("ANO4", "onda", 
+                             "Actividades primarias",
+                             "Industria Manufacturera",
+                             # "Alimentos, bebidad y tabaco",                    #Saco estas que son un desagregado de Industria Manufacturera
+                             # "Textiles, confecciones y calzado",
+                             # "Productos químicos y de la ref. de petróleo",
+                             # "Productos metálicos, maquinarias y equipos",
+                             # "Otras industrias manufactureras",
+                             "Electricidas, gas y agua",
+                             "Construcción",
+                             "Comercio y reparaciones",
+                             "Restaurantes y hoteles",
+                             "Transporte",
+                             "Servicios de correo y telecomunicaciones",
+                             "Intermediación finaciera",
+                             "Actividades inmobiliarias",
+                             "Servicios empresariales y de alquiler",
+                             "Administración pública y defensa",
+                             "Enseñanza",
+                             "Servicios sociales y de salud",
+                             "Otras servicios",
+                             "Servicio doméstico",
+                             "Desconocidos")
+
+
+base_puntual_ramas2[, 3:19] <- lapply(base_puntual_ramas2[, 3:19], function(x) as.numeric(as.character(x)))
+
+rownames(base_puntual_ramas2) <- NULL
+
+base_puntual_ramas2 <- base_puntual_ramas2 %>% 
+  mutate(ANO4.trim= paste0(ANO4, ".", onda)) %>% 
+  select(-onda)
+
+base_puntual_ramas3 <- gather(base_puntual_ramas2, key="cod.variable", value="valor", 2:18 )
+
+base_puntual_ramas3 <- base_puntual_ramas3 %>% 
+  mutate(nombre.pais="Argentina", 
+         iso3c="ARG", 
+         aglomerados="total_aglos",
+         ANO4=as.numeric(ANO4),
+         modulo='empleo_ramas')
+
+base_puntual <- bind_rows(base_puntual, base_puntual_ramas3)
+
+remove(base_puntual_ramas, base_puntual_ramas2, base_puntual_ramas3)
+
+# EPH Continua - Total aglomerados ####
 ### Descarga de bases con paquete eph | MODIFICAR ACA PARA ACTUALIZAR ####
 
 # variables <- c("ANO4", "TRIMESTRE", "AGLOMERADO", "ESTADO", "INTENSI", "CH06", "PP07H",
@@ -111,7 +182,28 @@ base.eph <- base.eph   %>%
                                        "servicio domestico (s/planes)",
                                        "trabajador sin salario",
                                        "planes jjhd",
-                                       "Ns/Nc"))) 
+                                       "Ns/Nc")), 
+         rama.ceped = 
+           case_when(
+             caes_seccion_cod %in% c("A","B") ~ "Actividades primarias",
+             PP04B_COD %in% c(10:12,1000:1299) ~ "Alimentos, bebidas y tabaco",
+             PP04B_COD %in% c(13:15,1300:1599) ~ "Textiles y confecciones",
+             PP04B_COD %in% c(19:22,1900:2299)  ~ "Productos químicos", 
+             PP04B_COD %in% c(24:30,2400:3099) ~ "Productos metálicos, maquinaria y equipo",
+             PP04B_COD %in% c(16:18,1600:1899,
+                              23:23,2300:2399,
+                              31:33,3100:3399,
+                              58:58,5800:5899) ~ "Otras industrias manufactureras",
+             PP04B_COD %in% c(35:39,3500:3900) ~ "Elec, Gas y Agua",
+             PP04B_COD %in% c(45:48,4500:4899) ~ "Comercio y Reparaciones",
+             PP04B_COD %in% c(59:61,5900:6199) ~ "Servicios de correo y telecomunicaciones",
+             PP04B_COD %in% c(62:63,6200:6399,
+                              69:75,6900:7599,
+                              77:82,7700:8299) ~ "Servicios empresariales y de alquiler",
+             PP04B_COD %in% c(90:96,9000:9699,
+                              99,9900:9998) ~ "Otros servicios sociales y comunitarios", 
+             TRUE ~ str_to_sentence(caes_seccion_label))) 
+
 ### Resultados ####
 
 tabla <- base.eph %>% 
@@ -150,6 +242,10 @@ tabla <- base.eph %>%
     'Trabajador familiar'                               = sum(PONDERA[cat.indec=="trabajador sin salario"]) / total_cat.indec,     
     'Planes JJHD'                                       = sum(PONDERA[cat.indec=="planes jjhd"])/ total_cat.indec)
 
+
+
+  
+
 base_continua <- tabla %>% 
   mutate(ANO4.trim= paste0(ANO4, ".", TRIMESTRE)) %>% 
   mutate(ANO4.trim=str_sub(ANO4.trim, end = 6)) %>% 
@@ -177,7 +273,36 @@ base_continua <- tabla %>%
   sjlabelled::remove_all_labels() %>% 
   tibble() 
 
+ 
+##Agregado información empleo por ramas ####
+total_rama_ponderado <- base.eph %>% 
+  group_by(ANO4, TRIMESTRE, rama.ceped) %>% 
+  summarise(rama_ponderado= sum(PONDERA[!is.na(rama.ceped)]))
 
+total_rama_trimestre <- base.eph %>% 
+  group_by(ANO4, TRIMESTRE) %>% 
+  summarise(rama_total= sum(PONDERA[!is.na(rama.ceped)]))
+
+tabla_rama <- left_join(total_rama_ponderado, total_rama_trimestre, by=c("ANO4", "TRIMESTRE")) %>% 
+  ungroup() %>% 
+  mutate(valor=(rama_ponderado/rama_total)*100) %>% 
+  mutate(ANO4.trim= paste0(ANO4, ".", TRIMESTRE)) %>% 
+  mutate(ANO4.trim=str_sub(ANO4.trim, end = 6)) %>% 
+  select(ANO4.trim, rama.ceped, valor) %>%           #Proximos 4 comandos para completar con valores NA     
+  complete(ANO4.trim, rama.ceped) %>% 
+  mutate(ANO4=str_sub(ANO4.trim, end = 4)) %>% 
+  select(ANO4, ANO4.trim, rama.ceped, valor) %>% 
+  rename( cod.variable= rama.ceped) %>% 
+  mutate(nombre.pais="Argentina", 
+          iso3c="ARG", 
+          aglomerados="total_aglos",
+          ANO4=as.numeric(ANO4),
+          modulo='empleo_ramas') %>% 
+  filter(!is.na(cod.variable))%>% 
+  sjlabelled::remove_all_labels() %>% 
+  tibble() 
+
+base_continua <- bind_rows(base_continua, tabla_rama)
 
 ### eph_total_aglos unificada ####
 
@@ -293,7 +418,34 @@ base_gba_continua <- tabla %>%
   sjlabelled::remove_all_labels() %>% 
   tibble() 
 
+#Agregado información empleo por ramas
+total_rama_ponderado <- base.eph %>%  
+  filter(AGLOMERADO %in% 32:33) %>%
+  group_by(ANO4, TRIMESTRE, rama.ceped) %>% 
+  summarise(rama_ponderado= sum(PONDERA[!is.na(rama.ceped)]))
 
+total_rama_trimestre <- base.eph %>% 
+  filter(AGLOMERADO %in% 32:33) %>%
+  group_by(ANO4, TRIMESTRE) %>% 
+  summarise(rama_total= sum(PONDERA[!is.na(rama.ceped)]))
+
+tabla_rama <- left_join(total_rama_ponderado, total_rama_trimestre, by=c("ANO4", "TRIMESTRE")) %>% 
+  ungroup() %>% 
+  mutate(valor=(rama_ponderado/rama_total)*100) %>% 
+  mutate(ANO4.trim= paste0(ANO4, ".", TRIMESTRE)) %>% 
+  mutate(ANO4.trim=str_sub(ANO4.trim, end = 6)) %>% 
+  select(-TRIMESTRE) %>% 
+  relocate(ANO4.trim, .after=ANO4) %>% 
+  select(ANO4, ANO4.trim, rama.ceped, valor) %>%
+  rename( cod.variable= rama.ceped) %>% 
+  mutate(nombre.pais="Argentina", 
+         iso3c="ARG", 
+         aglomerados="total_aglos",
+         ANO4=as.numeric(ANO4),
+         modulo='empleo_ramas') %>% 
+  filter(!is.na(cod.variable))%>% 
+  sjlabelled::remove_all_labels() %>% 
+  tibble() 
 
 
 ### eph_gba unificada ####
@@ -303,7 +455,6 @@ eph_gba <- bind_rows(base_gba_puntual, base_gba_continua)
 remove(base_gba_puntual, base_gba_continua)
 
 eph <- bind_rows(eph_total_aglos, eph_gba)
-
 
 saveRDS(eph, file = "www/data/eph.RDS")
 

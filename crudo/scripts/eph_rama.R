@@ -1,4 +1,4 @@
-
+library(tidyverse)
 library(readxl)
 
 #Script para levantar datos de archivos sobre EPH con formato CEPED horizontal
@@ -94,7 +94,7 @@ base_puntual2[1] <- ANO4
 colnames(base_puntual2) <- c("ANO4", "onda", 
                              "Actividades primarias",
                              "Industria Manufacturera",
-                             # "Alimentos, bebidad y tabaco",
+                             # "Alimentos, bebidad y tabaco",                    #Saco estas que son un desagregado de Industria Manufacturera
                              # "Textiles, confecciones y calzado",
                              # "Productos químicos y de la ref. de petróleo",
                              # "Productos metálicos, maquinarias y equipos",

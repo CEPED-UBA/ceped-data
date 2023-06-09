@@ -4,12 +4,15 @@ rama_eph_plot_server <- function(id) {
     
     df <-  reactive({
       
+      base <- eph %>% 
+        filter(modulo=="empleo_ramas") 
+      
       if(input$id_periodicidad == "Promedio anual"){
         
-        base <- rama_eph  %>%
+        base <- base  %>%
           filter(cod.variable  %in%   input$var_serie) %>% 
           filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
-          filter(!(ANO4==2003 & tipo.eph=="Puntual")) %>% 
+          filter(!(ANO4==2003)) %>% 
           group_by(ANO4, cod.variable) %>% 
           mutate(valor=mean(valor, na.rm=TRUE)) %>% 
           rename("Serie" = "cod.variable",
@@ -21,7 +24,7 @@ rama_eph_plot_server <- function(id) {
       
       if(input$id_periodicidad == "Trimestral/Onda"){
         
-        base <-  rama_eph  %>%
+        base <-  base  %>%
           filter(cod.variable  %in%   input$var_serie) %>% 
           filter(ANO4 %in% c(input$id_periodo[1]:input$id_periodo[2])) %>% 
           rename("Serie" = "cod.variable",
@@ -38,9 +41,7 @@ rama_eph_plot_server <- function(id) {
     generar_titulo <- function(variables, periodo_i, periodo_f){
       
       
-      lista_variables <-  paste0(variables, collapse = ", ")
-      lista_variables <- sub(",([^,]*)$", " y\\1", lista_variables)  
-      titulo <- paste0("<font size='+2'></br>", "Porcentaje de personas ocupadas en ", lista_variables ," sobre total de ocupados.</font>",
+      titulo <- paste0("<font size='+2'></br>", "Porcentaje de personas ocupadas por rama sobre total de ocupados.</font>",
                        "</br><font size='+1'>Años ", periodo_i, " - ", periodo_f,"</font>")
 
        }
@@ -51,10 +52,10 @@ rama_eph_plot_server <- function(id) {
         ggplot(
           aes(x = Periodo, y = valor/100, fill = Serie, 
                 text=paste0('</br>valor: ',round(valor,1), '</br>Período: ',Periodo)))+
-        scale_fill_manual(values =paleta_colores_extendida) +
+        scale_fill_manual(values =paleta_colores_extendida2) +
         geom_bar(stat="identity") +
         labs(y = "",
-             x = "Año",
+             x = "Periodo",
              color = "")+
         theme_minimal()+
         theme(text = element_text(size = 9),
@@ -145,16 +146,16 @@ rama_eph_plot_ui <- function(id, title) {
                            multiple = F
                ),
                pickerInput(ns('var_serie'),label = 'Seleccionar series',
-                           choices =  unique(rama_eph$cod.variable),
-                           selected = unique(rama_eph$cod.variable),
+                           choices =  unique(eph[eph$modulo=="empleo_ramas", ]$cod.variable),
+                           selected = unique(eph[eph$modulo=="empleo_ramas", ]$cod.variable),
                            options = list(`actions-box` = TRUE),
                            width = "350px",
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
-                           value = c(1995,2021),
+                           value = c(1995,2022),
                            min = 1995, 
-                           max = 2021,
+                           max = 2022,
                            sep=""
                ), 
                hr(), 

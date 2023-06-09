@@ -23,6 +23,9 @@ paleta_colores <- c("#41bdcd","#7ccb29","#cce45b","#f9cb27","#fc941d","#e45335")
 
 paleta_colores_extendida <- c(paleta_colores,"#cc0000","#e69138", "#4169e1" ,"#3d85c6","#000080", "#c576f6", "#3a7480", "#0c4f5d","#005c29","#7a1606","#ff9cd1")
 
+paleta_colores_extendida2 <- c(paleta_colores,"#cc0000","#e69138", "#4169e1" ,"#3d85c6","#000080", "#c576f6", "#3a7480", "#0c4f5d","#005c29","#7a1606","#ff9cd1", "#FF00FF", "#FFFF00", "#00FF00", "#0000FF", "#800080", "#FFA500", "#FF4500", "#00CED1", "#FF1493", "#8B4513", "#808000", "#008080", "#D2691E", "#7B68EE", "#4682B4", "#B0C4DE", "#FF00FF", "#00FF00", "#0000FF", "#800080", "#FFA500", "#FF4500", "#00CED1", "#FF1493", "#8B4513", "#808000", "#008080", "#D2691E", "#7B68EE", "#4682B4", "#B0C4DE", "#FF00FF", "#00FF00", "#0000FF", "#800080", "#FFA500", "#FF4500")
+
+
 
 #Importacion####
 diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
