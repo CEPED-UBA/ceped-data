@@ -56,6 +56,8 @@ base_dt24 <- readRDS(file = "www/data/base_dt24.RDS") %>%
 base_export_dt24 <- base_dt24 %>% 
   pivot_wider(names_from = sector,values_from = valor) %>% 
   arrange(variable)
+periodo_min_dt24 <- min(base_export_dt24$Anio)
+periodo_max_dt24 <- max(base_export_dt24$Anio)
 
 # SALARIOS #####
 salarios <- serie_salarios %>% 

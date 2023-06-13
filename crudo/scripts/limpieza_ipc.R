@@ -127,7 +127,7 @@ base_ipc <- bind_rows(IPC_Argentina_anual, IPC_Argentina_mensual, Ondas, Continu
 
 base_ipc$ANO4 <- as.numeric(base_ipc$ANO4)
 
-saveRDS(base_ipc,"opcion-modulos-paneles/www/data/base_ipc.RDS")
+saveRDS(base_ipc,"www/data/base_ipc.RDS")
 
 #base_ipc <- readRDS("opcion-modulos-paneles/www/data/base_ipc.RDS")
 

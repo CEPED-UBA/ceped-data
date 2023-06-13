@@ -112,7 +112,7 @@ df_plot_server <- function(id) {
       plot_interact(plot(input$tipo_graf,input$sector,input$serie, input$id_periodo[1],input$id_periodo[2]))
     })
     output$metadata1 <- renderText({
-"La serie elaborada por el CEPED es la correspondiente al período 1994-2015: entre 1994 y 2003 por el empalme de las series de las bases de Cuentas Nacionales; entre 2005-2015 corresponde a la estimación realizada en el CEPED ante el faltante de información oficial. Desde el año 2016 en adelante se trata de la información oficial, con la particularidad que se estima la desagregación por tipo de vínculo laboral. También se presenta el salario real, utilizando el IPC empalmado por el CEPED."
+"La serie elaborada por el CEPED es la correspondiente al período 1994-2015: entre 1994 y 2003 por el empalme de las series de las bases de Cuentas Nacionales; entre 2005-2015 corresponde a la estimación realizada en el CEPED ante el faltante de información oficial. Desde el año 2016 en adelante se trata de la información oficial, con la particularidad que se estima la desagregación por tipo de vínculo laboral para el 2022. También se presenta el salario real, utilizando el IPC empalmado por el CEPED."
       })
     
     output$tabla <- renderDT({
@@ -174,9 +174,9 @@ df_plot_ui <- function(id, title,v_variables) {
                               ),
                sliderInput(ns('id_periodo'),
                            "Período:",
-                           value = c(1993,2020),
-                           min = 1993, 
-                           max = 2020,
+                           value = c(periodo_min_dt24,periodo_max_dt24),
+                           min = periodo_min_dt24, 
+                           max = periodo_max_dt24,
                            sep=""
                            ),
                hr(),
