@@ -127,16 +127,7 @@ base_ipc <- bind_rows(IPC_Argentina_anual, IPC_Argentina_mensual, Ondas, Continu
 
 base_ipc$ANO4 <- as.numeric(base_ipc$ANO4)
 
-
-anio_max = max(base_ipc$ANO4)
-mes_max = max(as.numeric(base_ipc$sub[base_ipc$ANO4==anio_max]),na.rm = T)
-
-if(mes_max != 12){
-  base_ipc <-   base_ipc %>% 
-    filter(!(ANO4 == anio_max & cod.variable == "IPC_Anual_2017"))
-}
-  
-saveRDS(base_ipc,"www/data/base_ipc.RDS")
+saveRDS(base_ipc,"opcion-modulos-paneles/www/data/base_ipc.RDS")
 
 #base_ipc <- readRDS("opcion-modulos-paneles/www/data/base_ipc.RDS")
 
