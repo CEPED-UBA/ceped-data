@@ -27,9 +27,11 @@ paleta_colores_extendida2 <- c(paleta_colores,"#cc0000","#e69138", "#4169e1" ,"#
 
 
 
-#Importacion####
+#Diccionario variables####
 diccionario_variables <- read.xlsx("www/data/diccionario_cod.variable.xlsx")
 
+# Importacion de bases ####
+## BP####
 bop_arg_dolares <- readRDS("www/data/bop_arg_dolares.RDS") %>% 
   mutate(codigo_y_variable = paste0(Codigo," - ",cod.variable),
          Nivel = as.character(Nivel))
@@ -38,6 +40,8 @@ bop_sectores <- readRDS("www/data/bop_sectores.RDS") %>%
 bop_dolares_diccionario <- readRDS("www/data/bop_dolares_diccionario.RDS") 
 bop_sectores_diccionario <- readRDS("www/data/bop_sectores_diccionario.RDS") 
 bop_dolares_diccionario_aclaracion <- readRDS("www/data/bop_dolares_diccionario_aclaracion.RDS") 
+min_bop <- min(as.numeric(bop_sectores$ANO4))
+max_bop <- max(as.numeric(bop_sectores$ANO4))
 
 serie_salarios <- readRDS("www/data/salarios.RDS")
 tipo_cambio_argentina <- readRDS("www/data/Tipo_Cambio_Arg.RDS")
@@ -49,7 +53,7 @@ tabla_aglos <- readRDS("www/data/tabla_aglos.RDS")
 pobreza <- readRDS("www/data/pobreza.RDS")
 canastas <- readRDS("www/data/canastas.RDS")
 
-# Funcional
+## Funcional ####
 diccionario_dt24 <- read.xlsx(xlsxFile = "www/data/diccionario_dt24.xlsx") 
 base_dt24 <- readRDS(file = "www/data/base_dt24.RDS") %>% 
   mutate(valor = round(valor,digits = 2))
@@ -59,13 +63,13 @@ base_export_dt24 <- base_dt24 %>%
 periodo_min_dt24 <- min(base_export_dt24$Anio)
 periodo_max_dt24 <- max(base_export_dt24$Anio)
 
-# SALARIOS #####
+## SALARIOS #####
 salarios <- serie_salarios %>% 
   filter(cod.variable %in%  c("salario_relativo_usa_c_actual",
                               "salario_relativo_usa_c_priv",
                               "salario_ppa_c_priv_real",
                               "salario_ppa_c_actual_real"))
-#IPC_TIPO_CAMBIO####
+##IPC_TIPO_CAMBIO####
 
 v_ipc <- diccionario_variables %>% filter(base=="IPC_Argentina") %>%  pull(nombre.variable)      
 
