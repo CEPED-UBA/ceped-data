@@ -221,9 +221,9 @@ bp_plot_ui <- function(id, title,v_variables) {
                              ),
                  sliderInput(ns('id_periodo'),
                              "Período:",
-                             value = c(1992,2020),
-                             min = 1992, 
-                             max = 2020,
+                             value = c(min_bop,max_bop),
+                             min = min_bop, 
+                             max = max_bop,
                              sep=""
                              ),
                  hr(), 

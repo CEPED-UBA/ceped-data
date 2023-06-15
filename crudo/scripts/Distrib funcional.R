@@ -32,8 +32,8 @@ names(puestos_masa_w)[2:5] <- paste0("puestos_",names(puestos_masa_w)[2:5])
 names(puestos_masa_w)[6:9] <- paste0("salario.nominal_",names(puestos_masa_w)[6:9])
 names(puestos_masa_w)[10:13] <- paste0("masa.salarial_",names(puestos_masa_w)[10:13])
 names(puestos_masa_w)[15:18] <- paste0("puestos.composicion_",names(puestos_masa_w)[15:18])
-names(puestos_masa_w)[19:22] <- paste0("salario.real.2021_",names(puestos_masa_w)[19:22])
-names(puestos_masa_w)[23:26] <- paste0("masa.salarial.real.2021_",names(puestos_masa_w)[23:26])
+names(puestos_masa_w)[19:22] <- paste0("salario.real_",names(puestos_masa_w)[19:22])
+names(puestos_masa_w)[23:26] <- paste0("masa.salarial.real_",names(puestos_masa_w)[23:26])
 
 puestos_tidy <-  data.frame(puestos_masa_w) %>% 
   select(-14) %>% 
@@ -45,4 +45,5 @@ puestos_tidy <-  data.frame(puestos_masa_w) %>%
 base_completa_dt21<- puestos_tidy %>% 
   bind_rows(participacion_tidy)
 
-saveRDS(base_completa_dt21,file = "crudo/scripts/app_DT21/base_dt21.RDS")
+saveRDS(base_completa_dt21,file ="www/data/base_dt24.RDS")
+
