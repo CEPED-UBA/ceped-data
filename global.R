@@ -44,7 +44,6 @@ tipo_cambio_argentina <- readRDS("www/data/Tipo_Cambio_Arg.RDS")
 base_ipc <- readRDS("www/data/base_ipc.RDS")
 
 eph <- readRDS("www/data/eph.RDS")
-rama_eph <- readRDS("www/data/eph_rama.RDS") 
 tabla_aglos <- readRDS("www/data/tabla_aglos.RDS")
 pobreza <- readRDS("www/data/pobreza.RDS")
 canastas <- readRDS("www/data/canastas.RDS")

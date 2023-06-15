@@ -30,8 +30,7 @@ categoria_ocup_eph_plot_server <- function(id) {
       if(input$pok == "Filtrar por sector y registro"){
         
           base <- base %>% 
-            filter(modulo=="categoria_ocupacional_pok") %>% 
-            filter(aglomerados=="28_aglos")
+            filter(modulo=="categoria_ocupacional_pok") 
       }
       
       if(input$id_periodicidad == "Promedio anual"){
