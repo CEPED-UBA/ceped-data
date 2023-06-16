@@ -395,13 +395,14 @@ base_tasas_basicas <- base_tasas_basicas %>%
 ## Precariedad ####
 
 excel_prec <- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED (bases).xlsx",
-                         sheet = "28 trim - prec x aglom est")
+                         sheet = "28 trim - prec x aglom part")
 
-base_prec <- excel_prec[c(11, 56), 5:ncol(excel_prec) ]
+base_prec <- excel_prec[c(11), 5:ncol(excel_prec) ]
 
 base_prec  <- t(base_prec)
 
-base_prec <- data.frame(ANO4, trimestre, base_prec)
+base_prec <- data.frame(ANO4, trimestre, protegidos = base_prec) %>% 
+  mutate(proteg = 100-as.numeric(protegidos))
 
 colnames(base_prec) <- c("ANO4", "trimestre", "Precario (EPH continua)", "Protegido (EPH continua)" )
 
