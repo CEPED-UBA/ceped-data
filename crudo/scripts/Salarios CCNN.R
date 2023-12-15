@@ -198,4 +198,4 @@ base_export <- base %>%
                names_to = "cod.variable",values_to = "valor") %>% 
   filter(!is.na(valor))
 
-saveRDS(base_export,file = "opcion-modulos-paneles/www/data/salarios.RDS")
+saveRDS(base_export,file = "www/data/salarios.RDS")

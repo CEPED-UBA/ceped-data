@@ -51,7 +51,7 @@ bop_sectores_corrientes <-
 
 bop_sectores_constantes <- 
   read.xlsx("crudo/datos/Balance de Pagos.xlsx",
-            sheet = "BP_mill U$ corr",
+            sheet = "BP_mill U$ const",
             rows = c(2,77:100),
             skipEmptyRows = T) 
 

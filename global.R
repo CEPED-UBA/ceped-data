@@ -43,7 +43,8 @@ bop_dolares_diccionario_aclaracion <- readRDS("www/data/bop_dolares_diccionario_
 min_bop <- min(as.numeric(bop_sectores$ANO4))
 max_bop <- max(as.numeric(bop_sectores$ANO4))
 
-serie_salarios <- readRDS("www/data/salarios.RDS")
+#serie_salarios2 <- readRDS("www/data/salarios.RDS")
+serie_salarios <- readRDS("www/data/DT_salarios_internac.RDS")
 tipo_cambio_argentina <- readRDS("www/data/Tipo_Cambio_Arg.RDS")
 base_ipc <- readRDS("www/data/base_ipc.RDS")
 
@@ -63,11 +64,17 @@ periodo_min_dt24 <- min(base_export_dt24$Anio)
 periodo_max_dt24 <- max(base_export_dt24$Anio)
 
 ## SALARIOS #####
+# salarios <- serie_salarios %>% 
+#   filter(cod.variable %in%  c("salario_relativo_usa_c_actual",
+#                               "salario_relativo_usa_c_priv",
+#                               "salario_ppa_c_priv_real",
+#                               "salario_ppa_c_actual_real"))
+
 salarios <- serie_salarios %>% 
-  filter(cod.variable %in%  c("salario_relativo_usa_c_actual",
-                              "salario_relativo_usa_c_priv",
-                              "salario_ppa_c_priv_real",
-                              "salario_ppa_c_actual_real"))
+  filter(cod.variable %in%  c("salario_relativo_usa_c_priv",
+                              "salario_ppa_c_priv_real"))
+min_salarios <- min(salarios$ANO4)
+max_salarios <- max(salarios$ANO4)
 ##IPC_TIPO_CAMBIO####
 
 v_ipc <- diccionario_variables %>% filter(base=="IPC_Argentina") %>%  pull(nombre.variable)      
@@ -85,7 +92,8 @@ max_ondas <- max(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
 # Cómo citar? 
 titulo_cita <- "Cómo cito estos datos?"
 cita <- "CEPED (2022). Ceped.data. Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED-UBA), Universidad de Buenos Aires, Buenos Aires. Recuperado de www.ceped-data.shinyapps.io/"
-
+cita_salarios <- "Cazón, F., Kennedy, D. y Weksler, G. (2023) Salario en paridad de poder adquisitivo internacional. Parte I: Procedimientos y resultados a partir de una metodología homogénea para Argentina y países de la OCDE en el largo plazo. Documento de Trabajo del CEPED N° 28, Buenos Aires, CEPED-FCE-UBA."
+recuperado_de <- "Recuperado de www.ceped-data.shinyapps.io/ DOI: 10.5281/zenodo.7083025"
 doi <- "DOI: 10.5281/zenodo.7083025"
 
 # Notas aclaratorias eph
