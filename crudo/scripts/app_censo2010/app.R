@@ -19,6 +19,7 @@ provincias <- readRDS(file = "provincias.RDS")
 ###APP####
 ####genero ui########
 ui <-  fluidPage(
+  tags$head(includeHTML("google-analytics.html")),
   titlePanel(title = "Población urbana argentina - Homogeneización censos nacionales de 1960 a 2010 "),
   tabsetPanel(
     id = 'Display',

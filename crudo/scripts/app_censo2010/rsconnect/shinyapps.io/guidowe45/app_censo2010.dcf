@@ -5,9 +5,8 @@ account: guidowe45
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 6870502
-bundleId: 6248707
+bundleId: 8175927
 url: https://guidowe45.shinyapps.io/app_censo2010/
-when: 1661791894.56361
-lastSyncTime: 1661791894.56361
 asMultiple: FALSE
 asStatic: FALSE
+ignoredFiles: google-analytics.js|google-analytics.txt
