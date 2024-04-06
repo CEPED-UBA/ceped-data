@@ -1,7 +1,6 @@
 # Cargamos librerías
 library(openxlsx)
 library(tidyverse)
-library(stringr)
 
 # Leemos el Excel
 TC_paridad <- read.xlsx("crudo/datos/Precio dolar_Argentina_v4.xlsx",
@@ -19,9 +18,8 @@ TC_paridad <- TC_paridad %>%
 # Agregamos columnas de país
 TC_paridad <- TC_paridad %>%
   mutate(iso3c = "ARG",
-         nombre.pais = "Argentina"
-         ) %>% 
+         nombre.pais = "Argentina") %>% 
   select(nombre.pais,iso3c,everything())
 
 # Guardamos en formato para R
-saveRDS(TC_paridad,file = "data/TC_Paridad.RDS")
+saveRDS(TC_paridad,file ="www/data/base_tc_paridad.RDS")
