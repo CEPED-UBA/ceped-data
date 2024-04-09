@@ -1,32 +1,21 @@
 ##modelo: https://matbarofex.com.ar/IndiceDolarExportacion
 
-## vamos a probar el push de la rama local
 
 ####Server
 
 tipo_cambio_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
-    df <-  reactive({ ##base sería un recorte del df pobreza que reacciona a la solicitud del usuario
+ 
+       df <-  reactive({ ##base sería un recorte del df pobreza que reacciona a la solicitud del usuario
       
-      base <- pobreza %>% ##pobreza es un objeto que esta en www, debo hacer una base de tipo de cambio
-        filter(Serie %in% input$var_serie)  %>% ##filtrame para que serie sea los inputs que puso el usuario, ojo con input$var_serie fijarse en la interfaz de usuario
-        filter(ANO4 >=input$id_periodo[1], ANO4 <= input$id_periodo[2] ) %>% 
-        filter(metodologia==input$metodologia)
-      
+      base <- serie_tipo_cambio_paridad %>% 
+        filter(cod.variable %in% input$var_serie)  %>% ##filtrame para que serie sea los inputs que puso el usuario, ojo con input$var_serie fijarse en la interfaz de usuario
+        filter(anio >=input$id_periodo[1], anio <= input$id_periodo[2] )
       base
       
     })
     
-    df_canastas <-  reactive({
-      
-      base <- canastas %>%
-        filter(year(periodo) >=input$id_periodo[1], year(periodo) <= input$id_periodo[2] ) %>% 
-        mutate(periodo=format(periodo, "%b %Y"))
-      
-      base
-      
-    })
   
 ##Arranca el gráfico    
     
@@ -46,23 +35,21 @@ tipo_cambio_plot_server <- function(id) {
       
       p <- df() %>% ##parte del objeto df que reacciono arriba 
         ggplot(
-          aes(x = Periodo, y = valor/100, group = Serie, color = Serie,
-              text=paste0('</br>valor: ',round(valor,1), '</br>Período: ', Periodo)))+
-        geom_line(size = 1) +
-        geom_point(size = 2) +
-        labs(y = "",
+          aes(x = anio_mes, y = valor, group = cod.variable, color = cod.variable,
+              text=paste0('</br>% Precio/Valor: ',round(valor,1), '</br>Período: ', anio_mes)))+ ##labels del valor##
+        geom_line(size = 0.5) + ##le indico que es un gráfico de linea##
+        geom_point(size = 1) +  
+        labs(y = "% Precio/Valor",
              x = "Período",
              color = "")+
         theme_minimal()+
-        theme(text = element_text(size = 9),
+        theme(text = element_text(size = 10),
               axis.text.x = element_text(size=6),
-              axis.text.y = element_text(size=10),
+              axis.text.y = element_text(size=6),
               legend.position = "bottom",
               plot.title= element_text(size=12, face="bold"))+
         theme(axis.text.x = element_text(angle = 90))+
-        scale_color_manual(values =paleta_colores_extendida) +
-        scale_y_continuous(labels=scales::percent) +
-        scale_y_continuous(breaks=c(5,7.5, 20, 25))
+        scale_color_manual(values =paleta_colores_extendida) 
       p
       
     }
@@ -427,7 +414,7 @@ tc_plot_server <- function(id) {
 ####genero ui########
 
 
-tc_plot_ui <- function(id, title) {
+tipo_cambio_plot_ui <- function(id, title) {
   ns <- NS(id)
   
   tabPanel(title,
@@ -437,11 +424,11 @@ tc_plot_ui <- function(id, title) {
             
              sidebarPanel(
                selectInput(ns('var_serie'),label = 'Seleccionar una Serie',
-                           choices =  v_tc, 
-                           selected = v_tc[2],
+                           choices =  unique(serie_tipo_cambio_paridad$cod.variable), 
+                           selected = unique(serie_tipo_cambio_paridad$cod.variable)[1],
                            width = "300px",
                            multiple = T),
-               sliderInput(ns('id_periodo'), "Período:", value = c(1980,2005), min = 1882, max = 2019), 
+               sliderInput(ns('id_periodo'), "Período:", value = c(2005,2024), min = 1960, max = 2024), 
                hr(), 
                h4(strong(titulo_cita)), 
                h5(cita)

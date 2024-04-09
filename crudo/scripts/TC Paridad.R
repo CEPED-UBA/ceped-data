@@ -6,12 +6,12 @@ library(tidyverse)
 TC_paridad <- read.xlsx("crudo/datos/Precio dolar_Argentina_v4.xlsx",
                            sheet = "data_sistematizada_cd",
                            startRow = 1,
-                           cols = c(3:14),
+                           cols = c(1:14),
                            skipEmptyRows = T)
 
 # Convertimos de formato ancho a largo
 TC_paridad <- TC_paridad %>%
-  pivot_longer(cols = 2:ncol(.),
+  pivot_longer(cols = 4:ncol(.),
                names_to = "cod.variable",
                values_to = "valor")
 

@@ -75,6 +75,7 @@ salarios <- serie_salarios %>%
                               "salario_ppa_c_priv_real"))
 min_salarios <- min(salarios$ANO4)
 max_salarios <- max(salarios$ANO4)
+
 ##IPC_TIPO_CAMBIO####
 
 v_ipc <- diccionario_variables %>% filter(base=="IPC_Argentina") %>%  pull(nombre.variable)      
@@ -87,6 +88,12 @@ max_trim <- max(base_ipc$ANO4[base_ipc$cod.variable == "Trimestres_EPH_2017"])
 
 min_ondas<- min(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
 max_ondas <- max(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
+
+
+##Tipo de cambio de paridad####
+
+serie_tipo_cambio_paridad <- readRDS("www/data/base_tc_paridad.RDS")
+
 
 
 # Cómo citar? 
@@ -114,3 +121,5 @@ nota_aclaratoria_pobreza4<- "3. Para el período de la EPH Continua, las tasas f
 nota_aclaratoria_pobreza5<- "4. En relación a los ingresos no declarados, se utiliza el criterio utilizado por el INDEC en cada base de la EPH"
 nota_aclaratoria_pobreza6<- "5. Para obtener la serie comparable se realiza un empalme hacia adelante"
 nota_aclaratoria_pobreza7<- "6. Las series fueron nombradas a partir de los datos de la Encuesta de Ingresos y Gastos de los Hogares (ENGHo) utilizada para obtener los patrones de consumo de la población de referencia. La serie 1985/6 fue construida utilizando la metodología de CEPA (1993) y la serie 2004/5 fue construida utilizando la metodología de INDEC (2016)."
+
+
