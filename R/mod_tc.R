@@ -38,7 +38,8 @@ tipo_cambio_plot_server <- function(id) {
           aes(x = anio_mes, y = valor, group = cod.variable, color = cod.variable,
               text=paste0('</br>% Precio/Valor: ',round(valor,1), '</br>Período: ', anio_mes)))+ ##labels del valor##
         geom_line(size = 0.5) + ##le indico que es un gráfico de linea##
-        geom_point(size = 1) +  
+        geom_point(size = 1) +
+        geom_hline(yintercept = 100,color = "red")+
         labs(y = "% Precio/Valor",
              x = "Período",
              color = "")+
