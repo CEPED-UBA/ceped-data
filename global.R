@@ -88,6 +88,11 @@ max_trim <- max(base_ipc$ANO4[base_ipc$cod.variable == "Trimestres_EPH_2017"])
 min_ondas<- min(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
 max_ondas <- max(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
 
+## EPH ####
+
+min_eph <- min(eph$ANO4)
+max_eph <- max(eph$ANO4)
+
 
 # Cómo citar? 
 titulo_cita <- "Cómo cito estos datos?"

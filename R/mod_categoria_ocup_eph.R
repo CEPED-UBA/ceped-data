@@ -1,4 +1,4 @@
-
+## SERVER ####
 categoria_ocup_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
@@ -214,7 +214,7 @@ categoria_ocup_eph_plot_server <- function(id) {
     
      })
 }
-
+## INTERFAZ ####
 categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
   ns <- NS(id)
   
@@ -239,9 +239,9 @@ categoria_ocup_eph_plot_ui <- function(id, title,v_categoria_ocup_eph) {
                           multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período",
-                           value = c(1974,2022),
-                           min = 1974, 
-                           max = 2022,
+                           value = c(1974,max_eph),
+                           min = min_eph, 
+                           max = max_eph,
                            sep=""
                ), 
                hr(), 

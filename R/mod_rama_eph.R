@@ -1,4 +1,4 @@
-
+## SERVER ####
 rama_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
@@ -129,7 +129,7 @@ rama_eph_plot_server <- function(id) {
     
      })
 }
-
+## INTERFAZ ####
 rama_eph_plot_ui <- function(id, title) {
   ns <- NS(id)
   
@@ -153,9 +153,9 @@ rama_eph_plot_ui <- function(id, title) {
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
-                           value = c(1995,2022),
+                           value = c(1995,max_eph),
                            min = 1995, 
-                           max = 2022,
+                           max = max_eph,
                            sep=""
                ), 
                hr(), 

@@ -1,4 +1,4 @@
-
+## SERVER ####
 precariedad_eph_plot_server <- function(id) {
   moduleServer(id, function(input, output, session) {
     
@@ -167,7 +167,7 @@ precariedad_eph_plot_server <- function(id) {
     
      })
 }
-
+## INTERFAZ ####
 precariedad_eph_plot_ui <- function(id, title) {
   ns <- NS(id)
   
@@ -192,9 +192,9 @@ precariedad_eph_plot_ui <- function(id, title) {
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período",
-                           value = c(1974,2022),
-                           min = 1974, 
-                           max = 2022,
+                           value = c(2004,max_eph),
+                           min = min_eph, 
+                           max = max_eph,
                            sep=""
                ), 
                hr(), 
