@@ -5,10 +5,8 @@ account: ceped-data
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 7378046
-bundleId: 6436193
+bundleId: 8610900
 url: https://ceped-data.shinyapps.io/ceped-data-prueba/
-when: 1666636405.53884
-lastSyncTime: 1666636405.53904
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: crudo
+ignoredFiles: Manual de Actulizacion.docx|README.md|crudo

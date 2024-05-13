@@ -17,7 +17,7 @@ pobreza_plot_server <- function(id) {
 
       base <- canastas %>%
         filter(year(periodo) >=input$id_periodo[1], year(periodo) <= input$id_periodo[2] ) %>% 
-        mutate(periodo=format(periodo, "%b %Y"))
+        mutate(periodo=format(periodo, "%b %Y")) # Corregir, no se ordena ok
 
       base
 
@@ -163,9 +163,9 @@ pobreza_plot_ui <- function(id, title) {
                            multiple = T
                ),
                sliderInput(ns('id_periodo'), "Período:",
-                           value = c(1974, 2022),
+                           value = c(1974, max_pobreza),
                            min = 1974, 
-                           max = 2022,
+                           max = max_pobreza,
                            sep=""
                ), 
                hr(), 

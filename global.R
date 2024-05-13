@@ -93,7 +93,8 @@ max_ondas <- max(base_ipc$ANO4[base_ipc$cod.variable == "Ondas_EPH_2017"])
 min_eph <- min(eph$ANO4)
 max_eph <- max(eph$ANO4)
 
-
+## Pobreza ####
+max_pobreza <- max(pobreza$ANO4)
 # Cómo citar? 
 titulo_cita <- "Cómo cito estos datos?"
 cita <- "CEPED (2022). Ceped.data. Portal de difusión de datos del Centro de Estudios sobre Población, Empleo y Desarrollo (CEPED-UBA), Universidad de Buenos Aires, Buenos Aires. Recuperado de www.ceped-data.shinyapps.io/"
