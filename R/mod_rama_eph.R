@@ -71,6 +71,24 @@ rama_eph_plot_server <- function(id) {
 
     }
     
+    armar_tabla <- function(variables, periodo_i, periodo_f, descarga){
+      
+      tabla <- df() %>% 
+        filter(Serie  %in%   input$var_serie) %>% 
+        filter(Periodo %in% c(input$id_periodo[1]:input$id_periodo[2]))
+      
+      if (descarga == FALSE) {
+        tabla <- tabla %>% datatable(rownames = FALSE,
+                                     options = list(
+                                       searching=FALSE, 
+                                       pageLength = 10, 
+                                       dom='tip')) %>% 
+          formatRound("Valor")
+      } else {
+        tabla <- tabla
+      }
+        return(tabla)
+      }
     
     plot_interact <- function(p){
       ggplotly(p, tooltip = c("text"))%>% 
@@ -110,10 +128,11 @@ rama_eph_plot_server <- function(id) {
 
     output$downloadTable <- downloadHandler(
 
-      filename = function(){paste(input$var_serie[1],'.xlsx',sep='')},
+      filename = function(){paste("empleo_ramas",'.xlsx',sep='')},
       content = function(file){
 
-        write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],input$id_periodo[2]),
+        write.xlsx(armar_tabla(input$var_serie, input$id_periodo[1],
+                               input$id_periodo[2], descarga = T),
                    file)    }
     )
     output$downloadPlot <- downloadHandler(

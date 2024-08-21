@@ -76,7 +76,7 @@ ipc_plot_server <- function(id) {
     
     plot <- function(variables, periodo_i, periodo_f){
       
-      p <- base_ipc %>% ungroup() %>%
+      base_p <- base_ipc %>% ungroup() %>%
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>%
@@ -85,10 +85,11 @@ ipc_plot_server <- function(id) {
         rowwise() %>% 
         mutate(Per = ifelse(is.na(sub), paste0(ANO4),paste0(ANO4,"-",sub))) %>% 
         ungroup() %>% 
-        mutate(id = row_number()) %>% 
+        mutate(id = row_number())
         
+      fechas<- unique(base_p$Per)    
         
-       
+      p <-base_p %>% 
         ggplot(
           aes(x = fct_reorder(as.factor(Per), id), y = valor, group = cod.variable
               ,text=paste0('</br>',cod.variable,'</br>Valor: ',round(valor,1), '</br>Período: ',Per)))+
@@ -101,7 +102,8 @@ ipc_plot_server <- function(id) {
               axis.text.y = element_text(size=10),
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
-        scale_x_discrete(guide = guide_axis(check.overlap = TRUE))
+        scale_x_discrete(breaks = fechas[seq(1, length(fechas), 12)])
+        #scale_x_discrete(guide = guide_axis(check.overlap = TRUE))
         #scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)|grepl("-Mayo", x)|grepl("-T1", x)),paste0(x),paste0("") ))
       
       p
@@ -112,7 +114,7 @@ ipc_plot_server <- function(id) {
     
     plot_var <- function(variables, periodo_i, periodo_f){
       
-      p <- base_ipc %>% ungroup() %>%
+      base_p <- base_ipc %>% ungroup() %>%
         filter(cod.variable  ==  unique(diccionario_variables$cod.variable[diccionario_variables$nombre.variable == variables])) %>% 
         
         filter(ANO4 %in% c(periodo_i:periodo_f)) %>% 
@@ -121,9 +123,12 @@ ipc_plot_server <- function(id) {
         rowwise() %>% 
         mutate(Per = ifelse(is.na(sub), paste0(ANO4),paste0(ANO4,"-",sub))) %>% 
         ungroup() %>% 
-        mutate(id = row_number()) %>% 
-        
-       
+        mutate(id = row_number())
+
+fechas<- unique(base_p$Per)
+      
+              
+      p <- base_p %>% 
         ggplot(
           aes(x = fct_reorder(as.factor(Per), id), y = var, group = cod.variable
               ,text=paste0('</br>',cod.variable,'</br>Variación: ',round(var,1),'%' ,'</br>Período: ',Per)))+
@@ -137,11 +142,11 @@ ipc_plot_server <- function(id) {
               legend.position = "none",
               plot.title= element_text(size=12, face="bold"))+
         scale_y_continuous(labels = function(x) paste0(x,"%"))+
-        scale_x_discrete(guide = guide_axis(check.overlap = TRUE))
+        scale_x_discrete(breaks = fechas[seq(1, length(fechas), 12)])
+        #scale_x_discrete(guide = guide_axis(check.overlap = TRUE))
        # scale_x_discrete(labels = function(x) ifelse((nchar(x)==4|grepl("-6", x)),paste0(x),paste0("") ))
-      
-      p
 
+ 
     }
 
     
@@ -171,7 +176,7 @@ ipc_plot_server <- function(id) {
       } else if (x %in% c(v_ipc[1],v_ipc[2])) {
        up_min <- min_ipc
        up_max <- max_ipc
-       up_value <- c(2000,2010)
+       up_value <- c(2010,up_max)
       
         
          
@@ -318,10 +323,10 @@ ipc_plot_ui <- function(id, title,v_variables) {
              sidebarPanel(
                selectInput(ns('var_serie'),label = 'Seleccionar una Serie',
                            choices =  v_variables, 
-                           selected = v_variables[1],
+                           selected = v_variables[2],
                            width = "300px",
                            multiple = F),
-               sliderInput(ns('id_periodo'), "Período:", value = c(2000,2010), min = min_ipc, max = max_ipc,sep=""), 
+               sliderInput(ns('id_periodo'), "Período:", value = c(2010,max_ipc), min = min_ipc, max = max_ipc,sep=""), 
                hr(), 
                h4(strong(titulo_cita)), 
                h5(cita, style="text-align: justify;"),
@@ -336,10 +341,10 @@ ipc_plot_ui <- function(id, title,v_variables) {
                           value = "g_ipc",
                           
                
-               box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
+               box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
                br(),
                
-               plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[1]),
+               plotlyOutput(ns('plot_var'))%>% withSpinner(type = 7, color =paleta_colores[1]),
                br(),
                box(width = NULL,
                    downloadButton(ns('downloadPlot'),'Descargar gráfico')),
@@ -349,11 +354,11 @@ ipc_plot_ui <- function(id, title,v_variables) {
                
                box(title = "Aclaración sobre la construcción de los datos", width = NULL, htmlOutput(ns('metadata1'),style = "text-align: justify")),
                br(),
-               box(width = NULL,br(), htmlOutput(ns('titulob1'))), 
+               box(width = NULL,br(), htmlOutput(ns('titulo1'))), 
                br(),
                
               
-               plotlyOutput(ns('plot_var'))%>% withSpinner(type = 7, color =paleta_colores[2]),
+               plotlyOutput(ns('plot'))%>% withSpinner(type = 7, color =paleta_colores[2]),
                br(),
                box(width = NULL,
                   
