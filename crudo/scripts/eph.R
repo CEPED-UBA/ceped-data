@@ -135,7 +135,7 @@ base_tasas_basicas <- base_tasas_basicas[3:6,]
 base_tasas_basicas <- t(base_tasas_basicas)
 
 ANO4 <- c()
-for (i in 2003:2023){
+for (i in 2003:2024){
   ANO4 <- c(ANO4, rep(i, 4) )
 }
 
@@ -143,7 +143,7 @@ ANO4 <- ANO4[3:length(ANO4)]
 
 trimestre <- c()
 
-for (i in 2003:2023){
+for (i in 2003:2024){
   trimestre <- c(trimestre, c(1,2,3,4) )
 }
 
@@ -355,7 +355,7 @@ base_tasas_basicas <- excel_tasas_basicas[c(10, 55, 100, 145 ), 5:ncol(excel_tas
 base_tasas_basicas <- t(base_tasas_basicas)
 
 ANO4 <- c()
-for (i in 2003:2023){
+for (i in 2003:2024){
   ANO4 <- c(ANO4, rep(i, 4) )
 }
 
@@ -363,7 +363,7 @@ ANO4 <- ANO4[3:length(ANO4)]
 
 trimestre <- c()
 
-for (i in 2003:2023){
+for (i in 2003:2024){
   trimestre <- c(trimestre, c(1,2,3,4) )
 }
 
