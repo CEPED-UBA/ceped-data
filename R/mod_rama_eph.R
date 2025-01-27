@@ -136,12 +136,12 @@ rama_eph_plot_server <- function(id) {
                    file)    }
     )
     output$downloadPlot <- downloadHandler(
-      filename = function(){paste(input$var_serie[1],'.png',sep='')},
+      filename = function(){paste(input$var_serie[1],'.jpg',sep='')},
       content = function(file){
 
 
         ggsave(file,plot=plot(input$var_serie, input$id_periodo[1],input$id_periodo[2]),
-               width=8, height=4)
+               width=15, height=9)
       }
     )
     
