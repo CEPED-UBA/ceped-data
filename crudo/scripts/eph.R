@@ -2,6 +2,31 @@ library(readxl)
 library(tidyverse)
 library(sjlabelled)
 
+# Especificar periodo ###############################################
+anio_actual <- 2024  #Cambiar al actualizar (si corresponde) 
+trimestre_actual <- 2 #Cambiar al actualizar (si corresponde) 
+
+# Creo vectores de anio y trim EPH-continua ###########
+trimestres_de_sobra = case_when(trimestre_actual == 1 ~ 3,
+                                trimestre_actual == 2 ~ 2,
+                                trimestre_actual == 3 ~ 1,
+                                trimestre_actual == 4 ~ 0)
+ANO4 <- c()
+for (i in 2003:anio_actual){
+  ANO4 <- c(ANO4, rep(i, 4) )
+}
+
+ANO4 <- ANO4[3:length(ANO4)]
+ANO4 <- ANO4[1:(length(ANO4)-trimestres_de_sobra)]
+
+trimestre <- c()
+
+for (i in 2003:anio_actual){
+  trimestre <- c(trimestre, c(1,2,3,4) )
+}
+
+trimestre <- trimestre[3:length(trimestre)]
+trimestre <- trimestre[1:(length(trimestre)-trimestres_de_sobra)]
 # EPH Puntual - Total aglomerados ####
 
 base_mayo <- read_excel("crudo/datos/03. EPH_Total Aglomerados_empleo_Total.xlsx", 
@@ -58,14 +83,14 @@ base_puntual_ramas2 <- data.frame( t(base_puntual_ramas2[,-1]) )
 colnames(base_puntual_ramas2) <- base_puntual_ramas$index
 
 #Genero vector años
-ANO4 <- c()
+ANO4_punt <- c()
 for (i in 1995:2003){
-  ANO4 <- c(ANO4, rep(i, 2) )
+  ANO4_punt <- c(ANO4_punt, rep(i, 2) )
 }
 
-ANO4 <- ANO4[2:17]
+ANO4_punt <- ANO4_punt[2:17]
 
-base_puntual_ramas2[1] <- ANO4
+base_puntual_ramas2[1] <- ANO4_punt
 
 col_names_ramas <- c("Actividades primarias",
                      "Industria Manufacturera",
@@ -132,27 +157,18 @@ base_tasas_basicas <- bind_cols(base_hipotesis_b_2003_2010, base_2011_actual)
 
 base_tasas_basicas <- base_tasas_basicas[3:6,]
 
-base_tasas_basicas <- t(base_tasas_basicas)
-
-ANO4 <- c()
-for (i in 2003:2024){
-  ANO4 <- c(ANO4, rep(i, 4) )
-}
-
-ANO4 <- ANO4[3:length(ANO4)]
-
-trimestre <- c()
-
-for (i in 2003:2024){
-  trimestre <- c(trimestre, c(1,2,3,4) )
-}
-
-trimestre <- trimestre[3:length(trimestre)]
-
-base_tasas_basicas <- data.frame(ANO4, trimestre, base_tasas_basicas)
+df_tasas_basicas <- t(base_tasas_basicas) %>% 
+  data.frame() %>%
+  drop_na()
 
 
-colnames(base_tasas_basicas) <-  c("ANO4", "trimestre", "Tasa de actividad (EPH continua)", 
+
+
+
+base_tasas_basicas <- data.frame(ANO4, trimestre, df_tasas_basicas)
+
+
+  colnames(base_tasas_basicas) <-  c("ANO4", "trimestre", "Tasa de actividad (EPH continua)", 
                                            "Tasa de empleo (EPH continua)", "Tasa de desocupación (EPH continua)",
                                            "Tasa de subocupación (EPH continua)")
 
@@ -179,7 +195,9 @@ excel_prec <- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED (bases).x
 
 base_prec <- excel_prec[9:11, 4:ncol(excel_prec) ]
 
-base_prec  <- t(base_prec)
+base_prec  <- t(base_prec)%>% 
+  data.frame() %>%
+  drop_na()
 
 base_prec <- data.frame(ANO4, trimestre, base_prec)
 
@@ -208,7 +226,9 @@ excel_cat_ocup <- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED (base
 
 base_cat_ocup <- excel_cat_ocup[9:13, 4:ncol(excel_cat_ocup) ]
 
-base_cat_ocup  <- t(base_cat_ocup)
+base_cat_ocup  <- t(base_cat_ocup)%>% 
+  data.frame() %>%
+  drop_na()
 
 base_cat_ocup <- data.frame(ANO4, trimestre, base_cat_ocup)
 
@@ -238,7 +258,9 @@ excel_cat_ocup_pok <- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED (
 
 base_cat_ocup_pok <- excel_cat_ocup_pok[9:17, 4:ncol(excel_cat_ocup_pok) ]
 
-base_cat_ocup_pok  <- t(base_cat_ocup_pok)
+base_cat_ocup_pok  <- t(base_cat_ocup_pok)%>% 
+  data.frame() %>%
+  drop_na()
 
 base_cat_ocup_pok <- data.frame(ANO4, trimestre, base_cat_ocup_pok)
 
@@ -276,7 +298,9 @@ excel_ramas <- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED (bases).
 
 base_ramas <- excel_ramas[c(9:10, 16:30), 4:ncol(excel_ramas) ]
 
-base_ramas  <- t(base_ramas)
+base_ramas  <- t(base_ramas)%>% 
+  data.frame() %>%
+  drop_na()
 
 base_ramas <- data.frame(ANO4, trimestre, base_ramas)
 
@@ -352,22 +376,9 @@ excel_tasas_basicas <- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED 
 
 base_tasas_basicas <- excel_tasas_basicas[c(10, 55, 100, 145 ), 5:ncol(excel_tasas_basicas) ]
 
-base_tasas_basicas <- t(base_tasas_basicas)
-
-ANO4 <- c()
-for (i in 2003:2024){
-  ANO4 <- c(ANO4, rep(i, 4) )
-}
-
-ANO4 <- ANO4[3:length(ANO4)]
-
-trimestre <- c()
-
-for (i in 2003:2024){
-  trimestre <- c(trimestre, c(1,2,3,4) )
-}
-
-trimestre <- trimestre[3:length(trimestre)]
+base_tasas_basicas <- t(base_tasas_basicas) %>% 
+  data.frame() %>%
+  drop_na()
 
 base_tasas_basicas <- data.frame(ANO4, trimestre, base_tasas_basicas)
 
@@ -399,9 +410,11 @@ excel_prec <- read_excel("crudo/datos/Datos Mercado de Trabajo - CEPED (bases).x
 
 base_prec <- excel_prec[c(11), 5:ncol(excel_prec) ]
 
-base_prec  <- t(base_prec)
+base_prec  <- t(base_prec) %>% 
+  data.frame() %>%
+  drop_na()
 
-base_prec <- data.frame(ANO4, trimestre, protegidos = base_prec) %>% 
+base_prec <- data.frame(ANO4, trimestre, protegidos = base_prec[,1]) %>% 
   mutate(proteg = 100-as.numeric(protegidos))
 
 colnames(base_prec) <- c("ANO4", "trimestre", "Precario (EPH continua)", "Protegido (EPH continua)" )
